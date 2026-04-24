@@ -518,8 +518,8 @@ function Screen05Open({ phase = 'broadcast' }) {
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       <div style={{ padding:'16px 18px 8px', display:'flex', justifyContent:'space-between' }}>
-        <span className="lbl">Open Channel</span>
-        <span className="lbl">05 / 06</span>
+        <span className="lbl">{T('open_channel')}</span>
+        <span className="lbl">{T('host_step')}</span>
       </div>
 
       {/* Phase stepper */}

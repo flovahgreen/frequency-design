@@ -4,7 +4,7 @@
 // Simple i18n — controlled by window.FREQ_LANG ('en' | 'kr')
 const FREQ_STRINGS = {
   en: {
-    tune_top: 'Frequency · Tune', step: '01 / 06',
+    tune_top: 'Frequency · Tune', step: 'ENTER', host_step: 'HOST',
     locked: 'LOCKED', scanning: 'SCANNING',
     live: 'LIVE', channel: 'CHANNEL', round: 'ROUND',
     feed_round: 'Round', feed_live: 'Live',
@@ -34,7 +34,7 @@ const FREQ_STRINGS = {
     profile_tag: '@jay · YOU',
   },
   kr: {
-    tune_top: '주파수 · 튜닝', step: '01 / 06',
+    tune_top: '주파수 · 튜닝', step: '입력', host_step: '호스트',
     locked: '잠김', scanning: '탐색 중',
     live: '송신', channel: '채널', round: '라운드',
     feed_round: '라운드', feed_live: '송신',
