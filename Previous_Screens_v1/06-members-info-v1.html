@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>FREQUENCY · Members + Channel Info · v1</title>
+<link rel="stylesheet" href="../shared/mobile.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --te-orange-500: #F15A24;
+    --critical-red:   #E5484D;
+    --amber-500:      #F5A623;
+    --ink-1000: #0A0A0A;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --paper-bg:        #EDE6D7;
+    --paper-raised:    #F4EEE0;
+    --paper-edge:      #CFC6B3;
+    --paper-muted:     #B6AE9B;
+    --paper-tick:      #8A8271;
+    --paper-text-mute: #6A6152;
+    --paper-ink:       #141211;
+    --signal-green-paper:      #197A3E;
+    --signal-green-paper-glow: rgba(25, 122, 62, 0.40);
+
+    /* Member colors — Polaroid Film */
+    --member-self: #197A3E;
+    --member-1:    #E2B848;
+    --member-2:    #C04F3F;
+    --member-3:    #DB8A8A;
+    --member-4:    #5878A8;
+    --member-5:    #7FB298;
+    --member-6:    #8E6B47;
+    --member-7:    #A484B8;
+    --member-8:    #C4673A;
+
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --radius-xs: 2px; --radius-sm: 4px; --radius-md: 6px;
+    --motion-fast: 150ms; --motion-base: 200ms;
+    --ease-mech: cubic-bezier(0.2, 0, 0, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-800); color: var(--ink-50);
+    line-height: 1.5; padding: 40px 24px 96px; min-height: 100vh;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+
+  .page-head { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--ink-700); }
+  .page-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 8px;
+  }
+  .page-tag .accent { color: var(--signal-green-400); }
+  .page-title {
+    font-family: var(--font-sans); font-size: 24px; font-weight: 700;
+    letter-spacing: -0.02em; color: var(--ink-50); margin-bottom: 4px;
+  }
+  .page-sub { font-size: 13px; color: var(--ink-400); line-height: 1.6; }
+
+  .stage { display: flex; justify-content: center; padding: 16px 0 32px; }
+  .iphone {
+    width: 393px; aspect-ratio: 393 / 852;
+    background: var(--ink-1000); border-radius: 52px; padding: 11px;
+    box-shadow: 0 0 0 1px var(--ink-600), 0 32px 64px -20px rgba(0, 0, 0, 0.65);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%;
+    background: var(--paper-bg); color: var(--paper-ink);
+    border-radius: 44px; overflow: hidden;
+    display: flex; flex-direction: column; position: relative;
+  }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 118px; height: 34px;
+    background: var(--ink-1000); border-radius: 999px; z-index: 10;
+  }
+  .status-bar {
+    height: 52px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px 0 24px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+    color: var(--paper-ink); position: relative; z-index: 5;
+  }
+  .status-right { display: flex; align-items: center; gap: 6px; }
+  .sr-ico.signal {
+    width: 17px; height: 11px; background: currentColor; opacity: 0.9;
+    clip-path: polygon(0 100%,4px 100%,4px 70%,0 70%,0 100%,5px 100%,9px 100%,9px 50%,5px 50%,5px 100%,10px 100%,14px 100%,14px 30%,10px 30%,10px 100%,15px 100%,19px 100%,19px 10%,15px 10%);
+  }
+  .sr-ico.battery {
+    width: 24px; height: 12px; background: transparent;
+    border: 1px solid currentColor; border-radius: 2px; position: relative; opacity: 0.9;
+  }
+  .sr-ico.battery::after { content:""; position: absolute; right:-3px; top:3px; width:2px; height:6px; background:currentColor; }
+  .sr-ico.battery::before { content:""; position: absolute; top:1px; left:1px; bottom:1px; width:80%; background: currentColor; border-radius:1px; }
+  .home-indicator {
+    position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+    width: 38%; height: 5px;
+    background: var(--paper-ink); border-radius: 999px; opacity: 0.4; z-index: 10;
+  }
+  .screen-content { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Top bar */
+  .top-bar {
+    flex-shrink: 0; padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--paper-edge);
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    background: transparent; border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    cursor: pointer; color: var(--paper-ink);
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .icon-btn:active { background: var(--paper-raised); }
+  .top-title {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--paper-ink);
+  }
+
+  /* Scroll body */
+  .info-scroll {
+    flex: 1; min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .info-scroll::-webkit-scrollbar { display: none; }
+
+  /* Section */
+  .section {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--paper-edge);
+  }
+  .section-label {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label .pfx { color: var(--paper-text-mute); margin-right: 2px; }
+  .section-label .live-dot {
+    display: inline-block;
+    width: 5px; height: 5px; border-radius: 999px;
+    background: var(--signal-green-paper);
+    box-shadow: 0 0 5px var(--signal-green-paper-glow);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+
+  /* Channel name + freq display */
+  .channel-name {
+    font-size: 22px; font-weight: 700;
+    color: var(--paper-ink); letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .channel-freq {
+    display: flex; align-items: baseline; justify-content: center;
+    gap: 4px;
+    font-family: var(--font-mono); font-weight: 700;
+    color: var(--paper-ink);
+    margin: 4px 0 14px;
+  }
+  .channel-freq .digit { font-size: 44px; line-height: 1; }
+  .channel-freq .dot {
+    font-size: 44px; line-height: 1;
+    color: var(--signal-green-paper);
+  }
+  .channel-meta {
+    text-align: center;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .freq-actions {
+    display: flex; gap: 8px;
+  }
+  .freq-btn {
+    flex: 1; padding: 11px;
+    background: var(--paper-ink);
+    color: var(--paper-bg);
+    border: 1.5px solid var(--paper-ink);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .freq-btn:active {
+    background: var(--signal-green-paper);
+    border-color: var(--signal-green-paper);
+  }
+  .freq-btn.copied {
+    background: var(--signal-green-paper);
+    border-color: var(--signal-green-paper);
+  }
+
+  /* Member list */
+  .member-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--paper-edge);
+  }
+  .member-row:first-child { border-top: 0; padding-top: 4px; }
+  .member-chip {
+    padding: 4px 9px;
+    color: #EDE6D7;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    border-radius: 0;
+    flex-shrink: 0;
+    min-width: 64px; text-align: center;
+  }
+  .member-chip[data-member="YOU"]      { background: var(--member-self); }
+  .member-chip[data-member="HANI"]     { background: var(--member-1); }
+  .member-chip[data-member="JIN"]      { background: var(--member-2); }
+  .member-chip[data-member="MIN"]      { background: var(--member-3); }
+  .member-chip[data-member="SOO"]      { background: var(--member-4); }
+  .member-chip[data-member="YUN"]      { background: var(--member-5); }
+  .member-chip[data-member="BIN"]      { background: var(--member-6); }
+  .member-chip[data-member="HAE"]      { background: var(--member-7); }
+  .member-chip[data-member="KAY"]      { background: var(--member-8); }
+
+  .member-info {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .member-role {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+  .member-role.host { color: var(--te-orange-500); }
+  .member-time {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--paper-text-mute); font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .member-action {
+    background: transparent;
+    border: 1px solid var(--paper-edge);
+    color: var(--paper-text-mute);
+    width: 28px; height: 28px;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .member-action:active { background: var(--paper-raised); }
+  .member-action.kick { color: var(--critical-red); border-color: rgba(229, 72, 77, 0.3); }
+
+  /* Empty slot */
+  .empty-slots {
+    margin-top: 8px;
+    padding: 12px;
+    background: var(--paper-raised);
+    border: 1px dashed var(--paper-edge);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+  .empty-slots .num { color: var(--paper-ink); }
+
+  /* Stat row (rounds remaining 등) */
+  .stat-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0;
+    border-top: 1px solid var(--paper-edge);
+  }
+  .stat-row:first-child { border-top: 0; padding-top: 0; }
+  .stat-row .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+  .stat-row .val {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    color: var(--paper-ink); letter-spacing: 0.04em;
+  }
+  .stat-row .val.green { color: var(--signal-green-paper); }
+  .stat-row .val.warn { color: var(--amber-500); }
+
+  /* Bottom actions */
+  .bottom-actions {
+    flex-shrink: 0;
+    padding: 12px 18px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    border-top: 1px solid var(--paper-edge);
+    background: var(--paper-bg);
+  }
+  .action-btn {
+    width: 100%; padding: 14px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .action-btn.invite {
+    background: var(--te-orange-500);
+    color: var(--paper-bg);
+    border: 1.5px solid var(--te-orange-500);
+    box-shadow: 0 0 12px rgba(241, 90, 36, 0.22);
+  }
+  .action-btn.invite:active {
+    background: var(--paper-ink); border-color: var(--paper-ink);
+  }
+  .action-btn.leave {
+    background: transparent;
+    color: var(--critical-red);
+    border: 1.5px solid var(--critical-red);
+  }
+  .action-btn.leave:active {
+    background: var(--critical-red);
+    color: var(--paper-bg);
+  }
+
+  /* Demo controls */
+  .demo-controls {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 6px; z-index: 100;
+  }
+  .demo-row {
+    display: flex; gap: 4px;
+    padding: 8px;
+    background: var(--ink-700); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-sm);
+  }
+  .demo-row .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--ink-300); text-transform: uppercase;
+    align-self: center; padding: 0 8px;
+  }
+  .demo-btn {
+    padding: 8px 12px;
+    background: var(--ink-800); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--ink-200); cursor: pointer; min-width: 28px;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .demo-btn:hover { background: var(--ink-600); }
+  .demo-btn.active {
+    background: var(--signal-green-400);
+    color: var(--ink-1000);
+    border-color: var(--signal-green-400);
+  }
+
+  /* Notes */
+  .notes {
+    max-width: 560px; margin: 40px auto 0;
+    padding: 24px; background: var(--ink-900);
+    border: 1px solid var(--ink-700); border-radius: var(--radius-md);
+  }
+  .notes-title {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; color: var(--ink-400);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .notes-row {
+    display: flex; gap: 12px; padding: 7px 0;
+    font-size: 13px; line-height: 1.55; color: var(--ink-300);
+  }
+  .notes-row + .notes-row { border-top: 1px solid var(--ink-800); }
+  .notes-icon {
+    width: 16px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--signal-green-400); text-align: center;
+  }
+  .notes-icon.orange { color: var(--te-orange-500); }
+  .notes-icon.amber  { color: var(--amber-500); }
+  .notes-icon.red    { color: var(--critical-red); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · MEMBERS + CHANNEL INFO · V1</div>
+    <h1 class="page-title">채널 정보 + 멤버 9 / 호스트 권한</h1>
+    <p class="page-sub">방의 정보와 멤버 목록을 한 화면에. 채널 이름 + 큰 주파수(다시 공유 가능) + COPY/SHARE / MEMBERS 9명 (Polaroid 컬러 칩, host 마크) / 통계 (남은 라운드, 자동 휘발 시간) / 하단 INVITE FRIENDS + LEAVE CHANNEL. 우하단 토글로 HOST/MEMBER 시점, 인원수(1/5/9) 비교.</p>
+  </div>
+
+  <div class="stage">
+    <div class="iphone">
+      <div class="dynamic-island"></div>
+      <div class="iphone-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <span class="sr-ico signal"></span>
+            <span class="sr-ico battery"></span>
+          </div>
+        </div>
+
+        <div class="screen-content">
+
+          <div class="top-bar">
+            <button class="icon-btn" aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="top-title">CHANNEL INFO</div>
+            <button class="icon-btn" aria-label="Menu">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+            </button>
+          </div>
+
+          <div class="info-scroll">
+
+            <!-- Section 1: Channel Info -->
+            <div class="section">
+              <div class="section-label"><span class="pfx">&gt;</span> CHANNEL</div>
+              <div class="channel-name" id="channelName">친구들 모임</div>
+              <div class="channel-freq">
+                <span class="digit">1</span>
+                <span class="digit">0</span>
+                <span class="digit">7</span>
+                <span class="dot">.</span>
+                <span class="digit">4</span>
+              </div>
+              <div class="channel-meta">친구에게 이 4자리만 알려주세요</div>
+              <div class="freq-actions">
+                <button class="freq-btn" id="btnCopy">COPY 107.4</button>
+                <button class="freq-btn" id="btnShare">SHARE</button>
+              </div>
+            </div>
+
+            <!-- Section 2: Members -->
+            <div class="section">
+              <div class="section-label">
+                <span class="pfx">&gt;</span> MEMBERS · <span id="memberCount">5</span>/9
+                <span class="live-dot"></span>
+              </div>
+              <div id="memberList"></div>
+              <div class="empty-slots" id="emptySlots">
+                EMPTY · <span class="num" id="emptyNum">4</span> SLOT REMAINING
+              </div>
+            </div>
+
+            <!-- Section 3: Channel stats -->
+            <div class="section">
+              <div class="section-label"><span class="pfx">&gt;</span> CHANNEL STATS</div>
+              <div class="stat-row">
+                <span class="lbl">CURRENT ROUND</span>
+                <span class="val">14:00 ~ 16:00</span>
+              </div>
+              <div class="stat-row">
+                <span class="lbl">ROUNDS LIVE / TOTAL</span>
+                <span class="val green">8 / 12</span>
+              </div>
+              <div class="stat-row">
+                <span class="lbl">CHANNEL EXPIRES IN</span>
+                <span class="val warn">23H 47M</span>
+              </div>
+              <div class="stat-row">
+                <span class="lbl">CREATED</span>
+                <span class="val">2026.04.23 · 09:00</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="bottom-actions">
+            <button class="action-btn invite" id="btnInvite">INVITE FRIENDS</button>
+            <button class="action-btn leave" id="btnLeave">LEAVE CHANNEL</button>
+          </div>
+
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="notes-title">MEMBERS + CHANNEL INFO V1 · POLAROID CHIPS</div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>3 섹션 구조: (1) CHANNEL — 이름 + 큰 주파수 디스플레이 + COPY/SHARE 버튼 / (2) MEMBERS — 멤버 칩 + 역할 + 가입 시간 + 호스트 권한 액션 / (3) CHANNEL STATS — 현재 라운드, 남은 라운드, 자동 휘발 시간, 생성 시각.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>멤버 칩: Polaroid Film 팔레트 9색 (KODAK / VELVIA / POLAROID / EKTA / MINT / SEPIA / LAVENDER / BURNT + GREEN). 사각, 모노, paper-bg 텍스트. 본인 YOU = signal green (host 표시는 별도 라벨 + 오렌지 컬러).</span></div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>HOST 권한: 본인이 host 일 때 다른 멤버 옆에 X 버튼 (kick out). 일반 멤버 view 에서는 X 버튼 숨김. host 자신 옆에는 항상 X 없음. data-role="host" 일 때만 kick 액션 표시.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>채널 stats: 라운드 진행 (8/12), 자동 휘발 시간 (23H 47M, amber 강조). 24H 휘발 규칙을 정보 화면에서 명시 → "이 방은 곧 사라진다" 의 mental model 강화.</span></div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>하단 액션: INVITE FRIENDS = TE Orange CTA (주파수 다시 공유) / LEAVE CHANNEL = critical-red outline (위험 액션). 두 액션의 시각 위계가 명확.</span></div>
+    <div class="notes-row"><span class="notes-icon red">·</span><span>LEAVE CHANNEL: outline 만 빨강, 누르면 전체 빨강으로 fill. 시안에서는 단순 누름 효과만, 실제로는 confirm dialog 권장 ("정말 나가시겠습니까? 다시 들어오려면 주파수가 필요합니다").</span></div>
+    <div class="notes-row"><span class="notes-icon amber">·</span><span>다음 검토: (a) 멤버 탭 시 그 멤버의 모든 송출 모아보기 (개인 timeline), (b) host 권한 양도 / 채널 종료, (c) 추방된 멤버 재진입 차단, (d) leave 후 자동 Tune In 화면 복귀.</span></div>
+  </div>
+</div>
+
+<div class="demo-controls">
+  <div class="demo-row">
+    <span class="lbl">VIEW</span>
+    <button class="demo-btn active" data-role="host">HOST</button>
+    <button class="demo-btn" data-role="member">MEMBER</button>
+  </div>
+  <div class="demo-row">
+    <span class="lbl">N</span>
+    <button class="demo-btn" data-n="1">1</button>
+    <button class="demo-btn active" data-n="5">5</button>
+    <button class="demo-btn" data-n="9">9</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const ALL_MEMBERS = [
+  { name: 'YOU',  role: 'host',   when: '24시간 전 · 채널 개설' },
+  { name: 'HANI', role: 'member', when: '3시간 전 가입' },
+  { name: 'JIN',  role: 'member', when: '2시간 전 가입' },
+  { name: 'MIN',  role: 'member', when: '1시간 전 가입' },
+  { name: 'SOO',  role: 'member', when: '12분 전 가입' },
+  { name: 'YUN',  role: 'member', when: '8분 전 가입' },
+  { name: 'BIN',  role: 'member', when: '5분 전 가입' },
+  { name: 'HAE',  role: 'member', when: '2분 전 가입' },
+  { name: 'KAY',  role: 'member', when: '방금 가입' },
+];
+
+let viewRole = 'host';   // 'host' | 'member' (본인이 host 인지 일반 멤버인지)
+let memberN  = 5;
+
+const memberList   = document.getElementById('memberList');
+const memberCount  = document.getElementById('memberCount');
+const emptyNum     = document.getElementById('emptyNum');
+const emptySlots   = document.getElementById('emptySlots');
+const btnCopy      = document.getElementById('btnCopy');
+const btnShare     = document.getElementById('btnShare');
+const btnInvite    = document.getElementById('btnInvite');
+const btnLeave     = document.getElementById('btnLeave');
+
+function renderMembers() {
+  memberList.innerHTML = '';
+  const visible = ALL_MEMBERS.slice(0, memberN);
+  visible.forEach(m => {
+    const row = document.createElement('div');
+    row.className = 'member-row';
+
+    const chip = document.createElement('span');
+    chip.className = 'member-chip';
+    chip.dataset.member = m.name;
+    chip.textContent = m.name;
+    row.appendChild(chip);
+
+    const info = document.createElement('div');
+    info.className = 'member-info';
+    const role = document.createElement('span');
+    role.className = 'member-role' + (m.role === 'host' ? ' host' : '');
+    role.textContent = m.role === 'host' ? 'HOST' : 'MEMBER';
+    const time = document.createElement('span');
+    time.className = 'member-time';
+    time.textContent = m.when;
+    info.appendChild(role);
+    info.appendChild(time);
+    row.appendChild(info);
+
+    // host view 일 때, 본인이 아니고 host 가 아닌 멤버 옆에만 kick 버튼
+    if (viewRole === 'host' && m.name !== 'YOU') {
+      const kick = document.createElement('button');
+      kick.className = 'member-action kick';
+      kick.title = 'Remove member';
+      kick.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+      row.appendChild(kick);
+    }
+
+    memberList.appendChild(row);
+  });
+
+  // counters
+  memberCount.textContent = memberN;
+  const empty = 9 - memberN;
+  if (empty > 0) {
+    emptyNum.textContent = empty;
+    emptySlots.style.display = 'block';
+    emptySlots.innerHTML = `EMPTY · <span class="num">${empty}</span> SLOT${empty === 1 ? '' : 'S'} REMAINING`;
+  } else {
+    emptySlots.style.display = 'none';
+  }
+}
+
+// COPY / SHARE
+btnCopy.addEventListener('click', () => {
+  if (navigator.clipboard) navigator.clipboard.writeText('107.4').catch(() => {});
+  btnCopy.textContent = 'COPIED ✓';
+  btnCopy.classList.add('copied');
+  setTimeout(() => {
+    btnCopy.textContent = 'COPY 107.4';
+    btnCopy.classList.remove('copied');
+  }, 1400);
+});
+btnShare.addEventListener('click', () => {
+  const text = '[FREQUENCY] "친구들 모임" 채널 · 주파수 107.4 로 입장하세요';
+  if (navigator.share) {
+    navigator.share({ title: 'FREQUENCY', text }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch(() => {});
+    btnShare.textContent = 'COPIED ✓';
+    btnShare.classList.add('copied');
+    setTimeout(() => {
+      btnShare.textContent = 'SHARE';
+      btnShare.classList.remove('copied');
+    }, 1400);
+  }
+});
+
+// Demo: role + n
+document.querySelectorAll('.demo-btn[data-role]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.demo-btn[data-role]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    viewRole = b.dataset.role;
+    renderMembers();
+  });
+});
+document.querySelectorAll('.demo-btn[data-n]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.demo-btn[data-n]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    memberN = parseInt(b.dataset.n, 10);
+    renderMembers();
+  });
+});
+
+// init
+renderMembers();
+</script>
+
+</body>
+</html>

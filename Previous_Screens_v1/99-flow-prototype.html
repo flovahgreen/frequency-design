@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FREQUENCY · Integrated Flow Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --te-orange-500: #F15A24;
+    --amber-500: #F5A623;
+    --critical-red: #E5484D;
+    --ink-1000: #0A0A0A;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --motion-fast: 150ms; --motion-base: 200ms; --motion-slow: 300ms;
+    --ease-mech: cubic-bezier(0.2, 0, 0, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-1000);
+    color: var(--ink-100);
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ============ Layout ============ */
+  .proto-shell {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    min-height: 100vh;
+  }
+
+  /* ============ Header ============ */
+  .proto-header {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid var(--ink-700);
+  }
+  .proto-tag {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 12px;
+  }
+  .proto-tag .live {
+    width: 7px; height: 7px; border-radius: 999px;
+    background: var(--signal-green-400);
+    box-shadow: 0 0 8px rgba(38, 250, 133, 0.5);
+    animation: ledPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .proto-tag .accent { color: var(--signal-green-400); }
+  .proto-title {
+    font-size: 28px; font-weight: 700;
+    color: var(--ink-0); letter-spacing: -0.02em;
+  }
+  .proto-sub {
+    margin-top: 6px;
+    font-size: 13px; color: var(--ink-400);
+    max-width: 720px; line-height: 1.5;
+  }
+
+  /* ============ Step Navigator ============ */
+  .step-nav {
+    padding: 24px 40px 20px;
+    border-bottom: 1px solid var(--ink-700);
+    background: linear-gradient(to bottom, rgba(38,250,133,0.02), transparent);
+  }
+  .step-track {
+    max-width: 880px;
+    margin: 0 auto;
+    display: flex; align-items: center;
+    gap: 0;
+    position: relative;
+  }
+  .step-item {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    padding: 4px 8px;
+    cursor: pointer;
+    background: transparent; border: none;
+    color: var(--ink-300);
+    transition: color var(--motion-base) var(--ease-mech);
+    position: relative; z-index: 2;
+  }
+  .step-item:hover { color: var(--ink-100); }
+  .step-item.active { color: var(--ink-0); }
+  .step-dot {
+    width: 22px; height: 22px;
+    border-radius: 999px;
+    background: var(--ink-700);
+    border: 2px solid var(--ink-700);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--ink-300);
+    transition: all var(--motion-base) var(--ease-mech);
+  }
+  .step-item.done .step-dot {
+    background: var(--signal-green-400);
+    border-color: var(--signal-green-400);
+    color: var(--ink-1000);
+  }
+  .step-item.active .step-dot {
+    background: var(--ink-0);
+    border-color: var(--te-orange-500);
+    color: var(--ink-1000);
+    box-shadow: 0 0 0 4px rgba(241, 90, 36, 0.18);
+  }
+  .step-label {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .step-sub {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--ink-500);
+  }
+  .step-item.active .step-sub { color: var(--ink-300); }
+  /* Connector line behind dots */
+  .step-track::before {
+    content: ""; position: absolute;
+    top: 14px; left: 11%; right: 11%;
+    height: 1px; background: var(--ink-700);
+    z-index: 1;
+  }
+
+  /* ============ Stage (iframe viewport) ============ */
+  .stage-wrap {
+    padding: 32px 40px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .device-frame {
+    width: 393px;
+    height: 852px;
+    border-radius: 52px;
+    background: var(--ink-1000);
+    padding: 11px;
+    box-shadow:
+      0 0 0 1px var(--ink-600),
+      0 32px 64px -20px rgba(0, 0, 0, 0.65),
+      0 0 80px rgba(38, 250, 133, 0.04);
+    position: relative;
+    overflow: hidden;
+  }
+  .device-screen {
+    width: 100%; height: 100%;
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    background: #0A0A0A;
+  }
+  .stage-iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    transition: opacity var(--motion-slow) var(--ease-mech);
+  }
+  .stage-iframe.loading { opacity: 0; }
+
+  .stage-loader {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 10px;
+    background: var(--ink-1000);
+    color: var(--ink-400);
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--motion-base) var(--ease-mech);
+  }
+  .stage-loader.on { opacity: 1; }
+  .stage-loader .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--ink-700);
+    border-top-color: var(--signal-green-400);
+    border-radius: 999px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Side rail — flow hint */
+  .stage-side {
+    position: absolute;
+    right: 40px; top: 50%;
+    transform: translateY(-50%);
+    width: 280px;
+    background: var(--ink-900);
+    border: 1px solid var(--ink-700);
+    border-radius: 6px;
+    padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .stage-side .hint-tag {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--signal-green-400); font-weight: 700;
+  }
+  .stage-side .hint-title {
+    font-size: 14px; font-weight: 700;
+    color: var(--ink-0); letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .stage-side .hint-desc {
+    font-size: 12px; color: var(--ink-300);
+    line-height: 1.5;
+  }
+  .stage-side .hint-actions {
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--ink-800);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hint-action {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-300); letter-spacing: 0.06em;
+    padding: 2px 0;
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .hint-action .key {
+    background: var(--ink-700);
+    color: var(--ink-100);
+    padding: 1px 5px;
+    font-size: 9px;
+    border-radius: 2px;
+    font-weight: 700;
+  }
+  .hint-action .arrow { color: var(--signal-green-400); margin: 0 4px; }
+
+  /* Left rail — current step number */
+  .stage-corner {
+    position: absolute;
+    left: 40px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 14px;
+    align-items: center;
+  }
+  .corner-step {
+    font-family: var(--font-mono); font-size: 56px; font-weight: 700;
+    color: var(--ink-0); letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .corner-step .slash {
+    color: var(--ink-500); margin: 0 4px; font-weight: 400;
+  }
+  .corner-step .total {
+    color: var(--ink-500); font-size: 28px;
+  }
+  .corner-name {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--signal-green-400);
+  }
+
+  /* ============ Footer controls ============ */
+  .proto-footer {
+    padding: 20px 40px 28px;
+    border-top: 1px solid var(--ink-700);
+    background: linear-gradient(to top, var(--ink-900), transparent);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .nav-btn {
+    padding: 12px 22px;
+    background: var(--ink-800);
+    border: 1px solid var(--ink-600);
+    border-radius: 4px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-100);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background var(--motion-fast) var(--ease-mech),
+                border-color var(--motion-fast) var(--ease-mech);
+  }
+  .nav-btn:hover:not(:disabled) {
+    background: var(--ink-700);
+    border-color: var(--ink-500);
+  }
+  .nav-btn:disabled {
+    opacity: 0.4; cursor: not-allowed;
+  }
+  .nav-btn.primary {
+    background: var(--signal-green-400);
+    border-color: var(--signal-green-400);
+    color: var(--ink-1000);
+  }
+  .nav-btn.primary:hover:not(:disabled) {
+    background: var(--signal-green-500);
+    border-color: var(--signal-green-500);
+  }
+  .footer-meta {
+    flex: 1;
+    text-align: center;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-500);
+  }
+  .footer-meta .accent { color: var(--ink-200); }
+
+  /* ============ Responsive (작은 화면에서는 사이드 컨트롤 숨김) ============ */
+  @media (max-width: 1280px) {
+    .stage-side, .stage-corner { display: none; }
+  }
+  @media (max-width: 720px) {
+    .proto-header { padding: 20px; }
+    .step-nav { padding: 16px 20px; }
+    .stage-wrap { padding: 16px; }
+    .device-frame { width: 320px; height: 695px; padding: 9px; border-radius: 42px; }
+    .device-screen { border-radius: 36px; }
+    .proto-title { font-size: 22px; }
+    .proto-footer { padding: 16px 20px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="proto-shell">
+
+  <!-- Header -->
+  <header class="proto-header">
+    <div class="proto-tag">
+      <span class="live"></span>
+      <span><span class="accent">FREQUENCY</span> · INTEGRATED FLOW PROTOTYPE · 2026.04.23</span>
+    </div>
+    <h1 class="proto-title">실제 흐름 프로토타입</h1>
+    <p class="proto-sub">현재까지 만든 4개 시안을 실제 navigation 흐름으로 연결. 각 단계는 실제 시안의 인터랙션을 그대로 사용. 화면 전환은 외부 step navigator 또는 키보드 좌우 화살표로.</p>
+  </header>
+
+  <!-- Step Navigator -->
+  <nav class="step-nav">
+    <div class="step-track" id="stepTrack">
+      <button class="step-item" data-step="0">
+        <span class="step-dot">01</span>
+        <span class="step-label">Open Channel</span>
+        <span class="step-sub">host 채널 발급</span>
+      </button>
+      <button class="step-item" data-step="1">
+        <span class="step-dot">02</span>
+        <span class="step-label">Tune In</span>
+        <span class="step-sub">주파수 입력</span>
+      </button>
+      <button class="step-item" data-step="2">
+        <span class="step-dot">03</span>
+        <span class="step-label">Feed</span>
+        <span class="step-sub">방 안 모자이크</span>
+      </button>
+      <button class="step-item" data-step="3">
+        <span class="step-dot">04</span>
+        <span class="step-label">Post Detail</span>
+        <span class="step-sub">스탬프 + 댓글</span>
+      </button>
+      <button class="step-item" data-step="4">
+        <span class="step-dot">05</span>
+        <span class="step-label">Camera</span>
+        <span class="step-sub">사진 / 영상</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Stage -->
+  <div class="stage-wrap">
+
+    <!-- Left corner badge -->
+    <aside class="stage-corner">
+      <div class="corner-step">
+        <span id="cornerCur">01</span><span class="slash">/</span><span class="total">05</span>
+      </div>
+      <div class="corner-name" id="cornerName">TUNE IN</div>
+    </aside>
+
+    <!-- Device -->
+    <div class="device-frame">
+      <div class="device-screen">
+        <div class="stage-loader on" id="stageLoader">
+          <div class="spinner"></div>
+          <span>LOADING...</span>
+        </div>
+        <iframe class="stage-iframe loading" id="stageIframe" src=""></iframe>
+      </div>
+    </div>
+
+    <!-- Right side hint -->
+    <aside class="stage-side" id="stageSide">
+      <span class="hint-tag" id="hintTag">> STEP 01</span>
+      <div class="hint-title" id="hintTitle">주파수 4자리를 입력해 방에 진입</div>
+      <div class="hint-desc" id="hintDesc">우하단 데모 버튼으로 자동 부팅 / autofill 가능. TUNED IN 상태가 되면 다음 단계로.</div>
+      <div class="hint-actions" id="hintActions">
+        <span class="hint-action"><span class="key">→</span><span class="arrow">→</span> 다음: Feed</span>
+        <span class="hint-action"><span class="key">←</span><span class="arrow">→</span> 이전: 없음</span>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Footer controls -->
+  <footer class="proto-footer">
+    <button class="nav-btn" id="btnPrev" disabled>← PREV</button>
+    <div class="footer-meta">
+      <span class="accent" id="footerStep">01 · TUNE IN</span> &nbsp;·&nbsp; 화살표 키로 이동 &nbsp;·&nbsp; 각 시안의 데모 버튼은 그대로 사용
+    </div>
+    <button class="nav-btn primary" id="btnNext">NEXT →</button>
+  </footer>
+
+</div>
+
+<script>
+'use strict';
+
+const STEPS = [
+  {
+    src: '05-open-channel-v1.html',
+    name: 'OPEN CHANNEL',
+    title: '새 채널 만들기 (host)',
+    desc: '채널 이름 + 닉네임 + 컬러 선택 → OPEN CHANNEL 누르면 주파수 자동 발급 슬롯 머신 → 초대 코드 + ENTER. 우하단 AUTOFILL 로 빠르게 진행 가능.',
+    nextHint: '다음: Tune In (다른 사용자 진입)',
+    prevHint: '이전: 없음',
+  },
+  {
+    src: '01-tune-in-b-v2-hybrid.html',
+    name: 'TUNE IN',
+    title: '주파수 4자리를 입력해 방에 진입',
+    desc: '우하단 데모 버튼으로 자동 부팅(REPLAY BOOT) 또는 자동 입력(AUTOFILL 107.4) 가능. 4자리 입력하면 인디케이터가 정중앙 0°로 정렬되며 TUNED IN.',
+    nextHint: '다음: Feed',
+    prevHint: '이전: Open Channel',
+  },
+  {
+    src: '02-feed-v2-mosaic.html',
+    name: 'FEED',
+    title: '방 안 모자이크 + 가로 스와이프',
+    desc: '우하단 N 토글로 인원수 1~9 변경. 가로로 좌우 스와이프해서 12 라운드(24H) 시간 여행. NOW = 우측 끝, 좌로 갈수록 과거.',
+    nextHint: '다음: Post Detail (셀 탭 시뮬)',
+    prevHint: '이전: Tune In',
+  },
+  {
+    src: '04-post-detail-v1.html',
+    name: 'POST DETAIL',
+    title: '단일 포스트 + 5 스탬프 + 40자 댓글',
+    desc: '스탬프 toggle 가능. 댓글 입력에 레트로 ▌ 오렌지 커서. 우하단 데모로 PHOTO/VIDEO + OTHER/SELF 분기 확인.',
+    nextHint: '다음: Camera (셔터 시뮬)',
+    prevHint: '이전: Feed',
+  },
+  {
+    src: '03-camera-v1.html',
+    name: 'CAMERA',
+    title: '짧게 = 사진 / 길게 = 5초 영상',
+    desc: '셔터 짧게 탭 = 즉시 preview (멘트 입력창 자동 focus) / 250ms 이상 누르면 영상 녹화 (5초 자동 정지). 우하단 PHASE 토글로 SHOOT / PREVIEW / LOCKED 비교.',
+    nextHint: '다음: 없음 (Feed 로 복귀 예정)',
+    prevHint: '이전: Post Detail',
+  },
+];
+
+let current = 0;
+
+const stageIframe = document.getElementById('stageIframe');
+const stageLoader = document.getElementById('stageLoader');
+const stepItems   = document.querySelectorAll('.step-item');
+const btnPrev     = document.getElementById('btnPrev');
+const btnNext     = document.getElementById('btnNext');
+const cornerCur   = document.getElementById('cornerCur');
+const cornerName  = document.getElementById('cornerName');
+const footerStep  = document.getElementById('footerStep');
+const hintTag     = document.getElementById('hintTag');
+const hintTitle   = document.getElementById('hintTitle');
+const hintDesc    = document.getElementById('hintDesc');
+const hintActions = document.getElementById('hintActions');
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+function loadStep(idx) {
+  if (idx < 0 || idx >= STEPS.length) return;
+  current = idx;
+  const s = STEPS[idx];
+
+  // iframe load
+  stageLoader.classList.add('on');
+  stageIframe.classList.add('loading');
+  stageIframe.src = s.src;
+
+  // step nav
+  stepItems.forEach((b, i) => {
+    b.classList.remove('active', 'done');
+    if (i < idx) b.classList.add('done');
+    if (i === idx) b.classList.add('active');
+  });
+
+  // corner
+  cornerCur.textContent = pad2(idx + 1);
+  cornerName.textContent = s.name;
+  footerStep.textContent = pad2(idx + 1) + ' · ' + s.name;
+
+  // hint
+  hintTag.textContent = '> STEP ' + pad2(idx + 1);
+  hintTitle.textContent = s.title;
+  hintDesc.textContent = s.desc;
+  hintActions.innerHTML =
+    '<span class="hint-action"><span class="key">→</span><span class="arrow">→</span> ' + s.nextHint + '</span>' +
+    '<span class="hint-action"><span class="key">←</span><span class="arrow">→</span> ' + s.prevHint + '</span>';
+
+  // nav buttons
+  btnPrev.disabled = (idx === 0);
+  btnNext.disabled = (idx === STEPS.length - 1);
+  btnNext.textContent = (idx === STEPS.length - 1) ? 'END' : 'NEXT →';
+}
+
+// iframe load 완료 시 page-head/notes/demo 숨김 + paper bg
+stageIframe.addEventListener('load', () => {
+  try {
+    const doc = stageIframe.contentDocument;
+    if (doc) {
+      const css = doc.createElement('style');
+      css.textContent = `
+        body { padding: 0 !important; background: #0A0A0A !important; min-height: 0 !important; }
+        .wrap { max-width: none !important; margin: 0 !important; padding: 0 !important; }
+        .page-head, .notes, .demo-controls { display: none !important; }
+        .stage { padding: 0 !important; }
+        .iphone {
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          padding: 0 !important;
+          width: 100% !important;
+          aspect-ratio: auto !important;
+          height: 100% !important;
+        }
+        .iphone-screen { border-radius: 0 !important; }
+      `;
+      doc.head.appendChild(css);
+    }
+  } catch (e) {}
+  // fade in
+  setTimeout(() => {
+    stageLoader.classList.remove('on');
+    stageIframe.classList.remove('loading');
+  }, 80);
+});
+
+// step nav clicks
+stepItems.forEach(b => {
+  b.addEventListener('click', () => {
+    loadStep(parseInt(b.dataset.step, 10));
+  });
+});
+
+// prev/next buttons
+btnPrev.addEventListener('click', () => loadStep(current - 1));
+btnNext.addEventListener('click', () => loadStep(current + 1));
+
+// keyboard arrows
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' && current < STEPS.length - 1) loadStep(current + 1);
+  if (e.key === 'ArrowLeft' && current > 0) loadStep(current - 1);
+});
+
+// init
+loadStep(0);
+</script>
+
+</body>
+</html>

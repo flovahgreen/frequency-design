@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Temp
+*.log
+node_modules/
+
+# Archive folder is intentionally tracked (작업 자료 보존)

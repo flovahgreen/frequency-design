@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Room App · Typography Review V2 (English Focus)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper-50: #FAF8F4;
+    --paper-100: #F4F1EC;
+    --paper-200: #ECE7DE;
+    --bone-300: #E0DACF;
+    --bone-400: #C9C3B8;
+    --graphite-500: #8C8880;
+    --graphite-600: #5E5C56;
+    --graphite-700: #3D3B37;
+    --ink-900: #1C1B19;
+    --orange-500: #E85A2A;
+    --orange-100: #FBE4D8;
+    --navy-500: #2B3F5E;
+    --navy-100: #D7DCE5;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: #E8E4DC;
+    color: var(--ink-900);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 48px 24px 96px;
+    font-family: 'Pretendard Variable', 'Inter', sans-serif;
+  }
+  .wrapper { max-width: 1280px; margin: 0 auto; }
+
+  /* Pairing font utilities */
+  .pair-a-en { font-family: 'Inter', sans-serif; }
+  .pair-a-mono { font-family: 'JetBrains Mono', monospace; }
+  .pair-a-kr { font-family: 'Pretendard Variable', sans-serif; }
+
+  .pair-b-en { font-family: 'Space Grotesk', sans-serif; }
+  .pair-b-mono { font-family: 'IBM Plex Mono', monospace; }
+  .pair-b-kr { font-family: 'Pretendard Variable', sans-serif; }
+
+  .pair-c-en { font-family: 'Manrope', sans-serif; }
+  .pair-c-mono { font-family: 'Space Mono', monospace; }
+  .pair-c-kr { font-family: 'Pretendard Variable', sans-serif; }
+
+  /* ---------- HEADER ---------- */
+  header.intro {
+    padding: 40px 36px;
+    border: 1px solid var(--bone-400);
+    background: var(--paper-100);
+    margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+  header.intro .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--graphite-600);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  header.intro h1 {
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  header.intro .subtitle {
+    font-size: 16px;
+    color: var(--graphite-700);
+    max-width: 46ch;
+    line-height: 1.6;
+  }
+  header.intro .right-col {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--graphite-700);
+    align-self: end;
+  }
+  header.intro .right-col .row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    border-top: 1px solid var(--bone-400);
+    padding: 8px 0;
+  }
+  header.intro .right-col .row:last-child { border-bottom: 1px solid var(--bone-400); }
+  header.intro .right-col .label {
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 10px;
+    padding-top: 4px;
+  }
+
+  .pill {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--orange-500);
+    color: var(--paper-50);
+    padding: 4px 8px;
+    letter-spacing: 0.08em;
+    margin-right: 6px;
+  }
+
+  /* ---------- PAIRING CARD ---------- */
+  .pair-card {
+    background: var(--paper-100);
+    border: 1px solid var(--bone-400);
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .pair-head {
+    padding: 24px 36px 18px;
+    border-bottom: 1px solid var(--bone-400);
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: baseline;
+    gap: 24px;
+    background: var(--paper-100);
+  }
+  .pair-head .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--orange-500);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .pair-head h2 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .pair-head .stack-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--graphite-600);
+  }
+  .pair-head .stack-line .sep { color: var(--bone-400); margin: 0 4px; }
+  .pair-head .character {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--graphite-600);
+    text-align: right;
+    align-self: end;
+    padding-bottom: 4px;
+  }
+
+  /* ===== BIG DISPLAY ROW ===== */
+  .en-display-row {
+    padding: 44px 36px 36px;
+    border-bottom: 1px solid var(--bone-400);
+    background: var(--paper-50);
+  }
+  .en-display-row .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 18px;
+  }
+  .big-en {
+    font-size: 92px;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    color: var(--ink-900);
+  }
+  .big-en .muted { color: var(--graphite-500); }
+  .big-en-sub {
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--graphite-600);
+    margin-top: 14px;
+    line-height: 1.3;
+  }
+
+  /* ===== SPECIMEN ROW ===== */
+  .specimen-row {
+    padding: 36px 36px;
+    border-bottom: 1px solid var(--bone-400);
+    background: var(--paper-100);
+  }
+  .specimen-row .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 20px;
+  }
+  .specimen-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--bone-400);
+    border: 1px solid var(--bone-400);
+  }
+  .specimen-cell {
+    background: var(--paper-50);
+    padding: 24px 10px 16px;
+    text-align: center;
+    position: relative;
+  }
+  .specimen-cell .letter {
+    font-size: 72px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--ink-900);
+  }
+  .specimen-cell .caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-top: 10px;
+  }
+
+  /* Numerals strip */
+  .numerals-strip {
+    padding: 24px 36px;
+    border-bottom: 1px solid var(--bone-400);
+    background: var(--paper-50);
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .numerals-strip .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    white-space: nowrap;
+  }
+  .numerals {
+    font-size: 56px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--ink-900);
+    line-height: 1;
+  }
+  .numerals .muted { color: var(--graphite-500); }
+
+  /* ===== PARAGRAPH ROW ===== */
+  .paragraph-row {
+    padding: 36px 36px;
+    border-bottom: 1px solid var(--bone-400);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    background: var(--paper-100);
+  }
+  .paragraph-row .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 14px;
+  }
+  .para-heading {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .para-body {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--graphite-700);
+  }
+  .para-caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--graphite-500);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid var(--bone-300);
+  }
+
+  /* ===== PHONE MOCKUPS ROW ===== */
+  .mockup-row {
+    padding: 36px;
+    border-bottom: 1px solid var(--bone-400);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    background: var(--paper-200);
+  }
+  .mockup-block {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .mockup-block .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+  }
+
+  .phone {
+    aspect-ratio: 9 / 17.5;
+    border: 1px solid var(--bone-400);
+    background: var(--paper-50);
+    padding: 22px 16px 26px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 44px; height: 4px;
+    background: var(--bone-400);
+    border-radius: 2px;
+  }
+  .phone .status-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--graphite-600);
+    text-transform: uppercase;
+    padding-top: 8px;
+  }
+  .phone h3 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-top: 2px;
+  }
+  .phone .sub {
+    font-size: 10px;
+    color: var(--graphite-600);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: -4px;
+  }
+  .phone .body-para {
+    font-size: 13px;
+    color: var(--graphite-700);
+    line-height: 1.5;
+  }
+  .phone .body-para strong { font-weight: 600; color: var(--ink-900); }
+  .slot-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+  }
+  .slot {
+    aspect-ratio: 1;
+    border: 1px solid var(--bone-400);
+    background: var(--paper-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--graphite-600);
+    position: relative;
+  }
+  .slot.filled { background: var(--paper-200); color: var(--ink-900); }
+  .slot.filled.me::after {
+    content: '';
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--orange-500);
+  }
+  .slot.empty { color: var(--graphite-500); border-style: dashed; background: transparent; }
+
+  .post-card {
+    border: 1px solid var(--bone-400);
+    background: var(--paper-50);
+    margin-top: auto;
+  }
+  .post-card .image {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, var(--orange-100) 0%, var(--paper-200) 100%);
+    position: relative;
+  }
+  .post-card .image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.3), transparent 50%);
+  }
+  .post-card .meta {
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--graphite-600);
+    letter-spacing: 0.05em;
+    border-top: 1px solid var(--bone-300);
+  }
+  .post-card .stamps {
+    padding: 7px 10px 9px;
+    display: flex;
+    gap: 6px;
+    border-top: 1px solid var(--bone-300);
+    align-items: center;
+  }
+  .stamp {
+    width: 18px; height: 18px;
+    border: 1px solid var(--bone-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: var(--graphite-500);
+    background: var(--paper-100);
+  }
+  .stamp.on { background: var(--orange-100); border-color: var(--orange-500); color: var(--orange-500); }
+  .stamp-count {
+    font-size: 8px;
+    color: var(--graphite-500);
+    margin-left: auto;
+    letter-spacing: 0.05em;
+  }
+  .btn-primary {
+    background: var(--orange-500);
+    color: var(--paper-50);
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btn-primary .key {
+    font-size: 9px;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+  }
+
+  /* Notes row */
+  .pair-notes {
+    padding: 20px 36px 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    background: var(--paper-100);
+  }
+  .pair-notes .block .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 8px;
+  }
+  .pair-notes .block p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--graphite-700);
+  }
+  .pair-notes .block p strong { color: var(--ink-900); font-weight: 600; }
+
+  /* ---------- WHAT TO LOOK FOR ---------- */
+  .what-to-look {
+    padding: 32px 36px;
+    background: var(--ink-900);
+    color: var(--paper-100);
+    margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+  }
+  .what-to-look .rule {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 12px;
+  }
+  .what-to-look h2 {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .what-to-look h2 em { color: var(--orange-500); font-style: normal; }
+  .what-to-look .txt { font-size: 14px; line-height: 1.7; color: var(--bone-400); }
+  .what-to-look .txt strong { color: var(--paper-100); font-weight: 600; }
+  .what-to-look ul {
+    margin-top: 10px;
+    padding-left: 18px;
+    color: var(--bone-400);
+    line-height: 1.8;
+    font-size: 13px;
+  }
+
+  /* Compare & Guide */
+  .compare-section {
+    margin-top: 40px;
+    padding: 36px;
+    background: var(--paper-100);
+    border: 1px solid var(--bone-400);
+  }
+  .compare-section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .compare-section .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 24px;
+  }
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.compare th, table.compare td {
+    border-bottom: 1px solid var(--bone-400);
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.compare th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-600);
+    font-weight: 500;
+    background: var(--paper-200);
+  }
+  table.compare td strong { font-weight: 600; color: var(--ink-900); }
+
+  .guide {
+    margin-top: 36px;
+    padding: 28px 36px;
+    background: var(--ink-900);
+    color: var(--paper-100);
+  }
+  .guide h3 {
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    color: var(--orange-500);
+  }
+  .guide p { font-size: 14px; line-height: 1.75; color: var(--bone-400); }
+  .guide p strong { color: var(--paper-100); font-weight: 600; }
+
+  @media (max-width: 1100px) {
+    .mockup-row { grid-template-columns: 1fr; }
+    .paragraph-row { grid-template-columns: 1fr; }
+    .specimen-grid { grid-template-columns: repeat(3, 1fr); }
+    .big-en { font-size: 64px; }
+    .numerals { font-size: 40px; }
+  }
+  @media (max-width: 760px) {
+    header.intro { grid-template-columns: 1fr; }
+    .what-to-look { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="intro">
+    <div>
+      <div class="meta">TYPOGRAPHY REVIEW · V2 · ENGLISH FOCUS</div>
+      <h1>영문 폰트의 차이를<br>크고 또렷하게.</h1>
+      <p class="subtitle"><span class="pill">FEEDBACK</span>한글 위주 UI에서는 영문 산세리프의 성격 차이가 라벨 몇 줄에만 숨어 있었습니다. 이번 버전은 대형 영문 디스플레이, 글자 샘플 스펙트럼, 영문 단락, 영문 UI 목업까지 포함해서 각 폰트의 개성을 정확히 비교할 수 있게 했습니다.</p>
+    </div>
+    <div class="right-col">
+      <div class="row"><span class="label">Palette</span><span>Marine (fixed)</span></div>
+      <div class="row"><span class="label">Korean</span><span>Pretendard Variable (fixed)</span></div>
+      <div class="row"><span class="label">A / English</span><span>Inter</span></div>
+      <div class="row"><span class="label">B / English</span><span>Space Grotesk</span></div>
+      <div class="row"><span class="label">C / English</span><span>Manrope</span></div>
+      <div class="row"><span class="label">Date</span><span>2026.04.21</span></div>
+    </div>
+  </header>
+
+  <!-- WHAT TO LOOK FOR -->
+  <section class="what-to-look">
+    <div>
+      <div class="rule">HOW TO COMPARE</div>
+      <h2>차이가 가장 크게 <em>드러나는 5곳</em>을 집중해서 보세요.</h2>
+    </div>
+    <div>
+      <div class="rule">LOOK HERE</div>
+      <div class="txt">
+        <ul>
+          <li><strong>대형 디스플레이 "Today's Quiet Moments"</strong>: 타이틀의 첫인상을 결정합니다. 글자끼리 붙는 긴장감, 소문자 y와 t의 꼬리 끝 처리가 핵심 차이입니다.</li>
+          <li><strong>문자 샘플 스펙트럼 (Aa Gg Rr Qq)</strong>: 같은 글자를 6칸에 나란히 배치했습니다. 'g'의 꼬리, 'R'의 다리, 'a'의 구조, 'Q'의 꼬리가 폰트 성격을 결정합니다.</li>
+          <li><strong>숫자 열 (1234567890)</strong>: 이 앱에서 숫자가 많이 노출되므로(방 번호, 포스트 번호, 시간) 숫자 폰이 매우 중요합니다. 특히 '1', '4', '6', '9'가 폰트마다 다릅니다.</li>
+          <li><strong>영문 단락 본문</strong>: 한두 줄로 짧게 끝나는 UI 텍스트가 아니라, 실제로 읽어보는 단락. 안내 문구나 온보딩 화면 느낌을 예상해볼 수 있습니다.</li>
+          <li><strong>영문 UI 목업</strong>: 앱을 영문으로 쓸 경우(글로벌 확장이나 영어 사용자)의 화면. 한글 때와 얼마나 다른 인상을 주는지 체크.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- PAIRING A: Classic Grotesk -->
+  <!-- ========================================================== -->
+  <section class="pair-card">
+    <div class="pair-head">
+      <div class="num">A</div>
+      <div>
+        <h2 class="pair-a-en">Classic Grotesk</h2>
+        <div class="stack-line">Pretendard <span class="sep">/</span> Inter <span class="sep">/</span> JetBrains Mono</div>
+      </div>
+      <div class="character">Safest · Apple-adjacent</div>
+    </div>
+
+    <!-- BIG DISPLAY -->
+    <div class="en-display-row">
+      <div class="label">LARGE DISPLAY · 92px / Semibold</div>
+      <div class="big-en pair-a-en">Today's<br>Quiet Moments<span class="muted">.</span></div>
+      <div class="big-en-sub pair-a-en">A private room for the people closest to you.</div>
+    </div>
+
+    <!-- SPECIMEN -->
+    <div class="specimen-row">
+      <div class="label">CHARACTER SPECIMEN · 72px / Medium</div>
+      <div class="specimen-grid">
+        <div class="specimen-cell"><div class="letter pair-a-en">R</div><div class="caption">R · leg</div></div>
+        <div class="specimen-cell"><div class="letter pair-a-en">g</div><div class="caption">g · tail</div></div>
+        <div class="specimen-cell"><div class="letter pair-a-en">a</div><div class="caption">a · story</div></div>
+        <div class="specimen-cell"><div class="letter pair-a-en">Q</div><div class="caption">Q · tail</div></div>
+        <div class="specimen-cell"><div class="letter pair-a-en">t</div><div class="caption">t · terminal</div></div>
+        <div class="specimen-cell"><div class="letter pair-a-en">&amp;</div><div class="caption">ampersand</div></div>
+      </div>
+    </div>
+
+    <!-- NUMERALS -->
+    <div class="numerals-strip">
+      <div class="label">NUMERALS · 56px</div>
+      <div class="numerals pair-a-en">0 1 2 3 4 <span class="muted">·</span> 5 6 7 8 9</div>
+    </div>
+
+    <!-- PARAGRAPH -->
+    <div class="paragraph-row">
+      <div>
+        <div class="label">ENGLISH BODY · Inter 16px</div>
+        <div class="para-heading pair-a-en">The room you only open with people you trust.</div>
+        <div class="para-body pair-a-en">
+          A private space for up to 8 people. Only the photos and short videos you capture inside the app live here. No feeds, no algorithms, no public shares. Just the quiet weight of what you decided to keep today, stamped with the time and the hand that made it.
+        </div>
+        <div class="para-caption pair-a-mono">ROOM·04 · 12 POSTS · 5 OF 8 ACTIVE</div>
+      </div>
+      <div>
+        <div class="label">KOREAN BODY · Pretendard 16px</div>
+        <div class="para-heading pair-a-kr">믿는 사람들과만 여는 방.</div>
+        <div class="para-body pair-a-kr">
+          최대 8명이 함께 쓰는 조용한 공간. 앱 안에서 직접 찍은 사진과 짧은 영상만 이곳에 남습니다. 피드도, 알고리즘도, 외부 공유도 없어요. 오늘 남기기로 한 장면들만, 시간과 만든 사람의 이름이 찍힌 채 조용히 쌓입니다.
+        </div>
+        <div class="para-caption pair-a-mono">ROOM·04 · 12 POSTS · 5 OF 8 ACTIVE</div>
+      </div>
+    </div>
+
+    <!-- MOCKUPS -->
+    <div class="mockup-row">
+      <div class="mockup-block">
+        <div class="label">UI · ENGLISH</div>
+        <div class="phone">
+          <div class="status-row pair-a-mono"><span>9:41</span><span>ROOM·04</span></div>
+          <h3 class="pair-a-en">Quiet Afternoon</h3>
+          <div class="sub pair-a-mono">5/8 ACTIVE · 12 POSTS</div>
+          <p class="body-para pair-a-en"><strong>9 new posts</strong> landed this week.</p>
+          <div class="slot-grid">
+            <div class="slot filled me pair-a-mono">G</div>
+            <div class="slot filled pair-a-mono">J</div>
+            <div class="slot filled pair-a-mono">M</div>
+            <div class="slot filled pair-a-mono">S</div>
+            <div class="slot filled pair-a-mono">Y</div>
+            <div class="slot empty pair-a-mono">+</div>
+            <div class="slot empty pair-a-mono">+</div>
+            <div class="slot empty pair-a-mono">+</div>
+          </div>
+          <div class="post-card">
+            <div class="image"></div>
+            <div class="meta pair-a-mono"><span>#0024 · 04.21</span><span>BY GREEN</span></div>
+            <div class="stamps">
+              <div class="stamp on">●</div>
+              <div class="stamp">▲</div>
+              <div class="stamp on">★</div>
+              <div class="stamp">◆</div>
+              <span class="stamp-count pair-a-mono">2/4</span>
+            </div>
+          </div>
+          <button class="btn-primary pair-a-en">New Post <span class="key pair-a-mono">POST ↵</span></button>
+        </div>
+      </div>
+      <div class="mockup-block">
+        <div class="label">UI · KOREAN</div>
+        <div class="phone">
+          <div class="status-row pair-a-mono"><span>9:41</span><span>ROOM·04</span></div>
+          <h3 class="pair-a-kr">오후의 기록</h3>
+          <div class="sub pair-a-mono">5/8 ACTIVE · 12 POSTS</div>
+          <p class="body-para pair-a-kr">이번 주에 <strong>9개의 새 포스트</strong>가 쌓였어요.</p>
+          <div class="slot-grid">
+            <div class="slot filled me pair-a-mono">G</div>
+            <div class="slot filled pair-a-mono">J</div>
+            <div class="slot filled pair-a-mono">M</div>
+            <div class="slot filled pair-a-mono">S</div>
+            <div class="slot filled pair-a-mono">Y</div>
+            <div class="slot empty pair-a-mono">+</div>
+            <div class="slot empty pair-a-mono">+</div>
+            <div class="slot empty pair-a-mono">+</div>
+          </div>
+          <div class="post-card">
+            <div class="image"></div>
+            <div class="meta pair-a-mono"><span>#0024 · 04.21</span><span>BY 그린</span></div>
+            <div class="stamps">
+              <div class="stamp on">●</div>
+              <div class="stamp">▲</div>
+              <div class="stamp on">★</div>
+              <div class="stamp">◆</div>
+              <span class="stamp-count pair-a-mono">2/4</span>
+            </div>
+          </div>
+          <button class="btn-primary pair-a-kr">새 포스트 <span class="key pair-a-mono">POST ↵</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pair-notes">
+      <div class="block">
+        <div class="label">성격</div>
+        <p>Inter는 글자 구조가 <strong>가장 규범적</strong>입니다. 'a'와 'g'는 전통적인 double-story 구조(글자 안에 둥근 공간이 두 개), 'R'의 다리가 반듯하게 뻗어 있고, 'Q' 꼬리는 짧게 정리됩니다. 튀지 않으면서 모든 크기에서 깨끗하게 읽힙니다. 숫자도 또박또박해서 UI의 모든 자리에서 무난합니다.</p>
+      </div>
+      <div class="block">
+        <div class="label">장단점</div>
+        <p>장점: <strong>가장 안전하고 가장 범용</strong>. Apple 생태계 앱과 섞여도 어색하지 않습니다. 단점: "이 앱만의 얼굴"이 약합니다. 영문 제목을 크게 띄워도 브랜드 인식이 약하게 남습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- PAIRING B: Editorial Swiss -->
+  <!-- ========================================================== -->
+  <section class="pair-card">
+    <div class="pair-head">
+      <div class="num">B</div>
+      <div>
+        <h2 class="pair-b-en">Editorial Swiss</h2>
+        <div class="stack-line">Pretendard <span class="sep">/</span> Space Grotesk <span class="sep">/</span> IBM Plex Mono</div>
+      </div>
+      <div class="character">Refined · Studio feel</div>
+    </div>
+
+    <div class="en-display-row">
+      <div class="label">LARGE DISPLAY · 92px / Semibold</div>
+      <div class="big-en pair-b-en">Today's<br>Quiet Moments<span class="muted">.</span></div>
+      <div class="big-en-sub pair-b-en">A private room for the people closest to you.</div>
+    </div>
+
+    <div class="specimen-row">
+      <div class="label">CHARACTER SPECIMEN · 72px / Medium</div>
+      <div class="specimen-grid">
+        <div class="specimen-cell"><div class="letter pair-b-en">R</div><div class="caption">R · leg</div></div>
+        <div class="specimen-cell"><div class="letter pair-b-en">g</div><div class="caption">g · tail</div></div>
+        <div class="specimen-cell"><div class="letter pair-b-en">a</div><div class="caption">a · story</div></div>
+        <div class="specimen-cell"><div class="letter pair-b-en">Q</div><div class="caption">Q · tail</div></div>
+        <div class="specimen-cell"><div class="letter pair-b-en">t</div><div class="caption">t · terminal</div></div>
+        <div class="specimen-cell"><div class="letter pair-b-en">&amp;</div><div class="caption">ampersand</div></div>
+      </div>
+    </div>
+
+    <div class="numerals-strip">
+      <div class="label">NUMERALS · 56px</div>
+      <div class="numerals pair-b-en">0 1 2 3 4 <span class="muted">·</span> 5 6 7 8 9</div>
+    </div>
+
+    <div class="paragraph-row">
+      <div>
+        <div class="label">ENGLISH BODY · Space Grotesk 16px</div>
+        <div class="para-heading pair-b-en">The room you only open with people you trust.</div>
+        <div class="para-body pair-b-en">
+          A private space for up to 8 people. Only the photos and short videos you capture inside the app live here. No feeds, no algorithms, no public shares. Just the quiet weight of what you decided to keep today, stamped with the time and the hand that made it.
+        </div>
+        <div class="para-caption pair-b-mono">ROOM·04 · 12 POSTS · 5 OF 8 ACTIVE</div>
+      </div>
+      <div>
+        <div class="label">KOREAN BODY · Pretendard 16px</div>
+        <div class="para-heading pair-b-kr">믿는 사람들과만 여는 방.</div>
+        <div class="para-body pair-b-kr">
+          최대 8명이 함께 쓰는 조용한 공간. 앱 안에서 직접 찍은 사진과 짧은 영상만 이곳에 남습니다. 피드도, 알고리즘도, 외부 공유도 없어요. 오늘 남기기로 한 장면들만, 시간과 만든 사람의 이름이 찍힌 채 조용히 쌓입니다.
+        </div>
+        <div class="para-caption pair-b-mono">ROOM·04 · 12 POSTS · 5 OF 8 ACTIVE</div>
+      </div>
+    </div>
+
+    <div class="mockup-row">
+      <div class="mockup-block">
+        <div class="label">UI · ENGLISH</div>
+        <div class="phone">
+          <div class="status-row pair-b-mono"><span>9:41</span><span>ROOM·04</span></div>
+          <h3 class="pair-b-en">Quiet Afternoon</h3>
+          <div class="sub pair-b-mono">5/8 ACTIVE · 12 POSTS</div>
+          <p class="body-para pair-b-en"><strong>9 new posts</strong> landed this week.</p>
+          <div class="slot-grid">
+            <div class="slot filled me pair-b-mono">G</div>
+            <div class="slot filled pair-b-mono">J</div>
+            <div class="slot filled pair-b-mono">M</div>
+            <div class="slot filled pair-b-mono">S</div>
+            <div class="slot filled pair-b-mono">Y</div>
+            <div class="slot empty pair-b-mono">+</div>
+            <div class="slot empty pair-b-mono">+</div>
+            <div class="slot empty pair-b-mono">+</div>
+          </div>
+          <div class="post-card">
+            <div class="image"></div>
+            <div class="meta pair-b-mono"><span>#0024 · 04.21</span><span>BY GREEN</span></div>
+            <div class="stamps">
+              <div class="stamp on">●</div>
+              <div class="stamp">▲</div>
+              <div class="stamp on">★</div>
+              <div class="stamp">◆</div>
+              <span class="stamp-count pair-b-mono">2/4</span>
+            </div>
+          </div>
+          <button class="btn-primary pair-b-en">New Post <span class="key pair-b-mono">POST ↵</span></button>
+        </div>
+      </div>
+      <div class="mockup-block">
+        <div class="label">UI · KOREAN</div>
+        <div class="phone">
+          <div class="status-row pair-b-mono"><span>9:41</span><span>ROOM·04</span></div>
+          <h3 class="pair-b-kr">오후의 기록</h3>
+          <div class="sub pair-b-mono">5/8 ACTIVE · 12 POSTS</div>
+          <p class="body-para pair-b-kr">이번 주에 <strong>9개의 새 포스트</strong>가 쌓였어요.</p>
+          <div class="slot-grid">
+            <div class="slot filled me pair-b-mono">G</div>
+            <div class="slot filled pair-b-mono">J</div>
+            <div class="slot filled pair-b-mono">M</div>
+            <div class="slot filled pair-b-mono">S</div>
+            <div class="slot filled pair-b-mono">Y</div>
+            <div class="slot empty pair-b-mono">+</div>
+            <div class="slot empty pair-b-mono">+</div>
+            <div class="slot empty pair-b-mono">+</div>
+          </div>
+          <div class="post-card">
+            <div class="image"></div>
+            <div class="meta pair-b-mono"><span>#0024 · 04.21</span><span>BY 그린</span></div>
+            <div class="stamps">
+              <div class="stamp on">●</div>
+              <div class="stamp">▲</div>
+              <div class="stamp on">★</div>
+              <div class="stamp">◆</div>
+              <span class="stamp-count pair-b-mono">2/4</span>
+            </div>
+          </div>
+          <button class="btn-primary pair-b-kr">새 포스트 <span class="key pair-b-mono">POST ↵</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pair-notes">
+      <div class="block">
+        <div class="label">성격</div>
+        <p>Space Grotesk는 글자 안의 구멍(aperture)이 <strong>더 크고 열려 있습니다</strong>. 'a'와 'g'는 double-story지만 곡선이 더 둥글게 트여있고, 'R' 다리가 살짝 곡선 처리, 'Q' 꼬리가 글자 아래쪽으로 뻗는 편. 전체적으로 <strong>살짝 retro-futuristic</strong>. IBM Plex Mono는 타자기 감성의 엔지니어링 모노로, 특히 숫자가 또렷합니다.</p>
+      </div>
+      <div class="block">
+        <div class="label">장단점</div>
+        <p>장점: <strong>스튜디오/에디토리얼 감성</strong>. 이 앱이 디자인 의식이 있다는 인상을 즉시 전달합니다. 네이비(#2B3F5E)와 궁합이 특히 좋아서 Marine 팔레트를 살립니다. 단점: 장문의 가독성은 Inter보다 살짝 낮고, 일부 화면에서 너무 "멋 부린" 느낌이 날 수 있어 본문 크기는 주의 깊게 설정해야 합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- PAIRING C: Technical Retro -->
+  <!-- ========================================================== -->
+  <section class="pair-card">
+    <div class="pair-head">
+      <div class="num">C</div>
+      <div>
+        <h2 class="pair-c-en">Technical Retro</h2>
+        <div class="stack-line">Pretendard <span class="sep">/</span> Manrope <span class="sep">/</span> Space Mono</div>
+      </div>
+      <div class="character">Most TE · Signature</div>
+    </div>
+
+    <div class="en-display-row">
+      <div class="label">LARGE DISPLAY · 92px / Semibold</div>
+      <div class="big-en pair-c-en">Today's<br>Quiet Moments<span class="muted">.</span></div>
+      <div class="big-en-sub pair-c-en">A private room for the people closest to you.</div>
+    </div>
+
+    <div class="specimen-row">
+      <div class="label">CHARACTER SPECIMEN · 72px / Medium</div>
+      <div class="specimen-grid">
+        <div class="specimen-cell"><div class="letter pair-c-en">R</div><div class="caption">R · leg</div></div>
+        <div class="specimen-cell"><div class="letter pair-c-en">g</div><div class="caption">g · tail</div></div>
+        <div class="specimen-cell"><div class="letter pair-c-en">a</div><div class="caption">a · story</div></div>
+        <div class="specimen-cell"><div class="letter pair-c-en">Q</div><div class="caption">Q · tail</div></div>
+        <div class="specimen-cell"><div class="letter pair-c-en">t</div><div class="caption">t · terminal</div></div>
+        <div class="specimen-cell"><div class="letter pair-c-en">&amp;</div><div class="caption">ampersand</div></div>
+      </div>
+    </div>
+
+    <div class="numerals-strip">
+      <div class="label">NUMERALS · 56px</div>
+      <div class="numerals pair-c-en">0 1 2 3 4 <span class="muted">·</span> 5 6 7 8 9</div>
+    </div>
+
+    <div class="paragraph-row">
+      <div>
+        <div class="label">ENGLISH BODY · Manrope 16px</div>
+        <div class="para-heading pair-c-en">The room you only open with people you trust.</div>
+        <div class="para-body pair-c-en">
+          A private space for up to 8 people. Only the photos and short videos you capture inside the app live here. No feeds, no algorithms, no public shares. Just the quiet weight of what you decided to keep today, stamped with the time and the hand that made it.
+        </div>
+        <div class="para-caption pair-c-mono">ROOM·04 · 12 POSTS · 5 OF 8 ACTIVE</div>
+      </div>
+      <div>
+        <div class="label">KOREAN BODY · Pretendard 16px</div>
+        <div class="para-heading pair-c-kr">믿는 사람들과만 여는 방.</div>
+        <div class="para-body pair-c-kr">
+          최대 8명이 함께 쓰는 조용한 공간. 앱 안에서 직접 찍은 사진과 짧은 영상만 이곳에 남습니다. 피드도, 알고리즘도, 외부 공유도 없어요. 오늘 남기기로 한 장면들만, 시간과 만든 사람의 이름이 찍힌 채 조용히 쌓입니다.
+        </div>
+        <div class="para-caption pair-c-mono">ROOM·04 · 12 POSTS · 5 OF 8 ACTIVE</div>
+      </div>
+    </div>
+
+    <div class="mockup-row">
+      <div class="mockup-block">
+        <div class="label">UI · ENGLISH</div>
+        <div class="phone">
+          <div class="status-row pair-c-mono"><span>9:41</span><span>ROOM·04</span></div>
+          <h3 class="pair-c-en">Quiet Afternoon</h3>
+          <div class="sub pair-c-mono">5/8 ACTIVE · 12 POSTS</div>
+          <p class="body-para pair-c-en"><strong>9 new posts</strong> landed this week.</p>
+          <div class="slot-grid">
+            <div class="slot filled me pair-c-mono">G</div>
+            <div class="slot filled pair-c-mono">J</div>
+            <div class="slot filled pair-c-mono">M</div>
+            <div class="slot filled pair-c-mono">S</div>
+            <div class="slot filled pair-c-mono">Y</div>
+            <div class="slot empty pair-c-mono">+</div>
+            <div class="slot empty pair-c-mono">+</div>
+            <div class="slot empty pair-c-mono">+</div>
+          </div>
+          <div class="post-card">
+            <div class="image"></div>
+            <div class="meta pair-c-mono"><span>#0024 · 04.21</span><span>BY GREEN</span></div>
+            <div class="stamps">
+              <div class="stamp on">●</div>
+              <div class="stamp">▲</div>
+              <div class="stamp on">★</div>
+              <div class="stamp">◆</div>
+              <span class="stamp-count pair-c-mono">2/4</span>
+            </div>
+          </div>
+          <button class="btn-primary pair-c-en">New Post <span class="key pair-c-mono">POST ↵</span></button>
+        </div>
+      </div>
+      <div class="mockup-block">
+        <div class="label">UI · KOREAN</div>
+        <div class="phone">
+          <div class="status-row pair-c-mono"><span>9:41</span><span>ROOM·04</span></div>
+          <h3 class="pair-c-kr">오후의 기록</h3>
+          <div class="sub pair-c-mono">5/8 ACTIVE · 12 POSTS</div>
+          <p class="body-para pair-c-kr">이번 주에 <strong>9개의 새 포스트</strong>가 쌓였어요.</p>
+          <div class="slot-grid">
+            <div class="slot filled me pair-c-mono">G</div>
+            <div class="slot filled pair-c-mono">J</div>
+            <div class="slot filled pair-c-mono">M</div>
+            <div class="slot filled pair-c-mono">S</div>
+            <div class="slot filled pair-c-mono">Y</div>
+            <div class="slot empty pair-c-mono">+</div>
+            <div class="slot empty pair-c-mono">+</div>
+            <div class="slot empty pair-c-mono">+</div>
+          </div>
+          <div class="post-card">
+            <div class="image"></div>
+            <div class="meta pair-c-mono"><span>#0024 · 04.21</span><span>BY 그린</span></div>
+            <div class="stamps">
+              <div class="stamp on">●</div>
+              <div class="stamp">▲</div>
+              <div class="stamp on">★</div>
+              <div class="stamp">◆</div>
+              <span class="stamp-count pair-c-mono">2/4</span>
+            </div>
+          </div>
+          <button class="btn-primary pair-c-kr">새 포스트 <span class="key pair-c-mono">POST ↵</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pair-notes">
+      <div class="block">
+        <div class="label">성격</div>
+        <p>Manrope는 글자 끝이 <strong>미세하게 둥글게</strong> 처리되어 있어 친근합니다. 'a'와 'g'는 double-story지만 Inter보다 <strong>더 유기적이고 따뜻한 곡선</strong>. 'R' 다리가 살짝 flick, 't'의 상단 각도가 특징적. Space Mono는 슬래브(가로획)가 도드라지고 'g'가 double-story에 꼬리가 큼직해서 <strong>타자기 감성이 가장 강합니다</strong>. 숫자 '1'의 아래 가로획, '4'의 열린 구조가 시그니처.</p>
+      </div>
+      <div class="block">
+        <div class="label">장단점</div>
+        <p>장점: 가장 <strong>개성 있는 시그니처</strong>. 앱 스토어 스크린샷에서도 바로 알아볼 수 있는 얼굴이 생깁니다. 단점: Space Mono가 워낙 강해서 <strong>라벨이 많아지면 금방 피로</strong>해집니다. 짧은 메타정보에만 쓰고 긴 텍스트는 피해야 합니다. 본문 Manrope는 괜찮지만 Space Mono는 "포인트 사용" 전제.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section class="compare-section">
+    <div class="meta">COMPARE · ENGLISH-FOCUSED</div>
+    <h2>영문 성격 집중 비교</h2>
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>A Inter</th>
+          <th>B Space Grotesk</th>
+          <th>C Manrope</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>글자 내부 공간</strong></td>
+          <td>중간 (표준)</td>
+          <td>넓고 열림</td>
+          <td>중간, 둥근 끝</td>
+        </tr>
+        <tr>
+          <td><strong>'g' 꼬리 성격</strong></td>
+          <td>중립적</td>
+          <td>살짝 각짐</td>
+          <td>둥글고 따뜻함</td>
+        </tr>
+        <tr>
+          <td><strong>'R' 다리</strong></td>
+          <td>반듯하게 뻗음</td>
+          <td>살짝 곡선</td>
+          <td>끝에 살짝 튐</td>
+        </tr>
+        <tr>
+          <td><strong>숫자 인상</strong></td>
+          <td>또렷, 균일</td>
+          <td>retro-modern</td>
+          <td>둥글고 유기적</td>
+        </tr>
+        <tr>
+          <td><strong>디스플레이 임팩트</strong></td>
+          <td>깨끗 (인상은 약함)</td>
+          <td>강함, 에디토리얼</td>
+          <td>따뜻, 친근</td>
+        </tr>
+        <tr>
+          <td><strong>모노 개성</strong></td>
+          <td>JetBrains · 범용</td>
+          <td>IBM Plex · 엔지니어링</td>
+          <td>Space · 타자기</td>
+        </tr>
+        <tr>
+          <td><strong>본문 긴 글 가독성</strong></td>
+          <td>최상</td>
+          <td>상</td>
+          <td>상</td>
+        </tr>
+        <tr>
+          <td><strong>시그니처 강도</strong></td>
+          <td>낮음</td>
+          <td>중상</td>
+          <td>높음</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- GUIDE -->
+  <div class="guide">
+    <h3>체감 포인트</h3>
+    <p>이번엔 영문이 크게 보이니까 차이가 또렷할 겁니다. 특히 <strong>"Today's Quiet Moments"</strong> 디스플레이의 첫인상, <strong>숫자 '0 1 2 3 4 · 5 6 7 8 9'</strong>의 성격, <strong>모노 라벨(ROOM·04)</strong>의 느낌을 비교해보세요.</p>
+    <p style="margin-top: 14px;">구체적인 관찰 포인트:<br>
+    <strong>A Inter</strong>: 글자끼리의 간격과 굵기가 가장 중립적. "잘 만든 OS 폰트" 느낌.<br>
+    <strong>B Space Grotesk</strong>: 'a'의 둥근 공간, 'Q' 꼬리 각도가 독특해서 타이틀이 기억에 남습니다. 숫자가 가장 retro-modern.<br>
+    <strong>C Manrope</strong>: 본문이 가장 따뜻하고, Space Mono의 타자기 감성이 앱 전체를 "작은 기기"처럼 만듭니다. 대신 피로감 관리가 필요.</p>
+    <p style="margin-top: 14px;">방향 정하시거나 "B 본문 + C 모노" 같은 하이브리드 요청도 좋습니다.</p>
+  </div>
+
+</div>
+</body>
+</html>

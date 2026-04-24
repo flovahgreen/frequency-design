@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Room App · Color Palette Review V2 (Pop Variations)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --font-sans: 'Pretendard Variable', Pretendard, 'Inter', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', Menlo, monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-sans);
+    background: #E8E4DC;
+    color: #1C1B19;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 48px 24px 96px;
+  }
+
+  .wrapper { max-width: 1240px; margin: 0 auto; }
+
+  /* ---------- HEADER ---------- */
+  header.intro {
+    padding: 40px 36px;
+    border: 1px solid #C9C3B8;
+    background: #F4F1EC;
+    margin-bottom: 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+  header.intro .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: #5E5C56;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  header.intro h1 {
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  header.intro .subtitle {
+    font-size: 17px;
+    color: #3D3B37;
+    max-width: 44ch;
+  }
+  header.intro .right-col {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.9;
+    color: #3D3B37;
+    align-self: end;
+  }
+  header.intro .right-col .row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    border-top: 1px solid #C9C3B8;
+    padding: 8px 0;
+  }
+  header.intro .right-col .row:last-child { border-bottom: 1px solid #C9C3B8; }
+  header.intro .right-col .label { color: #8C8880; text-transform: uppercase; letter-spacing: 0.05em; font-size: 10px; padding-top: 4px;}
+
+  .pill {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    background: #E85A2A;
+    color: #FAF8F4;
+    padding: 4px 8px;
+    letter-spacing: 0.08em;
+    margin-right: 6px;
+  }
+
+  /* ---------- VARIATION SECTION ---------- */
+  .variation {
+    margin-bottom: 56px;
+    border: 1px solid var(--border);
+    background: var(--bg-canvas);
+    color: var(--text-primary);
+    overflow: hidden;
+  }
+
+  .variation-head {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    align-items: baseline;
+    padding: 28px 36px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 24px;
+  }
+  .variation-head .num {
+    font-family: var(--font-mono);
+    font-size: 44px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .variation-head .titles h2 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .variation-head .titles .tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+  .variation-head .spirit {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-align: right;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    align-self: end;
+    padding-bottom: 4px;
+  }
+
+  /* ---------- MOOD STRIP ---------- */
+  .mood-strip {
+    padding: 20px 36px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    background: var(--bg-canvas);
+  }
+
+  /* ---------- PALETTE GRID ---------- */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 1px;
+    background: var(--border);
+    padding: 1px;
+  }
+  .swatch {
+    aspect-ratio: 1;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .swatch .tok {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .swatch .hex {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .swatch.light { color: #1C1B19; }
+  .swatch.dark { color: #F4F1EC; }
+
+  /* ---------- UI PREVIEW ---------- */
+  .preview-area {
+    padding: 40px 36px;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 32px;
+    background: var(--bg-canvas);
+    border-top: 1px solid var(--border);
+  }
+
+  /* Phone mockup */
+  .phone {
+    aspect-ratio: 9 / 17.5;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    padding: 24px 18px 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 48px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  .phone .status-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    padding-top: 8px;
+  }
+  .phone h3 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-top: 2px;
+  }
+  .phone .sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: -6px;
+  }
+
+  /* color-tag (labeled mini chip over UI) */
+  .tag-row {
+    display: flex;
+    gap: 4px;
+    margin-top: -2px;
+  }
+  .color-tag {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    padding: 2px 6px;
+    letter-spacing: 0.06em;
+    color: #FAF8F4;
+  }
+
+  /* Slot grid */
+  .slot-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .slot {
+    aspect-ratio: 1;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    position: relative;
+  }
+  .slot.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .slot.active-b {
+    background: var(--accent-b-soft);
+    color: var(--accent-b);
+    border-color: var(--accent-b);
+  }
+  .slot.active-c {
+    background: var(--accent-c-soft);
+    color: var(--accent-c);
+    border-color: var(--accent-c);
+  }
+  .slot.empty { color: var(--text-tertiary); border-style: dashed; }
+
+  /* Post card */
+  .post-card {
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    margin-top: auto;
+  }
+  .post-card .image {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-inset) 100%);
+    position: relative;
+  }
+  .post-card .image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.3), transparent 50%);
+  }
+  .post-card .meta {
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    border-top: 1px solid var(--border);
+  }
+  .post-card .stamps {
+    padding: 8px 12px 10px;
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .stamp {
+    width: 22px; height: 22px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+  .stamp.on-a { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .stamp.on-b { background: var(--accent-b-soft); border-color: var(--accent-b); color: var(--accent-b); }
+  .stamp.on-c { background: var(--accent-c-soft); border-color: var(--accent-c); color: var(--accent-c); }
+  .stamp.on-d { background: var(--accent-d-soft); border-color: var(--accent-d); color: var(--accent-d); }
+
+  /* Primary button */
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-text);
+    padding: 14px 18px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btn-primary .key {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+  }
+
+  /* Right column: type & spec */
+  .spec-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .spec-block {
+    padding: 20px 22px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+  }
+  .spec-block .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+  }
+  .type-sample-h {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .type-sample-b {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .type-sample-m {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .accent-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .accent-row .chip {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: flex-end;
+    padding: 8px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: #1C1B19;
+    letter-spacing: 0.02em;
+  }
+  .accent-row .chip.dark-text { color: #F4F1EC; }
+
+  .notes-block {
+    padding: 20px 22px;
+    border: 1px dashed var(--border);
+    background: var(--bg-inset);
+  }
+  .notes-block .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+  .notes-block p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  /* labeled mini-strip in preview */
+  .label-strip {
+    display: flex;
+    gap: 2px;
+    margin-top: 6px;
+  }
+  .label-strip span {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 3px 7px;
+    letter-spacing: 0.06em;
+    color: #FAF8F4;
+  }
+
+  /* ---------- 05 ARCADE ---------- */
+  .theme-arcade {
+    --bg-canvas: #F4F1EC;
+    --bg-surface: #FAF8F4;
+    --bg-inset: #ECE7DE;
+    --border: #C9C3B8;
+    --text-primary: #1C1B19;
+    --text-secondary: #5E5C56;
+    --text-tertiary: #8C8880;
+    --accent: #E85A2A;
+    --accent-soft: #FBE4D8;
+    --accent-text: #FAF8F4;
+    --accent-b: #2E5EA8;
+    --accent-b-soft: #D7E0EF;
+    --accent-c: #E8B533;
+    --accent-c-soft: #F9E9C3;
+    --accent-d: #B33B2A;
+    --accent-d-soft: #F3D4CE;
+  }
+
+  /* ---------- 06 SIGNAL ---------- */
+  .theme-signal {
+    --bg-canvas: #E7E5DE;
+    --bg-surface: #EFEDE6;
+    --bg-inset: #D9D6CE;
+    --border: #B5B2A9;
+    --text-primary: #0F0E0D;
+    --text-secondary: #4A4944;
+    --text-tertiary: #84837E;
+    --accent: #F25C14;
+    --accent-soft: #FBDACA;
+    --accent-text: #FAF8F4;
+    --accent-b: #1E4A82;
+    --accent-b-soft: #CEDAEB;
+    --accent-c: #E8B53B;
+    --accent-c-soft: #F7E5B7;
+    --accent-d: #D93E32;
+    --accent-d-soft: #F4D3D0;
+  }
+
+  /* ---------- 07 PARADE ---------- */
+  .theme-parade {
+    --bg-canvas: #F3EBD8;
+    --bg-surface: #F8F2E4;
+    --bg-inset: #E8DFC8;
+    --border: #C7BC9F;
+    --text-primary: #241F16;
+    --text-secondary: #5A4E38;
+    --text-tertiary: #8B7A5F;
+    --accent: #E8523F;
+    --accent-soft: #F6D4CD;
+    --accent-text: #F8F2E4;
+    --accent-b: #2E8080;
+    --accent-b-soft: #C8E0E0;
+    --accent-c: #EBC042;
+    --accent-c-soft: #F9E9B8;
+    --accent-d: #6B3050;
+    --accent-d-soft: #E2CEDB;
+  }
+
+  /* ---------- COMPARISON TABLE ---------- */
+  .compare-section {
+    margin-top: 80px;
+    padding: 36px;
+    background: #F4F1EC;
+    border: 1px solid #C9C3B8;
+  }
+  .compare-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .compare-section .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8C8880;
+    margin-bottom: 28px;
+  }
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.compare th, table.compare td {
+    border-bottom: 1px solid #C9C3B8;
+    padding: 14px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.compare th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5E5C56;
+    font-weight: 500;
+    background: #ECE7DE;
+  }
+  table.compare td strong { font-weight: 600; color: #1C1B19; }
+  table.compare .dot {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 8px;
+    border: 1px solid #00000018;
+  }
+
+  /* ---------- FOOTER / GUIDE ---------- */
+  .guide {
+    margin-top: 48px;
+    padding: 28px 36px;
+    background: #1C1B19;
+    color: #F4F1EC;
+  }
+  .guide h3 {
+    font-size: 14px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    color: #E85A2A;
+  }
+  .guide p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #C9C3B8;
+  }
+  .guide ol {
+    margin-top: 12px;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #C9C3B8;
+  }
+
+  @media (max-width: 880px) {
+    header.intro { grid-template-columns: 1fr; }
+    .variation-head { grid-template-columns: 80px 1fr; }
+    .variation-head .spirit { grid-column: 1 / -1; text-align: left; }
+    .preview-area { grid-template-columns: 1fr; }
+    .palette-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- ======================= HEADER ======================= -->
+  <header class="intro">
+    <div>
+      <div class="meta">DESIGN TONE · COLOR REVIEW · V2 · POP VARIATIONS</div>
+      <h1>조금 더 pop하게.<br>같은 DNA, 더 큰 색의 대비.</h1>
+      <p class="subtitle"><span class="pill">FEEDBACK</span>01, 02의 뼈대는 살리되 전체적으로 너무 차분하다는 피드백을 반영했습니다. 베이스는 여전히 중성이지만 액센트를 더 선명하게, 그리고 여러 색이 공존하는 방향으로 확장했습니다. OP-1 Field, Olivetti 타자기, Pocket Operator 계열의 감각입니다.</p>
+    </div>
+    <div class="right-col">
+      <div class="row"><span class="label">Project</span><span>Private Room App</span></div>
+      <div class="row"><span class="label">Stage</span><span>Color · V2 Pop</span></div>
+      <div class="row"><span class="label">Options</span><span>03 new variations</span></div>
+      <div class="row"><span class="label">Approach</span><span>Calm base + vivid accents</span></div>
+      <div class="row"><span class="label">Date</span><span>2026.04.21</span></div>
+    </div>
+  </header>
+
+  <!-- ======================= 05 ARCADE ======================= -->
+  <section class="variation theme-arcade">
+    <div class="variation-head">
+      <div class="num">05</div>
+      <div class="titles">
+        <h2>Arcade</h2>
+        <div class="tag">warm paper · orange + cobalt + mustard · color-coded toolbox</div>
+      </div>
+      <div class="spirit">01 Workshop + pop sidekick</div>
+    </div>
+    <div class="mood-strip">
+      Workshop의 따뜻한 종이 베이스는 그대로. 주황색 혼자였던 액센트에 <strong>코발트 블루</strong>와 <strong>선명한 머스타드</strong>를 더했습니다. 예전 공구상자나 측정 장비의 색깔별 라벨처럼, 용도마다 색이 달라지는 시스템입니다. 제일 "쓰기 재미있는" 방향.
+    </div>
+
+    <div class="palette-grid">
+      <div class="swatch light" style="background:#FAF8F4"><span class="tok">paper/50</span><span class="hex">#FAF8F4</span></div>
+      <div class="swatch light" style="background:#F4F1EC"><span class="tok">paper/100</span><span class="hex">#F4F1EC</span></div>
+      <div class="swatch light" style="background:#ECE7DE"><span class="tok">paper/200</span><span class="hex">#ECE7DE</span></div>
+      <div class="swatch light" style="background:#C9C3B8"><span class="tok">bone/400</span><span class="hex">#C9C3B8</span></div>
+      <div class="swatch light" style="background:#8C8880"><span class="tok">graphite/500</span><span class="hex">#8C8880</span></div>
+      <div class="swatch dark" style="background:#1C1B19"><span class="tok">ink/900</span><span class="hex">#1C1B19</span></div>
+      <div class="swatch dark" style="background:#E85A2A"><span class="tok">orange/500</span><span class="hex">#E85A2A</span></div>
+      <div class="swatch dark" style="background:#2E5EA8"><span class="tok">cobalt/500</span><span class="hex">#2E5EA8</span></div>
+      <div class="swatch light" style="background:#E8B533"><span class="tok">mustard/500</span><span class="hex">#E8B533</span></div>
+      <div class="swatch dark" style="background:#B33B2A"><span class="tok">brick/500</span><span class="hex">#B33B2A</span></div>
+    </div>
+
+    <div class="preview-area">
+      <div class="phone">
+        <div class="status-row"><span>9:41</span><span>ROOM·04</span></div>
+        <div class="label-strip">
+          <span style="background:#E85A2A">POST</span>
+          <span style="background:#2E5EA8">MEMBER</span>
+          <span style="background:#E8B533; color:#1C1B19">NEW</span>
+        </div>
+        <h3>오후의 기록</h3>
+        <div class="sub">5/8 ACTIVE · 12 POSTS</div>
+        <div class="slot-grid">
+          <div class="slot active">G</div>
+          <div class="slot active-b">J</div>
+          <div class="slot active">M</div>
+          <div class="slot active-b">S</div>
+          <div class="slot active-c">Y</div>
+          <div class="slot empty">+</div>
+          <div class="slot empty">+</div>
+          <div class="slot empty">+</div>
+        </div>
+        <div class="post-card">
+          <div class="image"></div>
+          <div class="meta"><span>#0024 · 04.21 16:22</span><span>BY 그린</span></div>
+          <div class="stamps">
+            <div class="stamp on-a">●</div>
+            <div class="stamp on-b">▲</div>
+            <div class="stamp on-c">★</div>
+            <div class="stamp on-d">◆</div>
+          </div>
+        </div>
+        <button class="btn-primary">새 포스트 <span class="key">POST ↵</span></button>
+      </div>
+
+      <div class="spec-col">
+        <div class="spec-block">
+          <div class="label">Type / Sample</div>
+          <div class="type-sample-h">오후의 기록</div>
+          <div class="type-sample-b">우리가 함께 본 장면들은 여기에만 남습니다. 다른 곳으로는 새지 않아요.</div>
+          <div class="type-sample-m">ROOM·04 · 12/40 · MAX 8 USERS</div>
+        </div>
+        <div class="spec-block">
+          <div class="label">Accent / 4 tones</div>
+          <div class="accent-row">
+            <div class="chip dark-text" style="background:#E85A2A">#E85A2A</div>
+            <div class="chip dark-text" style="background:#2E5EA8">#2E5EA8</div>
+            <div class="chip" style="background:#E8B533">#E8B533</div>
+            <div class="chip dark-text" style="background:#B33B2A">#B33B2A</div>
+          </div>
+        </div>
+        <div class="notes-block">
+          <div class="label">어울리는 성격</div>
+          <p>"톤 다운된 TE가 너무 점잖다"고 느끼셨다면 여기부터 보세요. 오렌지 하나가 아니라 <strong>오렌지/코발트</strong> 듀오로 시그니처를 만듭니다. 멤버마다 색깔 배정, 스탬프 4색 같이 쓰면 앱 전체가 살아납니다. 단점: 색 사용 규칙을 엄격히 지키지 않으면 금방 어수선해집니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 06 SIGNAL ======================= -->
+  <section class="variation theme-signal">
+    <div class="variation-head">
+      <div class="num">06</div>
+      <div class="titles">
+        <h2>Signal</h2>
+        <div class="tag">cool aluminum · vermillion + navy + amber · OP-1 Field panel</div>
+      </div>
+      <div class="spirit">02 Atelier + OP-1 Field pop</div>
+    </div>
+    <div class="mood-strip">
+      Atelier의 서늘한 스톤 베이스를 한 단계 더 은빛으로. 그 위에 <strong>선명한 버밀리언 오렌지, 딥 네이비, 앰버 옐로</strong>가 콘트롤 패널의 라벨처럼 올라갑니다. 잉크는 거의 순흑에 가깝게. OP-1 Field를 처음 봤을 때의 "은색 위의 밝은 주홍" 그 대비감입니다.
+    </div>
+
+    <div class="palette-grid">
+      <div class="swatch light" style="background:#EFEDE6"><span class="tok">silver/50</span><span class="hex">#EFEDE6</span></div>
+      <div class="swatch light" style="background:#E7E5DE"><span class="tok">silver/100</span><span class="hex">#E7E5DE</span></div>
+      <div class="swatch light" style="background:#D9D6CE"><span class="tok">silver/200</span><span class="hex">#D9D6CE</span></div>
+      <div class="swatch light" style="background:#B5B2A9"><span class="tok">silver/400</span><span class="hex">#B5B2A9</span></div>
+      <div class="swatch light" style="background:#84837E"><span class="tok">graphite/500</span><span class="hex">#84837E</span></div>
+      <div class="swatch dark" style="background:#0F0E0D"><span class="tok">ink/900</span><span class="hex">#0F0E0D</span></div>
+      <div class="swatch dark" style="background:#F25C14"><span class="tok">vermillion/500</span><span class="hex">#F25C14</span></div>
+      <div class="swatch dark" style="background:#1E4A82"><span class="tok">navy/500</span><span class="hex">#1E4A82</span></div>
+      <div class="swatch light" style="background:#E8B53B"><span class="tok">amber/500</span><span class="hex">#E8B53B</span></div>
+      <div class="swatch dark" style="background:#D93E32"><span class="tok">cherry/500</span><span class="hex">#D93E32</span></div>
+    </div>
+
+    <div class="preview-area">
+      <div class="phone">
+        <div class="status-row"><span>9:41</span><span>ROOM·04</span></div>
+        <div class="label-strip">
+          <span style="background:#F25C14">SHOOT</span>
+          <span style="background:#1E4A82">ROOM</span>
+          <span style="background:#E8B53B; color:#0F0E0D">LIVE</span>
+          <span style="background:#D93E32">REC</span>
+        </div>
+        <h3>오후의 기록</h3>
+        <div class="sub">5/8 ACTIVE · 12 POSTS</div>
+        <div class="slot-grid">
+          <div class="slot active">G</div>
+          <div class="slot active-b">J</div>
+          <div class="slot active">M</div>
+          <div class="slot active-c">S</div>
+          <div class="slot active-b">Y</div>
+          <div class="slot empty">+</div>
+          <div class="slot empty">+</div>
+          <div class="slot empty">+</div>
+        </div>
+        <div class="post-card">
+          <div class="image"></div>
+          <div class="meta"><span>#0024 · 04.21 16:22</span><span>BY 그린</span></div>
+          <div class="stamps">
+            <div class="stamp on-a">●</div>
+            <div class="stamp on-b">▲</div>
+            <div class="stamp on-c">★</div>
+            <div class="stamp on-d">◆</div>
+          </div>
+        </div>
+        <button class="btn-primary">새 포스트 <span class="key">POST ↵</span></button>
+      </div>
+
+      <div class="spec-col">
+        <div class="spec-block">
+          <div class="label">Type / Sample</div>
+          <div class="type-sample-h">오후의 기록</div>
+          <div class="type-sample-b">우리가 함께 본 장면들은 여기에만 남습니다. 다른 곳으로는 새지 않아요.</div>
+          <div class="type-sample-m">ROOM·04 · 12/40 · MAX 8 USERS</div>
+        </div>
+        <div class="spec-block">
+          <div class="label">Accent / 4 tones</div>
+          <div class="accent-row">
+            <div class="chip dark-text" style="background:#F25C14">#F25C14</div>
+            <div class="chip dark-text" style="background:#1E4A82">#1E4A82</div>
+            <div class="chip" style="background:#E8B53B">#E8B53B</div>
+            <div class="chip dark-text" style="background:#D93E32">#D93E32</div>
+          </div>
+        </div>
+        <div class="notes-block">
+          <div class="label">어울리는 성격</div>
+          <p>"기기스러움"을 가장 강하게 밀고 싶을 때. 은빛 베이스 덕분에 사진이 떠오르듯 돋보이고, 3~4색 액센트가 콘트롤 패널의 라벨처럼 기능을 구분합니다. 가장 <strong>브랜드 아이덴티티가 뾰족한</strong> 방향. 단점: 색 사용이 과감해서 컴포넌트마다 규칙을 엄격히 정해야 합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 07 PARADE ======================= -->
+  <section class="variation theme-parade">
+    <div class="variation-head">
+      <div class="num">07</div>
+      <div class="titles">
+        <h2>Parade</h2>
+        <div class="tag">warm cream · coral + teal + banana + plum · chromatic index</div>
+      </div>
+      <div class="spirit">Most daring multi-color</div>
+    </div>
+    <div class="mood-strip">
+      가장 대담한 방향. 크림 베이스 위에 <strong>코랄, 티일, 바나나 옐로, 플럼 퍼플</strong>이 <em>함께</em> 삽니다. 멤버/스탬프/카테고리마다 색이 배정되어 "색인화"된 느낌. 오래된 도서관의 컬러 태그나 빈티지 공항 사인 시스템 감각. 가장 위험하지만 가장 개성 있음.
+    </div>
+
+    <div class="palette-grid">
+      <div class="swatch light" style="background:#F8F2E4"><span class="tok">cream/50</span><span class="hex">#F8F2E4</span></div>
+      <div class="swatch light" style="background:#F3EBD8"><span class="tok">cream/100</span><span class="hex">#F3EBD8</span></div>
+      <div class="swatch light" style="background:#E8DFC8"><span class="tok">cream/200</span><span class="hex">#E8DFC8</span></div>
+      <div class="swatch light" style="background:#C7BC9F"><span class="tok">sand/400</span><span class="hex">#C7BC9F</span></div>
+      <div class="swatch light" style="background:#8B7A5F"><span class="tok">sepia/500</span><span class="hex">#8B7A5F</span></div>
+      <div class="swatch dark" style="background:#241F16"><span class="tok">ink/900</span><span class="hex">#241F16</span></div>
+      <div class="swatch dark" style="background:#E8523F"><span class="tok">coral/500</span><span class="hex">#E8523F</span></div>
+      <div class="swatch dark" style="background:#2E8080"><span class="tok">teal/500</span><span class="hex">#2E8080</span></div>
+      <div class="swatch light" style="background:#EBC042"><span class="tok">banana/500</span><span class="hex">#EBC042</span></div>
+      <div class="swatch dark" style="background:#6B3050"><span class="tok">plum/500</span><span class="hex">#6B3050</span></div>
+    </div>
+
+    <div class="preview-area">
+      <div class="phone">
+        <div class="status-row"><span>9:41</span><span>ROOM·04</span></div>
+        <div class="label-strip">
+          <span style="background:#E8523F">POST</span>
+          <span style="background:#2E8080">ROOM</span>
+          <span style="background:#EBC042; color:#241F16">NEW</span>
+          <span style="background:#6B3050">ARCHIVE</span>
+        </div>
+        <h3>오후의 기록</h3>
+        <div class="sub">5/8 ACTIVE · 12 POSTS</div>
+        <div class="slot-grid">
+          <div class="slot active">G</div>
+          <div class="slot active-b">J</div>
+          <div class="slot active-c">M</div>
+          <div class="slot" style="background:#E2CEDB; color:#6B3050; border-color:#6B3050">S</div>
+          <div class="slot active">Y</div>
+          <div class="slot empty">+</div>
+          <div class="slot empty">+</div>
+          <div class="slot empty">+</div>
+        </div>
+        <div class="post-card">
+          <div class="image"></div>
+          <div class="meta"><span>#0024 · 04.21 16:22</span><span>BY 그린</span></div>
+          <div class="stamps">
+            <div class="stamp on-a">●</div>
+            <div class="stamp on-b">▲</div>
+            <div class="stamp on-c">★</div>
+            <div class="stamp on-d">◆</div>
+          </div>
+        </div>
+        <button class="btn-primary">새 포스트 <span class="key">POST ↵</span></button>
+      </div>
+
+      <div class="spec-col">
+        <div class="spec-block">
+          <div class="label">Type / Sample</div>
+          <div class="type-sample-h">오후의 기록</div>
+          <div class="type-sample-b">우리가 함께 본 장면들은 여기에만 남습니다. 다른 곳으로는 새지 않아요.</div>
+          <div class="type-sample-m">ROOM·04 · 12/40 · MAX 8 USERS</div>
+        </div>
+        <div class="spec-block">
+          <div class="label">Accent / 4 tones</div>
+          <div class="accent-row">
+            <div class="chip dark-text" style="background:#E8523F">#E8523F</div>
+            <div class="chip dark-text" style="background:#2E8080">#2E8080</div>
+            <div class="chip" style="background:#EBC042">#EBC042</div>
+            <div class="chip dark-text" style="background:#6B3050">#6B3050</div>
+          </div>
+        </div>
+        <div class="notes-block">
+          <div class="label">어울리는 성격</div>
+          <p>"앱 자체가 페스티벌처럼 느껴지길" 원할 때. 4색이 서로 다른 기능(게시, 멤버, 알림, 아카이브)을 담당해서 UI가 정보 체계로 작동합니다. 가장 <strong>눈에 띄는 앱 아이콘</strong>이 나올 수 있는 방향. 단점: 밸런스 실수 시 키치해지기 쉽고, 일관성 유지에 가장 많은 디자인 규율이 필요합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= COMPARE TABLE ======================= -->
+  <section class="compare-section">
+    <div class="meta">COMPARE · V1 CALM vs V2 POP</div>
+    <h2>v1 차분 vs v2 pop, 한눈에</h2>
+
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>01 Workshop <span style="font-size:9px; background:#C9C3B8; padding:2px 5px; color:#3D3B37;">V1</span></th>
+          <th>05 Arcade <span style="font-size:9px; background:#E85A2A; padding:2px 5px; color:#FAF8F4;">V2</span></th>
+          <th>06 Signal <span style="font-size:9px; background:#E85A2A; padding:2px 5px; color:#FAF8F4;">V2</span></th>
+          <th>07 Parade <span style="font-size:9px; background:#E85A2A; padding:2px 5px; color:#FAF8F4;">V2</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>액센트 수</strong></td>
+          <td>1 메인 + 1 보조</td>
+          <td>2 메인 + 2 보조</td>
+          <td>3~4 메인</td>
+          <td>4 공존</td>
+        </tr>
+        <tr>
+          <td><strong>베이스</strong></td>
+          <td>따뜻한 종이</td>
+          <td>따뜻한 종이 (유지)</td>
+          <td>은빛 스톤 (더 차가움)</td>
+          <td>따뜻한 크림 (더 진함)</td>
+        </tr>
+        <tr>
+          <td><strong>첫인상</strong></td>
+          <td>"잘 만든 기기"</td>
+          <td>"색 라벨 붙은 공구상자"</td>
+          <td>"OP-1 Field 패널"</td>
+          <td>"빈티지 공항 사인"</td>
+        </tr>
+        <tr>
+          <td><strong>pop 강도</strong></td>
+          <td>낮음 (1/5)</td>
+          <td>중간 (3/5)</td>
+          <td>중상 (4/5)</td>
+          <td>높음 (5/5)</td>
+        </tr>
+        <tr>
+          <td><strong>시그니처성</strong></td>
+          <td>중간</td>
+          <td>강함 (오렌지+블루 듀오)</td>
+          <td>매우 강함</td>
+          <td>매우 강함 (4색)</td>
+        </tr>
+        <tr>
+          <td><strong>키치 위험</strong></td>
+          <td>낮음</td>
+          <td>낮음</td>
+          <td>중간 (색 규율 필요)</td>
+          <td>높음 (가장 조심)</td>
+        </tr>
+        <tr>
+          <td><strong>사진 돋보임</strong></td>
+          <td>중간</td>
+          <td>중간</td>
+          <td>매우 강함 (은빛 덕분)</td>
+          <td>중간 (색 경쟁)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ======================= GUIDE ======================= -->
+  <div class="guide">
+    <h3>결정 가이드</h3>
+    <p>pop 강도가 <strong>낮음 → 중간 → 중상 → 높음</strong> 순으로 준비했습니다. 어디쯤에서 "여기부터는 너무 시끄럽다"고 느끼시는지가 기준이 될 거예요.</p>
+    <ol>
+      <li><strong>05 Arcade</strong>가 편하게 느껴진다면: 기존 DNA를 유지한 안전한 pop. 가장 실행하기 쉬움.</li>
+      <li><strong>06 Signal</strong>이 끌린다면: 앱이 "전문가용 기기" 같은 개성을 가짐. 브랜드 각이 가장 뾰족함.</li>
+      <li><strong>07 Parade</strong>가 매력적이라면: 시각적으로 가장 대담하고 재미있음. 디자인 규율이 가장 많이 필요.</li>
+    </ol>
+    <p style="margin-top: 16px;">혹은 "05 베이스에 06의 네이비만 섞어달라", "07인데 4색 중 하나를 빼고 3색으로" 같은 요청도 좋습니다. 방향이 정해지면 최종 톤을 고정하고, 그 위에서 Step 1-C 타이포그래피로 넘어가겠습니다.</p>
+  </div>
+
+</div>
+</body>
+</html>

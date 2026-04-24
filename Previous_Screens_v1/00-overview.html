@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FREQUENCY · 디자인 시안 Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --signal-green-paper: #197A3E;
+    --te-orange-500: #F15A24;
+    --amber-500: #F5A623;
+    --critical-red: #E5484D;
+    --ink-1000: #0A0A0A;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --ink-0:    #FFFFFF;
+    --paper-bg: #EDE6D7;
+    --paper-ink: #141211;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --radius-xs: 2px; --radius-sm: 4px; --radius-md: 6px;
+    --motion-fast: 150ms; --motion-base: 200ms;
+    --ease-mech: cubic-bezier(0.2, 0, 0, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-1000);
+    color: var(--ink-100);
+    line-height: 1.5;
+    padding: 0 0 96px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+  /* ============ HEADER ============ */
+  .ov-header {
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--ink-700);
+    margin-bottom: 48px;
+  }
+  .ov-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .ov-tag .dot {
+    width: 7px; height: 7px; border-radius: 999px;
+    background: var(--signal-green-400);
+    box-shadow: 0 0 8px rgba(38, 250, 133, 0.5);
+    animation: ledPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .ov-tag .accent { color: var(--signal-green-400); }
+  .ov-title {
+    font-family: var(--font-sans); font-size: 44px;
+    font-weight: 700; letter-spacing: -0.025em;
+    color: var(--ink-0); margin-bottom: 12px;
+    line-height: 1.1;
+  }
+  .ov-sub {
+    font-size: 15px; color: var(--ink-300);
+    line-height: 1.6; max-width: 720px;
+  }
+  .ov-stats {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .stat-card {
+    padding: 18px 20px;
+    background: var(--ink-900);
+    border: 1px solid var(--ink-700);
+    border-radius: var(--radius-sm);
+  }
+  .stat-card .lbl {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 8px;
+  }
+  .stat-card .val {
+    font-family: var(--font-mono); font-size: 22px;
+    font-weight: 700; color: var(--ink-0); letter-spacing: -0.01em;
+  }
+  .stat-card .val .unit {
+    font-size: 11px; color: var(--ink-400);
+    margin-left: 4px; font-weight: 500;
+  }
+  .stat-card.accent .val { color: var(--signal-green-400); }
+  .stat-card.warn .val { color: var(--te-orange-500); }
+
+  /* ============ SECTION ============ */
+  .ov-section { margin-bottom: 64px; }
+  .section-head {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ink-800);
+  }
+  .section-num {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.16em; color: var(--signal-green-400);
+    font-weight: 700;
+  }
+  .section-title {
+    font-family: var(--font-sans); font-size: 22px;
+    font-weight: 700; color: var(--ink-0);
+    letter-spacing: -0.015em;
+  }
+  .section-sub {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-500); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  /* ============ SCREENS GRID ============ */
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .screen-card {
+    background: var(--ink-900);
+    border: 1px solid var(--ink-700);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: border-color var(--motion-base) var(--ease-mech),
+                transform var(--motion-base) var(--ease-mech);
+  }
+  .screen-card:hover {
+    border-color: var(--ink-500);
+    transform: translateY(-2px);
+  }
+  .thumb-wrap {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    background: var(--ink-1000);
+    overflow: hidden;
+    border-bottom: 1px solid var(--ink-700);
+  }
+  .thumb-wrap iframe {
+    border: 0;
+    width: 1440px;
+    height: 1240px;
+    transform: scale(0.26);
+    transform-origin: top left;
+    pointer-events: none;
+    background: var(--ink-800);
+  }
+  .thumb-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 70%, rgba(10,10,10,0.7));
+    pointer-events: none;
+  }
+  .thumb-status {
+    position: absolute; top: 12px; left: 12px;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 700;
+    background: rgba(10,10,10,0.7);
+    color: var(--ink-100);
+    padding: 4px 8px;
+    border-radius: 2px;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .thumb-status .dot {
+    width: 6px; height: 6px; border-radius: 999px;
+    background: var(--signal-green-400);
+    box-shadow: 0 0 6px rgba(38, 250, 133, 0.5);
+  }
+  .card-body {
+    padding: 18px 20px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .card-meta {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 10px;
+  }
+  .card-num {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.18em; color: var(--ink-500);
+    font-weight: 700;
+  }
+  .card-version {
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--signal-green-400);
+    background: rgba(38, 250, 133, 0.08);
+    border: 1px solid rgba(38, 250, 133, 0.2);
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
+  }
+  .card-title {
+    font-family: var(--font-sans); font-size: 16px;
+    font-weight: 700; color: var(--ink-0); letter-spacing: -0.01em;
+    margin: 4px 0 2px;
+  }
+  .card-desc {
+    font-size: 12px; color: var(--ink-300);
+    line-height: 1.55;
+  }
+  .card-features {
+    list-style: none;
+    margin: 8px 0 4px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .card-features li {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-400);
+    padding-left: 12px;
+    position: relative;
+    letter-spacing: 0.02em;
+  }
+  .card-features li::before {
+    content: "+";
+    position: absolute; left: 0;
+    color: var(--signal-green-400);
+    font-weight: 700;
+  }
+  .card-actions {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--ink-800);
+    display: flex; gap: 8px;
+  }
+  .card-btn {
+    flex: 1;
+    padding: 10px 12px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--ink-600);
+    background: transparent;
+    color: var(--ink-100);
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: background var(--motion-fast) var(--ease-mech),
+                border-color var(--motion-fast) var(--ease-mech);
+  }
+  .card-btn:hover {
+    background: var(--ink-700);
+    border-color: var(--ink-500);
+  }
+  .card-btn.primary {
+    background: var(--signal-green-400);
+    border-color: var(--signal-green-400);
+    color: var(--ink-1000);
+  }
+  .card-btn.primary:hover { background: var(--signal-green-500); }
+
+  /* ============ DESIGN SYSTEM ============ */
+  .ds-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 1fr;
+    gap: 20px;
+  }
+  .ds-card {
+    padding: 24px;
+    background: var(--ink-900);
+    border: 1px solid var(--ink-700);
+    border-radius: var(--radius-md);
+  }
+  .ds-card .h {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 16px; font-weight: 700;
+  }
+  /* Color palette */
+  .palette {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .swatch-row {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .swatch {
+    width: 44px; height: 44px;
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--ink-700);
+    flex-shrink: 0;
+  }
+  .swatch.ink { background: var(--paper-ink); }
+  .swatch.paper { background: var(--paper-bg); }
+  .swatch.green { background: var(--signal-green-paper); }
+  .swatch.orange { background: var(--te-orange-500); }
+  .swatch-info {
+    display: flex; flex-direction: column; gap: 2px;
+    flex: 1; min-width: 0;
+  }
+  .swatch-name {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--ink-100); letter-spacing: 0.04em;
+  }
+  .swatch-hex {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-400); letter-spacing: 0.05em;
+  }
+  .swatch-role {
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--ink-500); letter-spacing: 0.04em;
+  }
+  /* Type */
+  .type-row {
+    padding: 14px 0;
+    border-top: 1px solid var(--ink-800);
+  }
+  .type-row:first-child { border-top: 0; padding-top: 0; }
+  .type-name {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-500); margin-bottom: 6px;
+  }
+  .type-sample {
+    font-size: 18px; color: var(--ink-100); line-height: 1.2;
+  }
+  .type-sample.mono {
+    font-family: var(--font-mono); font-size: 14px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .type-sample.sans {
+    font-family: var(--font-sans); font-weight: 700; letter-spacing: -0.015em;
+  }
+  /* Tokens */
+  .token-list {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .token-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 0;
+    border-top: 1px solid var(--ink-800);
+  }
+  .token-row:first-child { border-top: 0; padding-top: 0; }
+  .token-key {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-300); letter-spacing: 0.04em;
+    min-width: 120px;
+  }
+  .token-val {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--ink-0); letter-spacing: 0.04em;
+  }
+
+  /* ============ DECISIONS ============ */
+  .dec-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .dec-card {
+    padding: 20px;
+    background: var(--ink-900);
+    border: 1px solid var(--ink-700);
+    border-radius: var(--radius-md);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .dec-card.locked {
+    border-color: rgba(241, 90, 36, 0.3);
+    background: linear-gradient(to bottom right, rgba(241, 90, 36, 0.04), var(--ink-900));
+  }
+  .dec-card .h {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); font-weight: 700;
+  }
+  .dec-card.locked .h { color: var(--te-orange-500); }
+  .dec-card .h .lock-tag {
+    background: var(--te-orange-500); color: var(--ink-1000);
+    padding: 2px 6px; border-radius: 2px; font-size: 9px;
+  }
+  .dec-title {
+    font-family: var(--font-sans); font-size: 16px;
+    font-weight: 700; color: var(--ink-0); letter-spacing: -0.01em;
+  }
+  .dec-desc {
+    font-size: 12px; color: var(--ink-300); line-height: 1.6;
+  }
+  .dec-rule {
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-400); letter-spacing: 0.04em;
+    background: var(--ink-1000);
+    padding: 8px 10px; border-radius: 2px;
+    border-left: 2px solid var(--signal-green-400);
+  }
+  .dec-card.locked .dec-rule { border-left-color: var(--te-orange-500); }
+
+  /* ============ ROADMAP ============ */
+  .road-list {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--ink-700);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .road-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 140px 120px;
+    gap: 16px;
+    padding: 14px 20px;
+    background: var(--ink-900);
+    border-top: 1px solid var(--ink-800);
+    align-items: center;
+  }
+  .road-row:first-child { border-top: 0; }
+  .road-row.done { opacity: 0.55; }
+  .road-num {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--ink-400); letter-spacing: 0.06em;
+  }
+  .road-name {
+    font-family: var(--font-sans); font-size: 14px; font-weight: 600;
+    color: var(--ink-0);
+  }
+  .road-name .sub {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-400); margin-top: 2px;
+    font-weight: 400; letter-spacing: 0.04em;
+  }
+  .road-tag {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-300); font-weight: 700;
+  }
+  .road-status {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 700; text-align: right;
+  }
+  .road-status.done { color: var(--signal-green-400); }
+  .road-status.todo { color: var(--ink-500); }
+  .road-status.next { color: var(--te-orange-500); }
+  .road-status .tick {
+    display: inline-block; margin-right: 4px;
+  }
+
+  /* ============ FOOTER ============ */
+  .ov-footer {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--ink-700);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-500); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .ov-footer .accent { color: var(--signal-green-400); }
+
+  @media (max-width: 1100px) {
+    .screens-grid { grid-template-columns: repeat(2, 1fr); }
+    .ds-grid { grid-template-columns: 1fr 1fr; }
+    .ds-grid .ds-card:nth-child(3) { grid-column: 1 / -1; }
+    .ov-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .screens-grid { grid-template-columns: 1fr; }
+    .ds-grid { grid-template-columns: 1fr; }
+    .dec-grid { grid-template-columns: 1fr; }
+    .ov-title { font-size: 32px; }
+    .road-row { grid-template-columns: 50px 1fr 80px; }
+    .road-row .road-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+  <!-- ===== HEADER ===== -->
+  <header class="ov-header">
+    <div class="ov-tag">
+      <span class="dot"></span>
+      <span><span class="accent">FREQUENCY</span> · DESIGN OVERVIEW · 2026.04.23</span>
+    </div>
+    <h1 class="ov-title">FREQUENCY 디자인 시안 오버뷰</h1>
+    <p class="ov-sub">같은 주파수에 맞춘 사람들만 통하는 시각적 무전기. 무전기 + 필름카메라 하이브리드 컨셉. 채널당 최대 9인, 2시간 라운드, 24시간 자동 휘발. 인앱 촬영만, 갤러리 import 없음. Teenage Engineering · Dieter Rams 감성에 iPod Nano급 손끝 디테일.</p>
+
+    <div class="ov-stats">
+      <div class="stat-card accent">
+        <div class="lbl">Screens Done</div>
+        <div class="val">6<span class="unit">/ MVP 6</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Channel Cap</div>
+        <div class="val">9<span class="unit">members</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Round / TTL</div>
+        <div class="val">2H<span class="unit">/ 24H</span></div>
+      </div>
+      <div class="stat-card warn">
+        <div class="lbl">Aspect Lock</div>
+        <div class="val">3:4<span class="unit">절대 고정</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== SCREENS ===== -->
+  <section class="ov-section">
+    <div class="section-head">
+      <span class="section-num">01 ·</span>
+      <h2 class="section-title">완료된 시안</h2>
+      <span class="section-sub">3 screens · interactive previews</span>
+    </div>
+
+    <div class="screens-grid">
+
+      <!-- Screen 1: Tune In -->
+      <article class="screen-card">
+        <div class="thumb-wrap">
+          <span class="thumb-status"><span class="dot"></span>LIVE</span>
+          <iframe src="01-tune-in-b-v2-hybrid.html" loading="lazy"></iframe>
+          <div class="thumb-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-num">SCREEN 01</span>
+            <span class="card-version">V2 HYBRID</span>
+          </div>
+          <h3 class="card-title">Tune In · 주파수 입력으로 방 입장</h3>
+          <p class="card-desc">반원 게이지 라디오 메타포. 4자리 입력하면 인디케이터가 한 칸씩 우측으로 이동해 정중앙 0°에서 LED와 정렬 → "TUNED IN".</p>
+          <ul class="card-features">
+            <li>반원 게이지 + 9 tick 균등 분포</li>
+            <li>한 자리 입력 = 22.5° 회전</li>
+            <li>LED 호흡 펄스 + 인디케이터 micro-snap</li>
+            <li>TUNE IN 버튼만 TE Orange (유일한 액센트)</li>
+          </ul>
+          <div class="card-actions">
+            <a class="card-btn primary" href="01-tune-in-b-v2-hybrid.html" target="_blank">OPEN</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Screen 2: Feed -->
+      <article class="screen-card">
+        <div class="thumb-wrap">
+          <span class="thumb-status"><span class="dot"></span>LIVE</span>
+          <iframe src="02-feed-v2-mosaic.html" loading="lazy"></iframe>
+          <div class="thumb-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-num">SCREEN 02</span>
+            <span class="card-version">V2.1 GRID</span>
+          </div>
+          <h3 class="card-title">Channel Feed · 인원수별 모자이크</h3>
+          <p class="card-desc">3:4 셀 균등 그리드. n=1 → 1x1, n=4 → 2x2, n=9 → 3x3. 가로 스와이프로 12 라운드(24H) 시간 여행, NOW = 우측 끝 그린 LED.</p>
+          <ul class="card-features">
+            <li>모든 셀 aspect-ratio: 3/4 절대 고정</li>
+            <li>인원수 1~9 토글 가능 (우하단 데모)</li>
+            <li>가로 스와이프 + 12 dot 페이지 인디케이터</li>
+            <li>NOW만 셔터 활성, 과거는 비활성</li>
+          </ul>
+          <div class="card-actions">
+            <a class="card-btn primary" href="02-feed-v2-mosaic.html" target="_blank">OPEN</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Screen 3: Camera -->
+      <article class="screen-card">
+        <div class="thumb-wrap">
+          <span class="thumb-status"><span class="dot"></span>LIVE</span>
+          <iframe src="03-camera-v1.html" loading="lazy"></iframe>
+          <div class="thumb-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-num">SCREEN 03</span>
+            <span class="card-version">V1.1 SHUTTER</span>
+          </div>
+          <h3 class="card-title">Camera · 짧게 = 사진 / 길게 = 영상</h3>
+          <p class="card-desc">3:4 뷰파인더 + 코너 브라켓. 모드 토글 제거, 단일 셔터로 통합 — 짧게 탭 = 사진, 250ms 이상 누르면 영상 (최대 5초 자동 정지).</p>
+          <ul class="card-features">
+            <li>외곽 페이퍼 + 뷰파인더 잉크 검정 듀얼 톤</li>
+            <li>5초 conic-gradient progress ring</li>
+            <li>전후면 flip = 양방향 화살표 아이콘</li>
+            <li>shoot ↔ preview ↔ locked phase 전환</li>
+          </ul>
+          <div class="card-actions">
+            <a class="card-btn primary" href="03-camera-v1.html" target="_blank">OPEN</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Screen 4: Post Detail -->
+      <article class="screen-card">
+        <div class="thumb-wrap">
+          <span class="thumb-status"><span class="dot"></span>LIVE</span>
+          <iframe src="04-post-detail-v1.html" loading="lazy"></iframe>
+          <div class="thumb-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-num">SCREEN 04</span>
+            <span class="card-version">V1 STAMPS</span>
+          </div>
+          <h3 class="card-title">Post Detail · 스탬프 + 댓글 40자</h3>
+          <p class="card-desc">3:4 풀너비 사진/영상 + 5개 이모지 스탬프(♥ 🔥 😂 💪 👀) + 댓글 40자 제한. 본인 글이면 입력창 대신 작성자/삭제 메타 표시.</p>
+          <ul class="card-features">
+            <li>멤버 컬러 칩 닉네임 (사각, 9색)</li>
+            <li>레트로 ▌ 오렌지 굵은 커서</li>
+            <li>댓글 40자 카운터 색 변화</li>
+            <li>OTHER ↔ SELF 분기</li>
+          </ul>
+          <div class="card-actions">
+            <a class="card-btn primary" href="04-post-detail-v1.html" target="_blank">OPEN</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Screen 5: Open Channel -->
+      <article class="screen-card">
+        <div class="thumb-wrap">
+          <span class="thumb-status"><span class="dot"></span>LIVE</span>
+          <iframe src="05-open-channel-v1.html" loading="lazy"></iframe>
+          <div class="thumb-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-num">SCREEN 05</span>
+            <span class="card-version">V1 OPEN</span>
+          </div>
+          <h3 class="card-title">Open Channel · 새 채널 만들기</h3>
+          <p class="card-desc">3 phase: SETUP (이름+닉네임+컬러) → BROADCASTING (주파수 자동 발급 슬롯 머신) → READY (초대 + ENTER). Tune In 의 짝.</p>
+          <ul class="card-features">
+            <li>9개 Polaroid 멤버 컬러 chip grid 선택</li>
+            <li>주파수 4자리 슬롯 머신 좌→우 잠금</li>
+            <li>주파수 자체가 진입 식별자 (별도 코드 없음)</li>
+            <li>COPY · SHARE · ENTER CHANNEL</li>
+          </ul>
+          <div class="card-actions">
+            <a class="card-btn primary" href="05-open-channel-v1.html" target="_blank">OPEN</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Screen 6: Members + Channel Info -->
+      <article class="screen-card">
+        <div class="thumb-wrap">
+          <span class="thumb-status"><span class="dot"></span>LIVE</span>
+          <iframe src="06-members-info-v1.html" loading="lazy"></iframe>
+          <div class="thumb-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-num">SCREEN 06</span>
+            <span class="card-version">V1 INFO</span>
+          </div>
+          <h3 class="card-title">Members + Channel Info</h3>
+          <p class="card-desc">채널 정보(이름, 주파수) + 멤버 9 (Polaroid 컬러 칩, host 마크) + stats(라운드, 휘발 시간) + INVITE/LEAVE.</p>
+          <ul class="card-features">
+            <li>HOST view: 멤버 옆 kick 버튼 표시</li>
+            <li>MEMBER view: kick 숨김, leave만</li>
+            <li>채널 휘발까지 남은 시간 amber 강조</li>
+            <li>인원수 1/5/9 토글 가능</li>
+          </ul>
+          <div class="card-actions">
+            <a class="card-btn primary" href="06-members-info-v1.html" target="_blank">OPEN</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== DESIGN SYSTEM ===== -->
+  <section class="ov-section">
+    <div class="section-head">
+      <span class="section-num">02 ·</span>
+      <h2 class="section-title">디자인 시스템 요약</h2>
+      <span class="section-sub">colors · type · tokens</span>
+    </div>
+
+    <div class="ds-grid">
+
+      <div class="ds-card">
+        <div class="h">PALETTE C · IVORY PAPER</div>
+        <div class="palette">
+          <div class="swatch-row">
+            <div class="swatch ink"></div>
+            <div class="swatch-info">
+              <span class="swatch-name">Paper Ink</span>
+              <span class="swatch-hex">#141211</span>
+              <span class="swatch-role">텍스트 / 인디케이터 / 슬롯 테두리</span>
+            </div>
+          </div>
+          <div class="swatch-row">
+            <div class="swatch paper"></div>
+            <div class="swatch-info">
+              <span class="swatch-name">Paper BG</span>
+              <span class="swatch-hex">#EDE6D7</span>
+              <span class="swatch-role">기본 배경 (앱 메인 톤)</span>
+            </div>
+          </div>
+          <div class="swatch-row">
+            <div class="swatch green"></div>
+            <div class="swatch-info">
+              <span class="swatch-name">Signal Green</span>
+              <span class="swatch-hex">#197A3E</span>
+              <span class="swatch-role">진행/OK/LIVE 신호 (LED, 본인)</span>
+            </div>
+          </div>
+          <div class="swatch-row">
+            <div class="swatch orange"></div>
+            <div class="swatch-info">
+              <span class="swatch-name">TE Orange</span>
+              <span class="swatch-hex">#F15A24</span>
+              <span class="swatch-role">유일한 컬러 액센트 (셔터 / CTA)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-card">
+        <div class="h">TYPOGRAPHY</div>
+        <div class="type-row">
+          <div class="type-name">Mono · Labels</div>
+          <div class="type-sample mono">JetBrains Mono</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">Sans · Body / Korean</div>
+          <div class="type-sample sans">Pretendard 기본 본문</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">Mono · Numbers</div>
+          <div class="type-sample mono">107.4 #025</div>
+        </div>
+      </div>
+
+      <div class="ds-card">
+        <div class="h">CORE TOKENS</div>
+        <div class="token-list">
+          <div class="token-row">
+            <span class="token-key">--aspect-ratio</span>
+            <span class="token-val">3 / 4</span>
+          </div>
+          <div class="token-row">
+            <span class="token-key">--radius-sm</span>
+            <span class="token-val">4px</span>
+          </div>
+          <div class="token-row">
+            <span class="token-key">--motion-base</span>
+            <span class="token-val">200ms</span>
+          </div>
+          <div class="token-row">
+            <span class="token-key">--ease-mech</span>
+            <span class="token-val">cubic-bezier(.2,0,0,1)</span>
+          </div>
+          <div class="token-row">
+            <span class="token-key">--ease-bounce</span>
+            <span class="token-val">cubic-bezier(.34,1.56,.64,1)</span>
+          </div>
+          <div class="token-row">
+            <span class="token-key">video max</span>
+            <span class="token-val">5000ms</span>
+          </div>
+          <div class="token-row">
+            <span class="token-key">long-press</span>
+            <span class="token-val">250ms</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== DECISIONS ===== -->
+  <section class="ov-section">
+    <div class="section-head">
+      <span class="section-num">03 ·</span>
+      <h2 class="section-title">핵심 결정 사항</h2>
+      <span class="section-sub">absolute rules</span>
+    </div>
+
+    <div class="dec-grid">
+
+      <div class="dec-card locked">
+        <div class="h">RULE 01 <span class="lock-tag">LOCKED</span></div>
+        <div class="dec-title">3:4 비율 절대 고정</div>
+        <div class="dec-desc">Feed 모자이크의 모든 셀, 인앱 카메라 결과물, Post Detail, NO SIGNAL 박스까지 모두 3:4 비율. 비대칭 모자이크는 큰 셀=2x2 sub-cell 강제 제약 때문에 회피하고 균등 그리드로 단순화.</div>
+        <div class="dec-rule">.cell { aspect-ratio: 3 / 4; }</div>
+      </div>
+
+      <div class="dec-card locked">
+        <div class="h">RULE 02 <span class="lock-tag">LOCKED</span></div>
+        <div class="dec-title">한 라운드 = 한 송출 · 24H 휘발</div>
+        <div class="dec-desc">2시간 라운드, 한 명당 한 라운드에 사진 1장 또는 영상 1개. 24시간 지난 라운드부터 자동 삭제. "흔적이 쌓이지 않는 방"이 정체성.</div>
+        <div class="dec-rule">round: 2H · ttl: 24H · max video: 5s</div>
+      </div>
+
+      <div class="dec-card">
+        <div class="h">RULE 03</div>
+        <div class="dec-title">인앱 촬영 only · 갤러리 import 없음</div>
+        <div class="dec-desc">사진첩에서 가져올 수 없음. 오직 앱 안에서 실시간으로 찍은 데이터만 송출 가능. 카메라 셔터 좌측을 비워서 시각적으로 신호 (갤러리 진입점 자체 부재).</div>
+        <div class="dec-rule">camera input: live capture only</div>
+      </div>
+
+      <div class="dec-card">
+        <div class="h">RULE 04</div>
+        <div class="dec-title">통합 셔터 · 짧게 사진 / 길게 영상</div>
+        <div class="dec-desc">PHOTO/VIDEO 모드 토글 없음. 단일 셔터: 250ms 이내 release = 사진, 250ms 이상 hold = 영상 시작. 한 손가락만으로 전체 촬영 흐름.</div>
+        <div class="dec-rule">tap &lt; 250ms → photo · hold ≥ 250ms → video</div>
+      </div>
+
+      <div class="dec-card">
+        <div class="h">RULE 05</div>
+        <div class="dec-title">컬러 액센트 단일점 · TE Orange</div>
+        <div class="dec-desc">화면 내 컬러 액센트는 항상 한 곳에만. Tune In = TUNE IN 버튼 / Feed = 셔터 / Camera = 셔터 + USE 버튼. Signal Green은 LIVE/OK 신호로만 점적 사용.</div>
+        <div class="dec-rule">accent fill: TE Orange #F15A24 · 화면당 1개</div>
+      </div>
+
+      <div class="dec-card">
+        <div class="h">RULE 06</div>
+        <div class="dec-title">메타포 = 구조에만, UI = 정밀</div>
+        <div class="dec-desc">무전기 + 필름카메라는 구조와 용어 (Channel, Tune In, Frame, Round). UI는 메타포에 휘둘리지 않고 iPod Nano급 손끝 디테일 정밀도. 메타포 강요로 디자인 어색해지면 메타포가 후순위.</div>
+        <div class="dec-rule">metaphor: structure only · UI: precision first</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== ROADMAP ===== -->
+  <section class="ov-section">
+    <div class="section-head">
+      <span class="section-num">04 ·</span>
+      <h2 class="section-title">로드맵</h2>
+      <span class="section-sub">MVP scope</span>
+    </div>
+
+    <div class="road-list">
+      <div class="road-row done">
+        <span class="road-num">01</span>
+        <div class="road-name">Tune In · 주파수 입력 + LED 잠금<span class="sub">반원 게이지 / TUNED IN / 햅틱</span></div>
+        <span class="road-tag">진입</span>
+        <span class="road-status done"><span class="tick">✓</span>DONE · V2H</span>
+      </div>
+      <div class="road-row done">
+        <span class="road-num">02</span>
+        <div class="road-name">Channel Feed · 모자이크 + 가로 스와이프<span class="sub">3:4 셀 / 1~9명 / 12 라운드</span></div>
+        <span class="road-tag">방</span>
+        <span class="road-status done"><span class="tick">✓</span>DONE · V2.1</span>
+      </div>
+      <div class="road-row done">
+        <span class="road-num">03</span>
+        <div class="road-name">Camera · 통합 셔터 + 5초 영상<span class="sub">3:4 뷰파인더 / 인앱 촬영 only</span></div>
+        <span class="road-tag">캡처</span>
+        <span class="road-status done"><span class="tick">✓</span>DONE · V1.1</span>
+      </div>
+      <div class="road-row done">
+        <span class="road-num">04</span>
+        <div class="road-name">Post Detail · 댓글 40자 + 이모지 스탬프<span class="sub">3:4 풀너비 / 6 스탬프 / OTHER·SELF 분기</span></div>
+        <span class="road-tag">방</span>
+        <span class="road-status done"><span class="tick">✓</span>DONE · V1</span>
+      </div>
+      <div class="road-row done">
+        <span class="road-num">05</span>
+        <div class="road-name">Open Channel · host 진입 흐름<span class="sub">SETUP → BROADCASTING → READY · 3 phase</span></div>
+        <span class="road-tag">진입</span>
+        <span class="road-status done"><span class="tick">✓</span>DONE · V1</span>
+      </div>
+      <div class="road-row done">
+        <span class="road-num">06</span>
+        <div class="road-name">Members + Channel Info<span class="sub">9 멤버 / Polaroid 칩 / host 권한 / leave</span></div>
+        <span class="road-tag">방</span>
+        <span class="road-status done"><span class="tick">✓</span>DONE · V1</span>
+      </div>
+      <div class="road-row">
+        <span class="road-num">07</span>
+        <div class="road-name">Notification · 알림 설정<span class="sub">라운드 / 새 송출 / 송출 임박</span></div>
+        <span class="road-tag">설정</span>
+        <span class="road-status next"><span class="tick">▸</span>NEXT</span>
+      </div>
+      <div class="road-row">
+        <span class="road-num">08</span>
+        <div class="road-name">Sound · Haptic · Motion 시스템<span class="sub">통합 가이드라인 + 토큰</span></div>
+        <span class="road-tag">시스템</span>
+        <span class="road-status todo"><span class="tick">○</span>TODO</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="ov-footer">
+    <span><span class="accent">FREQUENCY</span> · channel of nine · paper system v2</span>
+    <span>2026.04.23</span>
+  </footer>
+
+</main>
+
+</body>
+</html>

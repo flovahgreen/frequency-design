@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FREQUENCY · Tune In · Ivory × Orange</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    /* ----- IVORY × ORANGE tokens ----- */
+    --paper:          #EDE6D7;
+    --paper-raised:   #F4EEE0;
+    --paper-lighter:  #F7F2E5;
+    --paper-edge:     #CFC6B3;
+    --paper-tick:     #8A8271;
+    --ink:            #141211;
+    --ink-mute:       #6A6152;
+    --key:            #F15A24;
+    --key-soft:       rgba(241, 90, 36, 0.14);
+
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --motion-base: 200ms;
+    --motion-slow: 300ms;
+    --ease-mechanical: cubic-bezier(0.2, 0, 0, 1);
+    --ease-detent:     cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: #141414;
+    color: #E8E8E8;
+    line-height: 1.5;
+    padding: 40px 24px 96px;
+    min-height: 100vh;
+  }
+
+  .page { max-width: 1120px; margin: 0 auto; }
+
+  /* head */
+  .page-head {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #2E2E2E;
+  }
+  .page-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #7A7A7A; margin-bottom: 8px;
+  }
+  .page-tag .accent { color: var(--key); }
+  .page-title {
+    font-size: 24px; font-weight: 700;
+    letter-spacing: -0.02em; color: #FFFFFF; margin-bottom: 4px;
+  }
+  .page-sub {
+    font-size: 13px; color: #A0A0A0; line-height: 1.6;
+    max-width: 720px;
+  }
+
+  /* Swatch bar */
+  .swatch-bar {
+    display: flex;
+    gap: 10px;
+    padding: 14px 16px;
+    background: #1A1A1A;
+    border: 1px solid #2E2E2E;
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+  }
+  .sw {
+    flex: 1;
+    display: flex; flex-direction: column; gap: 6px;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.06em; color: #7A7A7A;
+  }
+  .sw i {
+    display: block; height: 28px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .sw b { color: #E8E8E8; font-weight: 600; letter-spacing: 0.04em; }
+
+  /* grid of two states */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .state {
+    background: #1A1A1A;
+    border: 1px solid #2E2E2E;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .state-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid #242424;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .state-head .label {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #A0A0A0;
+  }
+  .state-head .label b { color: #F4F4F4; font-weight: 700; margin-right: 8px; }
+  .state-head .tag {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; color: var(--key);
+  }
+
+  /* the paper canvas where the component lives */
+  .canvas {
+    background: var(--paper);
+    padding: 36px 32px 32px;
+    display: flex; flex-direction: column;
+    gap: 18px;
+    min-height: 520px;
+  }
+
+  /* ---- Component bits (ivory paper) ---- */
+  .sub-label {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-mute);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sub-label .line { flex: 1; height: 1px; background: var(--paper-edge); }
+  .sub-label .mode { color: var(--ink); font-weight: 700; }
+  .sub-label .mode.hot { color: var(--key); }
+
+  .tune-block {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 14px;
+    padding: 4px 0;
+  }
+
+  .dial-wrap { width: 134px; height: 134px; position: relative; }
+  .dial {
+    width: 100%; height: 100%;
+    border-radius: 999px;
+    background: var(--paper-raised);
+    border: 1px solid var(--paper-edge);
+    position: relative;
+    transition: border-color var(--motion-base) var(--ease-mechanical);
+  }
+  .dial.tuning { border-color: var(--ink-mute); }
+  .dial.locked { border-color: var(--ink); }
+
+  .tick {
+    position: absolute; left: 50%; top: 8px;
+    width: 1px; height: 6px;
+    background: var(--paper-tick);
+    transform-origin: 50% 59px;
+  }
+  .tick.major {
+    height: 8px;
+    background: var(--ink);
+    top: 7px;
+    transform-origin: 50% 60px;
+  }
+
+  .indicator {
+    position: absolute; left: 50%; top: 8px;
+    width: 2px; height: 50px;
+    background: var(--key);
+    transform-origin: 50% 59px;
+    transform: translateX(-50%) rotate(0deg);
+    z-index: 3;
+  }
+
+  .dial-center {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px; height: 10px;
+    border-radius: 999px;
+    background: var(--paper-edge);
+    z-index: 4;
+    transition: background var(--motion-base) var(--ease-mechanical);
+  }
+  .dial.tuning .dial-center { background: var(--key); opacity: 0.65; }
+  .dial.locked .dial-center { background: var(--key); }
+
+  .dial-status {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+  }
+  .dial-status .dot {
+    width: 5px; height: 5px; border-radius: 999px;
+    background: currentColor;
+  }
+  .dial-status.tuning { color: var(--ink); }
+  .dial-status.tuning .dot { background: var(--key); }
+  .dial-status.locked { color: var(--ink); }
+  .dial-status.locked .dot { background: var(--key); box-shadow: 0 0 0 3px var(--key-soft); }
+
+  .slots-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 5px;
+  }
+  .slot {
+    width: 44px; height: 56px;
+    background: var(--paper-lighter);
+    border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-xs);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 30px; font-weight: 500;
+    color: var(--ink);
+    position: relative;
+  }
+  .slot.active {
+    border-color: var(--key);
+    background: var(--paper-raised);
+  }
+  .slot.active .cursor {
+    width: 2px; height: 26px;
+    background: var(--key);
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50%{opacity:0} }
+  .slot.filled { border-color: var(--ink); }
+  .slot.locked-fill {
+    border-color: var(--key);
+    box-shadow: inset 0 0 0 1px var(--key-soft);
+  }
+  .slot-sep {
+    font-family: var(--font-mono); font-size: 30px; font-weight: 700;
+    color: var(--key);
+    width: 14px; text-align: center;
+  }
+
+  .lock-feedback {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--key);
+    font-weight: 700;
+    text-align: center;
+    height: 14px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    opacity: 0;
+  }
+  .lock-feedback.show { opacity: 1; }
+  .lock-feedback .chev { opacity: 0.6; }
+
+  .hint {
+    text-align: center;
+    font-size: 12px; color: var(--ink-mute);
+    line-height: 1.5; letter-spacing: -0.01em;
+  }
+  .hint.locked { color: var(--ink); }
+
+  .btn-tunein {
+    width: 100%; padding: 15px 16px;
+    background: var(--paper-lighter);
+    color: var(--ink-mute);
+    border: 1.5px solid var(--paper-edge);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    cursor: not-allowed;
+  }
+  .btn-tunein.enabled {
+    background: var(--key);
+    color: #FFFFFF;
+    border-color: var(--key);
+    cursor: pointer;
+  }
+  .btn-tunein.enabled .pfx { opacity: 0.7; }
+
+  .actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+
+  /* notes panel */
+  .notes {
+    margin-top: 24px;
+    background: #1A1A1A;
+    border: 1px solid #2E2E2E;
+    border-radius: var(--radius-md);
+    padding: 20px 22px;
+  }
+  .notes-title {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #A0A0A0; margin-bottom: 12px;
+  }
+  .notes-row {
+    display: flex; gap: 12px; padding: 7px 0;
+    font-size: 13px; line-height: 1.55; color: #C8C8C8;
+  }
+  .notes-row + .notes-row { border-top: 1px solid #242424; }
+  .notes-icon {
+    width: 16px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    text-align: center;
+    color: var(--key);
+  }
+  .notes-icon.ink { color: #A0A0A0; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · TUNE IN · IVORY × ORANGE</div>
+    <h1 class="page-title">C × A 하이브리드 · Ivory Paper + TE Orange</h1>
+    <p class="page-sub">아이보리 페이퍼/잉크 베이스 위에 단일 키컬러로 TE Orange(#F15A24) 만 얹은 팔레트. 다이얼 바늘, 슬롯 구분자, 중앙 LED, LOCKED 상태 지시, TUNE IN 버튼 등 모든 "뜨거운" 지점이 오렌지 하나로 수렴합니다. 텍스트·tick·슬롯 기본선은 잉크(#141211)로 고정.</p>
+  </div>
+
+  <!-- Swatch bar -->
+  <div class="swatch-bar">
+    <div class="sw"><i style="background:#EDE6D7"></i><b>Paper</b>#EDE6D7</div>
+    <div class="sw"><i style="background:#F4EEE0"></i><b>Raised</b>#F4EEE0</div>
+    <div class="sw"><i style="background:#F7F2E5"></i><b>Lighter</b>#F7F2E5</div>
+    <div class="sw"><i style="background:#CFC6B3"></i><b>Edge</b>#CFC6B3</div>
+    <div class="sw"><i style="background:#8A8271"></i><b>Tick</b>#8A8271</div>
+    <div class="sw"><i style="background:#6A6152"></i><b>Ink Mute</b>#6A6152</div>
+    <div class="sw"><i style="background:#141211"></i><b>Ink</b>#141211</div>
+    <div class="sw"><i style="background:#F15A24"></i><b>Key · Orange</b>#F15A24</div>
+  </div>
+
+  <!-- 2 states -->
+  <div class="grid-2">
+
+    <!-- ============ STATE 1 · TUNING ============ -->
+    <div class="state">
+      <div class="state-head">
+        <span class="label"><b>STATE 1</b>입력 중</span>
+        <span class="tag">TUNING</span>
+      </div>
+      <div class="canvas">
+        <div class="sub-label">
+          <span>CHANNEL ENTRY</span>
+          <span class="line"></span>
+          <span class="mode hot">TUNING</span>
+        </div>
+
+        <div class="tune-block">
+          <div class="dial-wrap">
+            <div class="dial tuning" id="dial1">
+              <div class="indicator" style="transform: translateX(-50%) rotate(140deg);"></div>
+              <div class="dial-center"></div>
+            </div>
+          </div>
+
+          <div class="dial-status tuning">
+            <span class="dot"></span>
+            <span>TUNING</span>
+          </div>
+
+          <div class="slots-row">
+            <div class="slot filled">1</div>
+            <div class="slot filled">0</div>
+            <div class="slot active"><span class="cursor"></span></div>
+            <div class="slot-sep">.</div>
+            <div class="slot">&nbsp;</div>
+          </div>
+
+          <div class="lock-feedback"><span class="chev">&gt;</span><span>FREQUENCY LOCKED</span></div>
+
+          <div class="hint">호스트가 공유한 주파수 번호 4자리를 입력</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-tunein"><span class="pfx">&gt;</span> TUNE IN</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ STATE 2 · LOCKED ============ -->
+    <div class="state">
+      <div class="state-head">
+        <span class="label"><b>STATE 2</b>4자리 완료</span>
+        <span class="tag">LOCKED</span>
+      </div>
+      <div class="canvas">
+        <div class="sub-label">
+          <span>CHANNEL ENTRY</span>
+          <span class="line"></span>
+          <span class="mode hot">LOCKED</span>
+        </div>
+
+        <div class="tune-block">
+          <div class="dial-wrap">
+            <div class="dial locked" id="dial2">
+              <div class="indicator" style="transform: translateX(-50%) rotate(270deg);"></div>
+              <div class="dial-center"></div>
+            </div>
+          </div>
+
+          <div class="dial-status locked">
+            <span class="dot"></span>
+            <span>LOCKED</span>
+          </div>
+
+          <div class="slots-row">
+            <div class="slot locked-fill">1</div>
+            <div class="slot locked-fill">0</div>
+            <div class="slot locked-fill">7</div>
+            <div class="slot-sep">.</div>
+            <div class="slot locked-fill">4</div>
+          </div>
+
+          <div class="lock-feedback show"><span class="chev">&gt;</span><span>FREQUENCY LOCKED</span></div>
+
+          <div class="hint locked">주파수가 맞았어요. 연결할 준비 완료.</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-tunein enabled"><span class="pfx">&gt;</span> TUNE IN</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Notes -->
+  <div class="notes">
+    <div class="notes-title">Ivory × Orange · 설계 포인트</div>
+    <div class="notes-row"><span class="notes-icon">·</span><span>종이 위의 단일 키컬러. TE Orange를 "뜨거운 상태"에만 허용 (바늘, 슬롯 구분점, 중앙 LED, LOCKED dot, 활성 TUNE IN). 나머지는 잉크와 페이퍼 에지 두 무채색으로 유지.</span></div>
+    <div class="notes-row"><span class="notes-icon">·</span><span>TUNING → LOCKED 구분은 색 변경이 아니라 채도·두께·보조장식으로 확보. TUNING center는 오렌지 65% 불투명, LOCKED center는 100%. LOCKED dot 주위에 오렌지 14% soft ring 추가로 "잡혔다" 감 강조.</span></div>
+    <div class="notes-row"><span class="notes-icon">·</span><span>슬롯은 입력 중일 때 잉크 검정 테두리(완료 표시) + 오렌지 커서. LOCKED 시 전체 슬롯이 오렌지 테두리 + 오렌지 14% 내부 광으로 전환. 숫자 자체는 항상 잉크.</span></div>
+    <div class="notes-row"><span class="notes-icon">·</span><span>TUNE IN 버튼: 입력 중에는 페이퍼/에지만 / 준비 완료 시 오렌지 solid. 오직 "동작 가능" 순간에만 키컬러가 정면에 드러나도록.</span></div>
+    <div class="notes-row"><span class="notes-icon ink">·</span><span>에러/경고는 추후 TRANSMIT 플로우에서 같은 오렌지를 "보낸다/과열"로 재사용하고, 성공 확정은 잉크 검정 + 오렌지 dot로 처리. 2색 운영체계가 아닌 "오렌지 단독 운영"이 핵심 제약.</span></div>
+    <div class="notes-row"><span class="notes-icon ink">·</span><span>다크 모드 매핑 시: paper → ink-900, ink → paper, edge → ink-700, 키컬러는 그대로. 현재 A안 다크 팔레트와 한 키컬러로 호환 가능.</span></div>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+// Build 12 ticks + 4 cardinal majors on each dial
+document.querySelectorAll('.dial').forEach(dial => {
+  const indicator = dial.querySelector('.indicator');
+  for (let i = 0; i < 12; i++) {
+    const t = document.createElement('div');
+    const isMajor = (i % 3 === 0);
+    t.className = 'tick' + (isMajor ? ' major' : '');
+    t.style.transform = 'translateX(-50%) rotate(' + (i * 30) + 'deg)';
+    dial.insertBefore(t, indicator);
+  }
+});
+</script>
+
+</body>
+</html>

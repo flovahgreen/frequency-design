@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>FREQUENCY · Open Channel · v1</title>
+<link rel="stylesheet" href="../shared/mobile.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --te-orange-500: #F15A24;
+    --critical-red: #E5484D;
+    --amber-500: #F5A623;
+    --ink-1000: #0A0A0A;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --paper-bg:     #EDE6D7;
+    --paper-raised: #F4EEE0;
+    --paper-edge:   #CFC6B3;
+    --paper-muted:  #B6AE9B;
+    --paper-tick:   #8A8271;
+    --paper-text-mute: #6A6152;
+    --paper-ink:    #141211;
+    --signal-green-paper: #197A3E;
+    --signal-green-paper-glow: rgba(25, 122, 62, 0.40);
+
+    /* Member colors (Polaroid Film 팔레트, Post Detail 와 동일) */
+    --member-self: #197A3E;   /* GREEN (self) */
+    --member-1:    #E2B848;   /* KODAK */
+    --member-2:    #C04F3F;   /* VELVIA */
+    --member-3:    #DB8A8A;   /* POLAROID */
+    --member-4:    #5878A8;   /* EKTA */
+    --member-5:    #7FB298;   /* MINT */
+    --member-6:    #8E6B47;   /* SEPIA */
+    --member-7:    #A484B8;   /* LAVENDER */
+    --member-8:    #C4673A;   /* BURNT */
+
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --radius-xs: 2px; --radius-sm: 4px; --radius-md: 6px;
+    --motion-fast: 150ms; --motion-base: 200ms; --motion-slow: 300ms;
+    --ease-mech: cubic-bezier(0.2, 0, 0, 1);
+    --ease-detent: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-800); color: var(--ink-50);
+    line-height: 1.5; padding: 40px 24px 96px; min-height: 100vh;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+
+  .page-head { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--ink-700); }
+  .page-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 8px;
+  }
+  .page-tag .accent { color: var(--signal-green-400); }
+  .page-title {
+    font-family: var(--font-sans); font-size: 24px; font-weight: 700;
+    letter-spacing: -0.02em; color: var(--ink-50); margin-bottom: 4px;
+  }
+  .page-sub { font-size: 13px; color: var(--ink-400); line-height: 1.6; }
+
+  .stage { display: flex; justify-content: center; padding: 16px 0 32px; }
+  .iphone {
+    width: 393px; aspect-ratio: 393 / 852;
+    background: var(--ink-1000); border-radius: 52px; padding: 11px;
+    box-shadow: 0 0 0 1px var(--ink-600), 0 32px 64px -20px rgba(0, 0, 0, 0.65);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%;
+    background: var(--paper-bg); color: var(--paper-ink);
+    border-radius: 44px; overflow: hidden;
+    display: flex; flex-direction: column; position: relative;
+  }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 118px; height: 34px;
+    background: var(--ink-1000); border-radius: 999px; z-index: 10;
+  }
+  .status-bar {
+    height: 52px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px 0 24px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+    color: var(--paper-ink); position: relative; z-index: 5;
+  }
+  .status-right { display: flex; align-items: center; gap: 6px; }
+  .sr-ico.signal {
+    width: 17px; height: 11px; background: currentColor; opacity: 0.9;
+    clip-path: polygon(0 100%,4px 100%,4px 70%,0 70%,0 100%,5px 100%,9px 100%,9px 50%,5px 50%,5px 100%,10px 100%,14px 100%,14px 30%,10px 30%,10px 100%,15px 100%,19px 100%,19px 10%,15px 10%);
+  }
+  .sr-ico.battery {
+    width: 24px; height: 12px; background: transparent;
+    border: 1px solid currentColor; border-radius: 2px; position: relative; opacity: 0.9;
+  }
+  .sr-ico.battery::after { content:""; position: absolute; right:-3px; top:3px; width:2px; height:6px; background:currentColor; }
+  .sr-ico.battery::before { content:""; position: absolute; top:1px; left:1px; bottom:1px; width:80%; background: currentColor; border-radius:1px; }
+  .home-indicator {
+    position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+    width: 38%; height: 5px;
+    background: var(--paper-ink); border-radius: 999px; opacity: 0.4; z-index: 10;
+  }
+  .screen-content { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ---- Top bar ---- */
+  .top-bar {
+    flex-shrink: 0; padding: 16px 22px 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    background: transparent; border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    cursor: pointer; color: var(--paper-ink);
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .icon-btn:active { background: var(--paper-raised); }
+  .icon-btn-placeholder {
+    width: 36px; height: 36px;
+    visibility: hidden;
+  }
+  .wordmark {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--paper-ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .status-led {
+    width: 7px; height: 7px; border-radius: 999px;
+    background: var(--signal-green-paper);
+    box-shadow: 0 0 8px var(--signal-green-paper-glow);
+    animation: ledPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+  .top-divider { margin: 0 22px; height: 1px; background: var(--paper-edge); }
+
+  /* ---- Sub label ---- */
+  .sub-label {
+    flex-shrink: 0;
+    padding: 10px 22px 8px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+
+  /* ---- Phases ---- */
+  .phase {
+    flex: 1; min-height: 0;
+    display: none; flex-direction: column;
+    padding: 10px 22px 22px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .phase::-webkit-scrollbar { display: none; }
+  .phase.visible { display: flex; }
+
+  /* ============ PHASE 1: SETUP ============ */
+  .field {
+    display: flex; flex-direction: column; gap: 7px;
+    margin-bottom: 18px;
+  }
+  .field-label {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .field-label .opt {
+    color: var(--paper-muted);
+    font-weight: 500;
+  }
+  .field-input {
+    background: var(--paper-raised);
+    border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    padding: 11px 13px;
+    font-family: var(--font-mono); font-size: 14px;
+    color: var(--paper-ink);
+    outline: none;
+    line-height: 1.3;
+    min-height: 42px;
+    word-break: break-all;
+    caret-color: transparent;
+    -webkit-user-modify: read-write-plaintext-only;
+    transition: border-color var(--motion-fast) var(--ease-mech);
+  }
+  .field-input:focus { border-color: var(--paper-ink); }
+  .field-input:empty:not(:focus)::before {
+    content: attr(data-placeholder);
+    color: var(--paper-muted);
+    font-family: var(--font-sans);
+    pointer-events: none;
+  }
+  .field-input:focus::after {
+    content: "▌";
+    display: inline-block;
+    color: var(--te-orange-500);
+    font-family: var(--font-mono); font-weight: 900;
+    font-size: 16px; line-height: 1;
+    margin-left: 1px; vertical-align: -2px;
+    animation: caretBlink 0.6s step-end infinite;
+    text-shadow: 0 0 4px rgba(241, 90, 36, 0.35);
+  }
+  @keyframes caretBlink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+  .field-counter {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--paper-text-mute);
+    align-self: flex-end;
+  }
+  .field-counter.warn { color: var(--amber-500); }
+  .field-counter.over { color: var(--critical-red); }
+
+  /* Color grid */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 6px;
+  }
+  .color-chip {
+    aspect-ratio: 1 / 1;
+    border-radius: 0;
+    background: var(--c, var(--paper-edge));
+    cursor: pointer;
+    border: 0;
+    position: relative;
+    transition: transform var(--motion-base) var(--ease-bounce);
+  }
+  .color-chip:active { transform: scale(0.92); }
+  .color-chip.selected {
+    box-shadow: 0 0 0 2px var(--paper-bg), 0 0 0 4px var(--paper-ink);
+    transform: scale(1.05);
+    z-index: 2;
+  }
+
+  .preview-chip {
+    margin-top: 8px;
+    padding: 12px 14px;
+    background: var(--paper-raised);
+    border: 1px dashed var(--paper-edge);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+  .preview-chip .lbl { color: var(--paper-text-mute); }
+  .preview-chip .you-tag {
+    padding: 3px 8px;
+    background: var(--paper-edge);
+    color: var(--paper-ink);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em;
+    border-radius: 0;
+  }
+
+  /* CTA Open */
+  .btn-open {
+    margin-top: auto;
+    width: 100%; padding: 16px 16px;
+    background: var(--te-orange-500);
+    color: var(--paper-bg);
+    border: 1.5px solid var(--te-orange-500);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 0 14px rgba(241, 90, 36, 0.26);
+    transition: background var(--motion-base) var(--ease-mech),
+                transform var(--motion-fast) var(--ease-mech);
+  }
+  .btn-open:active {
+    background: var(--paper-ink); border-color: var(--paper-ink);
+    transform: scale(0.985);
+  }
+  .btn-open.disabled {
+    background: var(--paper-edge);
+    color: var(--paper-muted);
+    border-color: var(--paper-edge);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .btn-open .pfx { opacity: 0.7; }
+
+  /* ============ PHASE 2: BROADCASTING ============ */
+  .broadcast-wrap {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 28px;
+    padding: 40px 0;
+  }
+  .broadcast-status {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .broadcast-status .pulse {
+    width: 6px; height: 6px; border-radius: 999px;
+    background: var(--signal-green-paper);
+    box-shadow: 0 0 6px var(--signal-green-paper-glow);
+    animation: ledPulse 0.8s ease-in-out infinite;
+  }
+  .freq-slots {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px;
+  }
+  .freq-slot {
+    width: 56px; height: 80px;
+    background: var(--paper-raised);
+    border: 2px solid var(--paper-ink);
+    border-radius: var(--radius-xs);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 44px; font-weight: 600;
+    color: var(--paper-ink);
+    overflow: hidden;
+    position: relative;
+  }
+  .freq-slot.spinning {
+    background: var(--paper-bg);
+  }
+  .freq-slot.locked {
+    background: var(--paper-raised);
+    border-color: var(--paper-ink);
+  }
+  .freq-slot.locked::after {
+    content: "";
+    position: absolute; inset: -1px;
+    border: 2px solid var(--signal-green-paper);
+    border-radius: var(--radius-xs);
+    animation: lockFlash 380ms var(--ease-mech) forwards;
+  }
+  @keyframes lockFlash {
+    0%   { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.15); }
+  }
+  .freq-sep {
+    font-family: var(--font-mono); font-size: 44px; font-weight: 700;
+    color: var(--paper-ink); width: 14px; text-align: center;
+    opacity: 0.55;
+  }
+  .broadcast-progress {
+    width: 60%; max-width: 240px;
+    display: flex; flex-direction: column; gap: 8px;
+    align-items: center;
+  }
+  .progress-track {
+    width: 100%; height: 4px;
+    background: var(--paper-edge);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 0%;
+    background: var(--signal-green-paper);
+    box-shadow: 0 0 6px var(--signal-green-paper-glow);
+    transition: width var(--motion-slow) var(--ease-mech);
+  }
+  .progress-label {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-ink); font-weight: 700;
+  }
+
+  /* ============ PHASE 3: READY ============ */
+  .ready-wrap {
+    flex: 1;
+    display: flex; flex-direction: column;
+    gap: 16px;
+    padding: 4px 0 0;
+  }
+  .ready-section {
+    padding: 14px 0;
+    border-top: 1px solid var(--paper-edge);
+  }
+  .ready-section:first-child { border-top: 0; padding-top: 0; }
+  .ready-label {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .ready-name {
+    font-family: var(--font-sans); font-size: 18px; font-weight: 600;
+    color: var(--paper-ink); letter-spacing: -0.01em;
+  }
+  /* 큰 주파수 디스플레이 */
+  .ready-freq {
+    display: flex; align-items: baseline; justify-content: center;
+    gap: 4px;
+    font-family: var(--font-mono); font-weight: 700;
+    color: var(--paper-ink);
+    letter-spacing: 0;
+  }
+  .ready-freq .digit { font-size: 56px; line-height: 1; }
+  .ready-freq .dot {
+    font-size: 56px; line-height: 1;
+    color: var(--signal-green-paper);
+  }
+  .ready-freq-row {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 0 6px;
+  }
+  .ready-freq-meta {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+
+  /* Freq actions (COPY / SHARE) — 주파수 디스플레이 아래 */
+  .freq-actions {
+    display: flex; gap: 8px;
+    margin-top: 12px;
+  }
+  .freq-action-btn {
+    flex: 1;
+    padding: 11px;
+    background: var(--paper-ink);
+    color: var(--paper-bg);
+    border: 1.5px solid var(--paper-ink);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .freq-action-btn:active {
+    background: var(--signal-green-paper);
+    border-color: var(--signal-green-paper);
+  }
+  .freq-action-btn.copied {
+    background: var(--signal-green-paper);
+    border-color: var(--signal-green-paper);
+  }
+
+  /* (legacy) 초대 코드 */
+  .invite-code {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .invite-code .code {
+    flex: 1;
+    background: var(--paper-raised);
+    border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    font-family: var(--font-mono); font-size: 17px; font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--paper-ink);
+    text-align: center;
+  }
+  .invite-action {
+    padding: 0 14px;
+    height: 44px;
+    background: var(--paper-ink);
+    color: var(--paper-bg);
+    border: 1.5px solid var(--paper-ink);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .invite-action:active {
+    background: var(--signal-green-paper);
+    border-color: var(--signal-green-paper);
+  }
+  .invite-action.copied {
+    background: var(--signal-green-paper);
+    border-color: var(--signal-green-paper);
+  }
+
+  .host-row {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+  .host-row .name-chip {
+    padding: 4px 9px;
+    background: var(--paper-edge);
+    color: var(--paper-ink);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.14em;
+    border-radius: 0;
+  }
+
+  /* CTA Enter */
+  .ready-actions {
+    margin-top: auto;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .btn-enter {
+    width: 100%; padding: 16px;
+    background: var(--te-orange-500);
+    color: var(--paper-bg);
+    border: 1.5px solid var(--te-orange-500);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 0 14px rgba(241, 90, 36, 0.26);
+    transition: background var(--motion-base) var(--ease-mech);
+  }
+  .btn-enter:active {
+    background: var(--paper-ink); border-color: var(--paper-ink);
+  }
+  .btn-share {
+    width: 100%; padding: 12px;
+    background: transparent;
+    color: var(--paper-ink);
+    border: 1.5px solid var(--paper-ink);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-share:active { background: var(--paper-raised); }
+
+  /* ---- Demo controls ---- */
+  .demo-controls {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 6px; z-index: 100;
+  }
+  .demo-row {
+    display: flex; gap: 4px;
+    padding: 8px;
+    background: var(--ink-700); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-sm);
+  }
+  .demo-row .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--ink-300); text-transform: uppercase;
+    align-self: center; padding: 0 8px;
+  }
+  .demo-btn {
+    padding: 8px 12px;
+    background: var(--ink-800); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--ink-200); cursor: pointer; min-width: 28px;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .demo-btn:hover { background: var(--ink-600); }
+  .demo-btn.active {
+    background: var(--signal-green-400);
+    color: var(--ink-1000);
+    border-color: var(--signal-green-400);
+  }
+
+  /* ---- Notes ---- */
+  .notes {
+    max-width: 560px; margin: 40px auto 0;
+    padding: 24px; background: var(--ink-900);
+    border: 1px solid var(--ink-700); border-radius: var(--radius-md);
+  }
+  .notes-title {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; color: var(--ink-400);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .notes-row {
+    display: flex; gap: 12px; padding: 7px 0;
+    font-size: 13px; line-height: 1.55; color: var(--ink-300);
+  }
+  .notes-row + .notes-row { border-top: 1px solid var(--ink-800); }
+  .notes-icon {
+    width: 16px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--signal-green-400); text-align: center;
+  }
+  .notes-icon.orange { color: var(--te-orange-500); }
+  .notes-icon.amber  { color: var(--amber-500); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · OPEN CHANNEL · V1</div>
+    <h1 class="page-title">새 채널 만들기 (host) · Tune In의 짝</h1>
+    <p class="page-sub">3 phase 흐름: SETUP (채널 이름 + 닉네임 + 9개 멤버 컬러 선택) → BROADCASTING (주파수 4자리 자동 발급 슬롯 머신, 1.5초 좌→우로 한 자리씩 잠금) → READY (큰 주파수 디스플레이 + 초대 코드 + ENTER CHANNEL). Tune In 디자인 시스템(페이퍼 + 모노 + 잉크) 그대로, TE Orange는 OPEN/ENTER 버튼에만.</p>
+  </div>
+
+  <div class="stage">
+    <div class="iphone">
+      <div class="dynamic-island"></div>
+      <div class="iphone-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <span class="sr-ico signal"></span>
+            <span class="sr-ico battery"></span>
+          </div>
+        </div>
+
+        <div class="screen-content">
+
+          <!-- Top bar -->
+          <div class="top-bar">
+            <button class="icon-btn" aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="wordmark">FREQUENCY <span class="status-led"></span></div>
+            <span class="icon-btn-placeholder"></span>
+          </div>
+          <div class="top-divider"></div>
+
+          <div class="sub-label" id="subLabel">&gt; NEW CHANNEL</div>
+
+          <!-- ============ PHASE 1: SETUP ============ -->
+          <div class="phase visible" id="phaseSetup">
+            <div class="field">
+              <div class="field-label">CHANNEL NAME</div>
+              <div class="field-input" id="channelName" contenteditable="true" data-placeholder="채널 이름 (예: 친구들 모임)" spellcheck="false"></div>
+              <span class="field-counter" id="nameCounter">0/16</span>
+            </div>
+
+            <div class="field">
+              <div class="field-label">YOUR NAME</div>
+              <div class="field-input" id="userName" contenteditable="true" data-placeholder="닉네임 (영문 4자)" spellcheck="false"></div>
+              <span class="field-counter" id="userCounter">0/4</span>
+            </div>
+
+            <div class="field">
+              <div class="field-label">YOUR COLOR <span class="opt">· 멤버끼리 식별</span></div>
+              <div class="color-grid" id="colorGrid"></div>
+              <div class="preview-chip">
+                <span class="lbl">PREVIEW</span>
+                <span class="you-tag" id="previewChip" data-member="">YOU</span>
+              </div>
+            </div>
+
+            <button class="btn-open disabled" id="btnOpen"><span class="pfx">&gt;</span> OPEN CHANNEL</button>
+          </div>
+
+          <!-- ============ PHASE 2: BROADCASTING ============ -->
+          <div class="phase" id="phaseBroadcast">
+            <div class="broadcast-wrap">
+              <div class="broadcast-status">
+                <span class="pulse"></span>
+                <span id="broadcastText">RESERVING FREQUENCY</span>
+              </div>
+              <div class="freq-slots">
+                <div class="freq-slot" id="slot0">0</div>
+                <div class="freq-slot" id="slot1">0</div>
+                <div class="freq-slot" id="slot2">0</div>
+                <div class="freq-sep">.</div>
+                <div class="freq-slot" id="slot3">0</div>
+              </div>
+              <div class="broadcast-progress">
+                <div class="progress-track">
+                  <div class="progress-fill" id="broadcastFill"></div>
+                </div>
+                <span class="progress-label" id="broadcastPct">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ PHASE 3: READY ============ -->
+          <div class="phase" id="phaseReady">
+            <div class="ready-wrap">
+              <div class="ready-section">
+                <div class="ready-label">CHANNEL</div>
+                <div class="ready-name" id="readyName">친구들 모임</div>
+              </div>
+
+              <div class="ready-section">
+                <div class="ready-label">FREQUENCY · 친구에게 이 4자리만 알려주세요</div>
+                <div class="ready-freq-row">
+                  <div class="ready-freq" id="readyFreq">
+                    <span class="digit">1</span>
+                    <span class="digit">0</span>
+                    <span class="digit">7</span>
+                    <span class="dot">.</span>
+                    <span class="digit">4</span>
+                  </div>
+                  <span class="ready-freq-meta">RESERVED · 24H AUTO-EXPIRE</span>
+                </div>
+                <div class="freq-actions">
+                  <button class="freq-action-btn" id="btnCopy">COPY 107.4</button>
+                  <button class="freq-action-btn" id="btnShare">SHARE</button>
+                </div>
+              </div>
+
+              <div class="ready-section">
+                <div class="ready-label">HOST · 1 / 9 LIVE</div>
+                <div class="host-row">
+                  <span class="name-chip" id="hostChip" data-member="">YOU</span>
+                  <span>·</span>
+                  <span>채널 개설자</span>
+                </div>
+              </div>
+
+              <div class="ready-actions">
+                <button class="btn-enter" id="btnEnter"><span class="pfx">&gt;</span> ENTER CHANNEL</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="notes-title">OPEN CHANNEL V1 · 3 PHASE FLOW</div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>3 phase: SETUP (채널 이름 + 닉네임 + 컬러 선택) → BROADCASTING (자동 발급 1.5초) → READY (초대 + ENTER). Tune In 의 짝, 디자인 시스템(페이퍼/모노/잉크) 그대로 재사용.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>SETUP 입력 3개: 채널 이름 16자, 닉네임 4자(영문 모노 라벨로 사용), 컬러 9개 chip grid (Post Detail 멤버 컬러 시스템 동일). 모두 입력되어야 OPEN CHANNEL 버튼 활성.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>컬러 chip: 9개 사각 (라운드 0px), 선택 시 paper-bg 1px gap + 잉크 2px outer ring 으로 더블 ring. preview-chip 에서 YOU 칩이 선택한 컬러로 즉시 미리보기 → 멤버 컬러가 "내 식별자"임을 학습.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>BROADCASTING phase: 4자리 슬롯 머신 회전. 80ms 간격으로 random 0-9. 좌→우 순서로 한 자리씩 잠금 (각 350ms 간격). 잠금 시 그린 ring flash 380ms (slot-lock-flash 와 동일 모션). 진행률 progress bar 동기화. 1.5초 후 자동 READY phase 진입.</span></div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>READY phase: 큰 주파수 디스플레이 (56px 모노, "."만 그린 강조). 라벨 "친구에게 이 4자리만 알려주세요" → 주파수 자체가 진입 식별자. 별도 초대 코드 없음 (Tune In 화면에 주파수 4자리 외에 다른 입력 칸이 없으므로 redundant).</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>주파수 액션 2개: COPY (현재 발급된 주파수만 클립보드, 예: "107.4") / SHARE (native share sheet, 채널 이름 + 주파수 안내 메시지). 둘 다 잉크 fill 버튼, 누르면 그린으로 confirm flash. ENTER CHANNEL 만 TE Orange CTA 단독.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>주파수 발급 (시안): 100.0 ~ 119.9 범위 random. 실제 시스템에서는 서버에서 충돌 체크 + 24H 자동 휘발이 conflict 완화. 사용자 화면에서는 주파수 4자리 만으로 명확하게 표현.</span></div>
+    <div class="notes-row"><span class="notes-icon amber">·</span><span>다음 검토: (a) 동일 주파수 충돌 시 host 에게 재발급 옵션, (b) 닉네임 영문 4자 강제 validation, (c) READY 에서 ENTER 누르면 Feed (1명, n=1 풀스크린)로 전환, (d) SHARE 메시지에 deep link 포함 (frequency://107.4 → 자동 Tune In).</span></div>
+  </div>
+</div>
+
+<div class="demo-controls">
+  <div class="demo-row">
+    <span class="lbl">PHASE</span>
+    <button class="demo-btn active" data-phase="setup">SETUP</button>
+    <button class="demo-btn" data-phase="broadcast">BROADCAST</button>
+    <button class="demo-btn" data-phase="ready">READY</button>
+  </div>
+  <div class="demo-row">
+    <span class="lbl">DEMO</span>
+    <button class="demo-btn" id="demoFill">AUTOFILL</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const MEMBER_COLORS = [
+  { key: 'self', name: 'GREEN',    val: '#197A3E' },
+  { key: 'm1',   name: 'KODAK',    val: '#E2B848' },
+  { key: 'm2',   name: 'VELVIA',   val: '#C04F3F' },
+  { key: 'm3',   name: 'POLAROID', val: '#DB8A8A' },
+  { key: 'm4',   name: 'EKTA',     val: '#5878A8' },
+  { key: 'm5',   name: 'MINT',     val: '#7FB298' },
+  { key: 'm6',   name: 'SEPIA',    val: '#8E6B47' },
+  { key: 'm7',   name: 'LAVENDER', val: '#A484B8' },
+  { key: 'm8',   name: 'BURNT',    val: '#C4673A' },
+];
+
+let phase = 'setup';
+let selectedColor = null;
+let channelNameVal = '';
+let userNameVal = '';
+let generatedFreq = ['1','0','7','4'];
+
+const channelName = document.getElementById('channelName');
+const userName    = document.getElementById('userName');
+const nameCounter = document.getElementById('nameCounter');
+const userCounter = document.getElementById('userCounter');
+const colorGrid   = document.getElementById('colorGrid');
+const previewChip = document.getElementById('previewChip');
+const btnOpen     = document.getElementById('btnOpen');
+const subLabel    = document.getElementById('subLabel');
+
+const phaseSetup     = document.getElementById('phaseSetup');
+const phaseBroadcast = document.getElementById('phaseBroadcast');
+const phaseReady     = document.getElementById('phaseReady');
+
+const slots = [0,1,2,3].map(i => document.getElementById('slot'+i));
+const broadcastText = document.getElementById('broadcastText');
+const broadcastFill = document.getElementById('broadcastFill');
+const broadcastPct  = document.getElementById('broadcastPct');
+
+const readyName  = document.getElementById('readyName');
+const readyFreq  = document.getElementById('readyFreq');
+const hostChip   = document.getElementById('hostChip');
+const btnCopy    = document.getElementById('btnCopy');
+const btnShare   = document.getElementById('btnShare');
+const btnEnter   = document.getElementById('btnEnter');
+const demoFill   = document.getElementById('demoFill');
+
+// build color grid
+MEMBER_COLORS.forEach(c => {
+  const chip = document.createElement('button');
+  chip.className = 'color-chip';
+  chip.style.setProperty('--c', c.val);
+  chip.dataset.key = c.key;
+  chip.dataset.color = c.val;
+  chip.title = c.name;
+  chip.addEventListener('click', () => selectColor(c));
+  colorGrid.appendChild(chip);
+});
+
+function selectColor(c) {
+  selectedColor = c;
+  colorGrid.querySelectorAll('.color-chip').forEach(el => {
+    el.classList.toggle('selected', el.dataset.key === c.key);
+  });
+  previewChip.style.background = c.val;
+  previewChip.style.color = '#EDE6D7';
+  updateOpenButton();
+}
+
+function placeCaretAtEnd(el) {
+  el.focus();
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function bindInput(el, counter, max, onChange) {
+  el.addEventListener('input', () => {
+    let text = el.textContent || '';
+    if (text.includes('\n')) {
+      text = text.replace(/\n/g, '');
+      el.textContent = text;
+      placeCaretAtEnd(el);
+    }
+    if (text.length > max) {
+      el.textContent = text.substring(0, max);
+      placeCaretAtEnd(el);
+      text = text.substring(0, max);
+    }
+    counter.textContent = text.length + '/' + max;
+    counter.classList.remove('warn', 'over');
+    if (text.length >= max) counter.classList.add('over');
+    else if (text.length >= max - 4) counter.classList.add('warn');
+    onChange(text);
+  });
+  el.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+  el.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    document.execCommand('insertText', false, text);
+  });
+}
+
+bindInput(channelName, nameCounter, 16, t => { channelNameVal = t; updateOpenButton(); previewChip.dataset.name = t; });
+bindInput(userName,    userCounter, 4,  t => { userNameVal = t.toUpperCase(); userName.textContent === userNameVal || (userName.textContent = userNameVal); previewChip.textContent = userNameVal || 'YOU'; updateOpenButton(); });
+
+function updateOpenButton() {
+  const ok = channelNameVal.trim().length > 0 && userNameVal.trim().length > 0 && selectedColor;
+  btnOpen.classList.toggle('disabled', !ok);
+}
+
+function setPhase(p) {
+  phase = p;
+  phaseSetup.classList.toggle('visible', p === 'setup');
+  phaseBroadcast.classList.toggle('visible', p === 'broadcast');
+  phaseReady.classList.toggle('visible', p === 'ready');
+  if (p === 'setup') subLabel.innerHTML = '&gt; NEW CHANNEL';
+  if (p === 'broadcast') subLabel.innerHTML = '&gt; BROADCASTING';
+  if (p === 'ready') subLabel.innerHTML = '&gt; CHANNEL READY';
+  // demo button sync
+  document.querySelectorAll('.demo-btn[data-phase]').forEach(b =>
+    b.classList.toggle('active', b.dataset.phase === p));
+}
+
+// ----- BROADCASTING animation -----
+let spinTimers = [];
+let progressTimer = null;
+function clearSpins() { spinTimers.forEach(t => clearInterval(t)); spinTimers = []; }
+
+function startBroadcast() {
+  setPhase('broadcast');
+  clearSpins();
+  if (progressTimer) clearInterval(progressTimer);
+  broadcastFill.style.width = '0%';
+  broadcastPct.textContent = '0%';
+  broadcastText.textContent = 'RESERVING FREQUENCY';
+
+  // 새 random freq 생성
+  const first = String(100 + Math.floor(Math.random() * 20)).padStart(3, '0');
+  const last = String(Math.floor(Math.random() * 10));
+  generatedFreq = [first[0], first[1], first[2], last];
+
+  slots.forEach(s => { s.classList.remove('locked'); s.classList.add('spinning'); });
+
+  // 모든 슬롯 회전 시작
+  slots.forEach(s => {
+    const t = setInterval(() => {
+      s.textContent = Math.floor(Math.random() * 10);
+    }, 70);
+    spinTimers.push(t);
+  });
+
+  // 좌→우로 한 자리씩 잠금 (각 350ms)
+  const lockDelays = [400, 750, 1100, 1450];
+  lockDelays.forEach((delay, i) => {
+    setTimeout(() => {
+      clearInterval(spinTimers[i]);
+      slots[i].textContent = generatedFreq[i];
+      slots[i].classList.remove('spinning');
+      slots[i].classList.add('locked');
+    }, delay);
+  });
+
+  // progress
+  let pct = 0;
+  progressTimer = setInterval(() => {
+    pct += 6;
+    if (pct >= 100) { pct = 100; clearInterval(progressTimer); }
+    broadcastFill.style.width = pct + '%';
+    broadcastPct.textContent = pct + '%';
+  }, 90);
+
+  // 1.7초 후 READY
+  setTimeout(() => {
+    populateReady();
+    setPhase('ready');
+  }, 1850);
+}
+
+function freqString() {
+  return generatedFreq[0] + generatedFreq[1] + generatedFreq[2] + '.' + generatedFreq[3];
+}
+
+function populateReady() {
+  readyName.textContent = channelNameVal || '친구들 모임';
+  // freq display
+  readyFreq.innerHTML = `
+    <span class="digit">${generatedFreq[0]}</span>
+    <span class="digit">${generatedFreq[1]}</span>
+    <span class="digit">${generatedFreq[2]}</span>
+    <span class="dot">.</span>
+    <span class="digit">${generatedFreq[3]}</span>
+  `;
+  // host chip
+  hostChip.textContent = userNameVal || 'YOU';
+  if (selectedColor) {
+    hostChip.style.background = selectedColor.val;
+    hostChip.style.color = '#EDE6D7';
+  }
+  // copy/share button labels with current freq
+  btnCopy.textContent = 'COPY ' + freqString();
+  btnCopy.classList.remove('copied');
+}
+
+// btnOpen
+btnOpen.addEventListener('click', () => {
+  if (btnOpen.classList.contains('disabled')) return;
+  startBroadcast();
+});
+
+// COPY 주파수 (4자리 + 채널 이름)
+btnCopy.addEventListener('click', () => {
+  const freq = freqString();
+  if (navigator.clipboard) navigator.clipboard.writeText(freq).catch(() => {});
+  btnCopy.textContent = 'COPIED ✓';
+  btnCopy.classList.add('copied');
+  setTimeout(() => {
+    btnCopy.textContent = 'COPY ' + freq;
+    btnCopy.classList.remove('copied');
+  }, 1400);
+});
+
+// SHARE 시뮬 (실제로는 native share sheet)
+btnShare.addEventListener('click', () => {
+  const freq = freqString();
+  const channel = channelNameVal || '친구들 모임';
+  const text = `[FREQUENCY] "${channel}" 채널 · 주파수 ${freq} 로 입장하세요`;
+  if (navigator.share) {
+    navigator.share({ title: 'FREQUENCY', text }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch(() => {});
+    btnShare.textContent = 'COPIED ✓';
+    btnShare.classList.add('copied');
+    setTimeout(() => {
+      btnShare.textContent = 'SHARE';
+      btnShare.classList.remove('copied');
+    }, 1400);
+  }
+});
+
+// ENTER (시안에서는 단순 alert / 또는 phase reset)
+btnEnter.addEventListener('click', () => {
+  // 시안: setup 으로 reset
+  setTimeout(() => setPhase('setup'), 0);
+});
+
+// demo phase toggle
+document.querySelectorAll('.demo-btn[data-phase]').forEach(b => {
+  b.addEventListener('click', () => {
+    const p = b.dataset.phase;
+    if (p === 'broadcast') startBroadcast();
+    else {
+      if (p === 'ready') populateReady();
+      setPhase(p);
+    }
+  });
+});
+
+// AUTOFILL
+demoFill.addEventListener('click', () => {
+  channelName.textContent = '친구들 모임';
+  channelNameVal = '친구들 모임';
+  nameCounter.textContent = '7/16';
+  userName.textContent = 'GREN';
+  userNameVal = 'GREN';
+  userCounter.textContent = '4/4';
+  selectColor(MEMBER_COLORS[0]);  // GREEN
+  updateOpenButton();
+});
+
+// init
+setPhase('setup');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta charset="UTF-8">
+<title>Capture Icon Preview · D vs E</title>
+<style>
+  :root {
+    --ink-900: #1C1B19;
+    --paper-50: #FAF8F4;
+    --paper-200: #EBE6DC;
+    --bone-300: #D9D2C2;
+    --graphite-400: #8A8578;
+    --graphite-500: #6B675C;
+    --orange-500: #E8612C;
+    --radius-tight: 4px;
+    --font-sans: 'Pretendard', -apple-system, 'Helvetica Neue', sans-serif;
+    --font-mono: 'Space Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 48px 32px;
+    background: var(--paper-200);
+    font-family: var(--font-sans);
+    color: var(--ink-900);
+    min-height: 100vh;
+  }
+  .page-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .sub {
+    font-size: 13px;
+    color: var(--graphite-500);
+    margin-bottom: 36px;
+  }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 960px;
+    margin: 0 auto 48px;
+  }
+
+  .card {
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .card-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--bone-300);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-head .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+  }
+  .card-head .name {
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  /* Actual Capture bottom bar replica */
+  .cap-frame {
+    background: var(--ink-900);
+    padding: 28px 24px 32px;
+  }
+  .cap-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cap-thumb {
+    width: 44px; height: 44px;
+    border: 1px dashed rgba(250,248,244,0.35);
+    border-radius: var(--radius-tight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(250,248,244,0.85);
+  }
+  .cap-shutter {
+    width: 72px; height: 72px;
+    border-radius: 999px;
+    background: var(--paper-50);
+    border: 4px solid var(--paper-50);
+    position: relative;
+    box-shadow: 0 0 0 2px var(--ink-900);
+  }
+  .cap-shutter::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    background: var(--orange-500);
+    border-radius: 999px;
+  }
+  .cap-switch {
+    width: 44px; height: 44px;
+    border: 1.5px solid var(--paper-50);
+    border-radius: var(--radius-tight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--paper-50);
+    letter-spacing: 0.08em;
+  }
+
+  /* Enlarged inspection */
+  .zoom-row {
+    padding: 28px 18px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    justify-content: center;
+    background: var(--ink-900);
+  }
+  .zoom-box {
+    width: 160px; height: 160px;
+    border: 1px dashed rgba(250,248,244,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(250,248,244,0.9);
+  }
+  .zoom-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(250,248,244,0.55);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 10px;
+  }
+  .zoom-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .notes {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 22px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink-900);
+  }
+  .notes b { font-weight: 700; }
+  .notes .row + .row { margin-top: 10px; }
+  .notes .k {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div style="max-width: 960px; margin: 0 auto;">
+  <div class="page-title">ICON PREVIEW · 2026-04-22</div>
+  <h1>Capture 좌하단 슬롯: D vs E</h1>
+  <p class="sub">44×44 실제 사이즈 + 160×160 확대본으로 동시 비교. 어두운 Capture 하단 바 맥락 그대로.</p>
+</div>
+
+<div class="pair">
+
+  <!-- Option D -->
+  <div class="card">
+    <div class="card-head">
+      <div class="name">D. TE Dot Grid</div>
+      <div class="tag">3×3 도트 매트릭스</div>
+    </div>
+    <div class="cap-frame">
+      <div class="cap-bottom">
+        <div class="cap-thumb">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-label="dot grid">
+            <circle cx="3" cy="3" r="1.6"/>
+            <circle cx="10" cy="3" r="1.6"/>
+            <circle cx="17" cy="3" r="1.6"/>
+            <circle cx="3" cy="10" r="1.6"/>
+            <circle cx="10" cy="10" r="1.6"/>
+            <circle cx="17" cy="10" r="1.6"/>
+            <circle cx="3" cy="17" r="1.6"/>
+            <circle cx="10" cy="17" r="1.6"/>
+            <circle cx="17" cy="17" r="1.6"/>
+          </svg>
+        </div>
+        <div class="cap-shutter"></div>
+        <div class="cap-switch">FLIP</div>
+      </div>
+    </div>
+    <div class="zoom-row">
+      <div class="zoom-unit">
+        <div class="zoom-box">
+          <svg width="90" height="90" viewBox="0 0 20 20" fill="currentColor" aria-label="dot grid large">
+            <circle cx="3" cy="3" r="1.6"/>
+            <circle cx="10" cy="3" r="1.6"/>
+            <circle cx="17" cy="3" r="1.6"/>
+            <circle cx="3" cy="10" r="1.6"/>
+            <circle cx="10" cy="10" r="1.6"/>
+            <circle cx="17" cy="10" r="1.6"/>
+            <circle cx="3" cy="17" r="1.6"/>
+            <circle cx="10" cy="17" r="1.6"/>
+            <circle cx="17" cy="17" r="1.6"/>
+          </svg>
+        </div>
+        <div class="zoom-meta">100% / 450% 확대</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option E -->
+  <div class="card">
+    <div class="card-head">
+      <div class="name">E. Film Strip</div>
+      <div class="tag">미니 필름 스트립</div>
+    </div>
+    <div class="cap-frame">
+      <div class="cap-bottom">
+        <div class="cap-thumb">
+          <svg width="18" height="24" viewBox="0 0 18 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" aria-label="film strip">
+            <rect x="1" y="1" width="16" height="22" rx="1"/>
+            <rect x="3" y="3.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="3.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="3" y="7.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="7.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="3" y="11.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="11.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="3" y="15.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="15.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="3" y="19.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="19.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <line x1="6" y1="9.5" x2="12" y2="9.5"/>
+            <line x1="6" y1="17.5" x2="12" y2="17.5"/>
+          </svg>
+        </div>
+        <div class="cap-shutter"></div>
+        <div class="cap-switch">FLIP</div>
+      </div>
+    </div>
+    <div class="zoom-row">
+      <div class="zoom-unit">
+        <div class="zoom-box">
+          <svg width="70" height="95" viewBox="0 0 18 24" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" aria-label="film strip large">
+            <rect x="1" y="1" width="16" height="22" rx="1"/>
+            <rect x="3" y="3.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="3.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="3" y="7.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="7.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="3" y="11.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="11.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="3" y="15.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="15.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="3" y="19.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <rect x="13.4" y="19.5" width="1.6" height="1.6" fill="currentColor" stroke="none"/>
+            <line x1="6" y1="9.5" x2="12" y2="9.5"/>
+            <line x1="6" y1="17.5" x2="12" y2="17.5"/>
+          </svg>
+        </div>
+        <div class="zoom-meta">100% / 390% 확대</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="notes">
+  <div class="row"><span class="k">D</span><b>TE Dot Grid</b> · 의미 없음(순수 스타일 시그니처). OP-1 디스플레이, TE 브랜드 DNA. 44×44에서 가독성 좋음. 기하학적으로 중성적이라 바로 옆 셔터의 원형과 충돌 없이 조용히 놓임.</div>
+  <div class="row"><span class="k">E</span><b>Film Strip</b> · "한 롤의 유한한 컷수" 메타포, 시간당 1장 제한과 직결. 세로가 길어 시각적으로 특유함. 44×44에서 디테일이 약간 촘촘해서 주의가 조금 더 쏠림(= 시선 포인트가 생김).</div>
+  <div class="row" style="margin-top: 14px; color: var(--graphite-500); font-size: 12px;">
+    확대본에서 두 아이콘의 선 두께, 점 밀도, 프레임 분할이 44px에서 어떻게 축소되는지 같이 보실 수 있어요. 다크 배경 위 paper-50 톤 그대로.
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>FREQUENCY · Camera · v1 (3:4 viewfinder)</title>
+<link rel="stylesheet" href="../shared/mobile.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --te-orange-500: #F15A24;
+    --critical-red-500: #E5484D;
+    --amber-500: #F5A623;
+    --ink-1000: #0A0A0A;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --paper-bg:     #EDE6D7;
+    --paper-raised: #F4EEE0;
+    --paper-edge:   #CFC6B3;
+    --paper-muted:  #B6AE9B;
+    --paper-tick:   #8A8271;
+    --paper-text-mute: #6A6152;
+    --paper-ink:    #141211;
+    --signal-green-paper-500: #197A3E;
+    --signal-green-paper-glow: rgba(25, 122, 62, 0.40);
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --radius-xs: 2px; --radius-sm: 4px; --radius-md: 6px;
+    --motion-fast: 150ms; --motion-base: 200ms;
+    --ease-mechanical: cubic-bezier(0.2, 0, 0, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-800); color: var(--ink-50);
+    line-height: 1.5; padding: 40px 24px 96px; min-height: 100vh;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+
+  .page-head { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--ink-700); }
+  .page-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 8px;
+  }
+  .page-tag .accent { color: var(--signal-green-400); }
+  .page-title {
+    font-family: var(--font-sans); font-size: 24px; font-weight: 700;
+    letter-spacing: -0.02em; color: var(--ink-50); margin-bottom: 4px;
+  }
+  .page-sub { font-size: 13px; color: var(--ink-400); line-height: 1.6; }
+
+  .stage { display: flex; justify-content: center; padding: 16px 0 32px; }
+  .iphone {
+    width: 393px; aspect-ratio: 393 / 852;
+    background: var(--ink-1000); border-radius: 52px; padding: 11px;
+    box-shadow: 0 0 0 1px var(--ink-600), 0 32px 64px -20px rgba(0, 0, 0, 0.65);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%;
+    background: var(--paper-bg); color: var(--paper-ink);
+    border-radius: 44px; overflow: hidden;
+    display: flex; flex-direction: column; position: relative;
+  }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 118px; height: 34px;
+    background: var(--ink-1000); border-radius: 999px; z-index: 10;
+  }
+  .status-bar {
+    height: 52px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px 0 24px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+    color: var(--paper-ink); position: relative; z-index: 5;
+  }
+  .status-right { display: flex; align-items: center; gap: 6px; }
+  .sr-ico.signal {
+    width: 17px; height: 11px; background: currentColor; opacity: 0.9;
+    clip-path: polygon(0 100%,4px 100%,4px 70%,0 70%,0 100%,5px 100%,9px 100%,9px 50%,5px 50%,5px 100%,10px 100%,14px 100%,14px 30%,10px 30%,10px 100%,15px 100%,19px 100%,19px 10%,15px 10%);
+  }
+  .sr-ico.battery {
+    width: 24px; height: 12px; background: transparent;
+    border: 1px solid currentColor; border-radius: 2px; position: relative; opacity: 0.9;
+  }
+  .sr-ico.battery::after { content:""; position: absolute; right:-3px; top:3px; width:2px; height:6px; background:currentColor; }
+  .sr-ico.battery::before { content:""; position: absolute; top:1px; left:1px; bottom:1px; width:80%; background: currentColor; border-radius:1px; }
+  .home-indicator {
+    position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+    width: 38%; height: 5px;
+    background: var(--paper-ink); border-radius: 999px; opacity: 0.4; z-index: 10;
+  }
+  .screen-content { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ---- Top bar ---- */
+  .top-bar {
+    flex-shrink: 0; padding: 16px 22px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    background: transparent; border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    cursor: pointer; color: var(--paper-ink);
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--motion-fast) var(--ease-mechanical);
+  }
+  .icon-btn:active { background: var(--paper-raised); }
+  .icon-btn-placeholder {
+    display: inline-block;
+    width: 36px; height: 36px;
+    visibility: hidden;
+  }
+  .channel-tag {
+    font-family: var(--font-mono); font-size: 12px;
+    font-weight: 700; letter-spacing: 0.14em;
+    color: var(--paper-text-mute); text-transform: uppercase;
+  }
+  .channel-tag .num { color: var(--paper-ink); font-weight: 700; }
+  .top-divider { margin: 0 22px; height: 1px; background: var(--paper-edge); }
+
+  /* ---- Sub label ---- */
+  .sub-label {
+    flex-shrink: 0;
+    padding: 10px 22px 8px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+  .sub-label .when { color: var(--paper-ink); }
+
+  /* ---- Viewfinder (다크 inset, 3:4 ratio) ---- */
+  .vf-wrap {
+    flex-shrink: 0;
+    padding: 4px 22px 14px;
+    display: flex; justify-content: center;
+  }
+  .viewfinder {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: #0A0A0A;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow:
+      inset 0 0 0 1px rgba(207, 198, 179, 0.08),
+      0 0 0 1px var(--paper-ink);
+  }
+  /* 카메라 프리뷰 placeholder — 어두운 그라데이션 (시안용) */
+  .vf-preview {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 60% 40%, rgba(220, 180, 140, 0.18), transparent 65%),
+      radial-gradient(ellipse at 30% 70%, rgba(120, 140, 160, 0.18), transparent 70%),
+      linear-gradient(160deg, #1a1a1a, #0a0a0a 70%);
+  }
+  /* Frame corner brackets — 필름 뷰파인더, 메타 텍스트와 안 겹치게 안쪽(36px) */
+  .vf-corners {
+    position: absolute; inset: 36px;
+    pointer-events: none;
+  }
+  .vf-corner {
+    position: absolute;
+    width: 18px; height: 18px;
+    border: 1.5px solid rgba(237, 230, 215, 0.7);
+  }
+  .vf-corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+  .vf-corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+  .vf-corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+  .vf-corner.br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+  /* Center reticle dot — focus indicator */
+  .vf-reticle {
+    position: absolute;
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 28px; height: 28px;
+    border: 1px solid rgba(237, 230, 215, 0.4);
+    border-radius: 999px;
+    pointer-events: none;
+    transition: opacity var(--motion-base) var(--ease-mechanical);
+  }
+  .vf-reticle::before, .vf-reticle::after {
+    content: ""; position: absolute;
+    background: rgba(237, 230, 215, 0.4);
+  }
+  .vf-reticle::before { left: 50%; top: -4px; bottom: -4px; width: 1px; transform: translateX(-50%); }
+  .vf-reticle::after { top: 50%; left: -4px; right: -4px; height: 1px; transform: translateY(-50%); }
+
+  /* Viewfinder overlays — meta info on dark */
+  .vf-meta {
+    position: absolute;
+    color: rgba(237, 230, 215, 0.85);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  .vf-meta.tl { top: 12px; left: 12px; font-size: 9px; }
+  .vf-meta.tr { top: 12px; right: 12px; font-size: 9px; }
+  .vf-meta.bl { bottom: 12px; left: 12px; font-size: 9px; color: rgba(237, 230, 215, 0.65); }
+  .vf-meta.br { bottom: 12px; right: 12px; font-size: 9px; color: rgba(237, 230, 215, 0.65); }
+  .vf-meta .live-dot {
+    display: inline-block;
+    width: 5px; height: 5px; border-radius: 999px;
+    background: var(--critical-red-500);
+    margin-right: 5px; vertical-align: 1px;
+    box-shadow: 0 0 6px rgba(229, 72, 77, 0.6);
+    animation: ledPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  /* Recording timer (video mode, 녹화 중) */
+  .vf-rec-timer {
+    position: absolute;
+    top: 12px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--paper-bg);
+    background: rgba(229, 72, 77, 0.85);
+    padding: 4px 10px;
+    border-radius: 2px;
+    display: none; align-items: center; gap: 6px;
+    z-index: 3;
+  }
+  .vf-rec-timer.on { display: flex; }
+  .vf-rec-timer::before {
+    content: ""; width: 7px; height: 7px;
+    border-radius: 999px; background: var(--paper-bg);
+    animation: ledPulse 1s ease-in-out infinite;
+  }
+
+  /* Preview mode overlay (after shooting) */
+  .vf-preview-shot {
+    position: absolute; inset: 0;
+    display: none;
+    background:
+      radial-gradient(ellipse at 30% 25%, rgba(255,220,170,0.35), transparent 60%),
+      linear-gradient(135deg, #C9A878, #6E5535);
+    z-index: 4;
+  }
+  .vf-preview-shot.on { display: block; }
+  .vf-preview-shot .shot-meta {
+    position: absolute; top: 12px; left: 12px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(20, 18, 17, 0.85);
+    background: rgba(237, 230, 215, 0.85);
+    padding: 3px 7px; border-radius: 2px;
+  }
+
+  /* ---- Mode toggle (PHOTO / VIDEO) ---- */
+  .mode-toggle-wrap {
+    flex-shrink: 0;
+    padding: 4px 22px 12px;
+    display: flex; justify-content: center;
+  }
+  .mode-toggle {
+    display: inline-flex;
+    background: var(--paper-raised);
+    border: 1px solid var(--paper-edge);
+    border-radius: 999px;
+    padding: 3px;
+    position: relative;
+  }
+  .mode-toggle button {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--paper-text-mute);
+    background: transparent; border: none;
+    padding: 7px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    z-index: 1;
+    transition: color var(--motion-base) var(--ease-mechanical);
+  }
+  .mode-toggle button.active {
+    color: var(--paper-bg);
+  }
+  .mode-toggle .toggle-pill {
+    position: absolute;
+    top: 3px; bottom: 3px; left: 3px;
+    width: calc(50% - 3px);
+    background: var(--paper-ink);
+    border-radius: 999px;
+    transition: transform var(--motion-base) var(--ease-mechanical);
+    z-index: 0;
+  }
+  .mode-toggle.video .toggle-pill {
+    transform: translateX(100%);
+  }
+
+  /* ---- Bottom action ---- */
+  .cam-actions {
+    flex-shrink: 0;
+    padding: 0 22px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: auto;
+  }
+  /* Capture stack — 셔터 + 셔터 위 안내 텍스트 */
+  .capture-stack {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 10px;
+  }
+  .capture-hint {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute);
+    white-space: nowrap;
+    transition: opacity var(--motion-base) var(--ease-mechanical);
+  }
+  .capture-hint .hint-eq {
+    color: var(--paper-ink); margin: 0 1px;
+  }
+  .capture-hint.hidden { opacity: 0; visibility: hidden; }
+
+  /* Capture shutter — 짧게=사진 / 길게=영상 통합 셔터 */
+  .btn-capture {
+    width: 72px; height: 72px;
+    border-radius: 999px;
+    background: var(--paper-bg);
+    border: 3px solid var(--te-orange-500);
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 6px 18px -4px rgba(241, 90, 36, 0.45);
+    transition: transform var(--motion-fast) var(--ease-mechanical),
+                box-shadow var(--motion-base) var(--ease-mechanical),
+                border-color var(--motion-base) var(--ease-mechanical);
+    overflow: visible;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  /* 안쪽 dot — 평소 오렌지 원, 영상 진입 시 빨간 사각 */
+  .btn-capture::after {
+    content: ""; position: absolute; inset: 5px;
+    border-radius: 999px;
+    background: var(--te-orange-500);
+    transition: inset var(--motion-fast) var(--ease-mechanical),
+                border-radius 200ms var(--ease-mechanical),
+                background 200ms var(--ease-mechanical);
+  }
+  .btn-capture:active { transform: scale(0.96); }
+  .btn-capture:active::after { inset: 9px; }
+  /* 녹화 중: 안쪽 dot이 빨간 작은 사각 (정지 버튼 메타포) */
+  .btn-capture.recording {
+    border-color: var(--critical-red-500);
+    box-shadow: 0 6px 18px -4px rgba(229, 72, 77, 0.45);
+  }
+  .btn-capture.recording::after {
+    background: var(--critical-red-500);
+    inset: 22px;
+    border-radius: 4px;
+  }
+  /* 외곽 5초 progress ring (conic-gradient) — 셔터 외곽 5px 두께로 채워짐 */
+  .cap-progress {
+    position: absolute;
+    inset: -5px;
+    border-radius: 999px;
+    background: conic-gradient(var(--critical-red-500) calc(var(--p, 0) * 3.6deg), transparent 0deg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms var(--ease-mechanical);
+    z-index: -1;
+  }
+  .cap-progress::after {
+    content: ""; position: absolute; inset: 5px;
+    border-radius: 999px;
+    background: var(--paper-bg);
+  }
+  .btn-capture.recording .cap-progress { opacity: 1; }
+  /* Disabled (이번 라운드 이미 송출) */
+  .btn-capture.disabled {
+    background: var(--paper-raised);
+    border-color: var(--paper-edge);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .btn-capture.disabled::after { background: var(--paper-edge); inset: 5px; border-radius: 999px; }
+
+  .cam-actions .icon-btn { width: 44px; height: 44px; }
+  .cam-actions .icon-btn svg { width: 20px; height: 20px; }
+  .cam-actions .icon-btn-placeholder { width: 44px; height: 44px; }
+
+  /* ---- Caption input (preview phase only) ---- */
+  .caption-wrap {
+    flex-shrink: 0;
+    padding: 0 22px 10px;
+    display: none;
+    align-items: center; gap: 8px;
+  }
+  .caption-wrap.visible { display: flex; }
+  .caption-input {
+    flex: 1;
+    background: var(--paper-raised);
+    border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--paper-ink);
+    outline: none;
+    transition: border-color var(--motion-fast) var(--ease-mech);
+    line-height: 1.3;
+    min-height: 38px;
+    word-break: break-all;
+    caret-color: transparent;
+    -webkit-user-modify: read-write-plaintext-only;
+  }
+  .caption-input:focus { border-color: var(--paper-ink); }
+  .caption-input:empty:not(:focus)::before {
+    content: attr(data-placeholder);
+    color: var(--paper-muted);
+    font-family: var(--font-sans);
+    pointer-events: none;
+  }
+  .caption-input:focus::after {
+    content: "▌";
+    display: inline-block;
+    color: var(--te-orange-500);
+    font-family: var(--font-mono); font-weight: 900;
+    font-size: 16px; line-height: 1;
+    margin-left: 1px; vertical-align: -2px;
+    animation: captionCaretBlink 0.6s step-end infinite;
+    text-shadow: 0 0 4px rgba(241, 90, 36, 0.35);
+  }
+  @keyframes captionCaretBlink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  .caption-counter {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--paper-text-mute);
+    flex-shrink: 0; min-width: 36px; text-align: right;
+    transition: color var(--motion-fast) var(--ease-mech);
+  }
+  .caption-counter.warn { color: var(--amber-500); }
+  .caption-counter.over { color: var(--critical-red-500); }
+
+  /* ---- Preview phase actions (USE / RETAKE) ---- */
+  .preview-actions {
+    flex-shrink: 0;
+    padding: 0 22px 24px;
+    display: none;
+    gap: 10px;
+    margin-top: auto;
+  }
+  .preview-actions.visible { display: flex; }
+  .pa-btn {
+    flex: 1;
+    padding: 14px 16px;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-mechanical);
+  }
+  .pa-btn.retake {
+    background: transparent;
+    border: 1.5px solid var(--paper-ink);
+    color: var(--paper-ink);
+  }
+  .pa-btn.retake:active { background: var(--paper-raised); }
+  .pa-btn.use {
+    background: var(--te-orange-500);
+    border: 1.5px solid var(--te-orange-500);
+    color: var(--paper-bg);
+    box-shadow: 0 0 14px rgba(241, 90, 36, 0.26);
+  }
+  .pa-btn.use:active {
+    background: var(--paper-ink);
+    border-color: var(--paper-ink);
+  }
+
+  /* ---- Round-locked notice (이번 라운드 이미 송출 시) ---- */
+  .lock-notice {
+    flex-shrink: 0;
+    margin: 0 22px 12px;
+    padding: 10px 14px;
+    background: var(--paper-raised);
+    border: 1px dashed var(--paper-edge);
+    border-radius: var(--radius-sm);
+    display: none;
+    flex-direction: column; align-items: center; gap: 4px;
+  }
+  .lock-notice.visible { display: flex; }
+  .lock-notice .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute);
+  }
+  .lock-notice .when {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    color: var(--paper-ink); letter-spacing: 0.06em;
+  }
+
+  /* ---- Demo controls ---- */
+  .demo-controls {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 6px; z-index: 100;
+  }
+  .demo-row {
+    display: flex; gap: 4px;
+    padding: 8px;
+    background: var(--ink-700); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-sm);
+  }
+  .demo-row .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--ink-300); text-transform: uppercase;
+    align-self: center; padding: 0 8px;
+  }
+  .demo-btn {
+    padding: 8px 12px;
+    background: var(--ink-800); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--ink-200); cursor: pointer; min-width: 28px;
+    transition: background var(--motion-fast) var(--ease-mechanical);
+  }
+  .demo-btn:hover { background: var(--ink-600); }
+  .demo-btn.active {
+    background: var(--signal-green-400);
+    color: var(--ink-1000);
+    border-color: var(--signal-green-400);
+  }
+
+  /* ---- Notes ---- */
+  .notes {
+    max-width: 560px; margin: 40px auto 0;
+    padding: 24px; background: var(--ink-900);
+    border: 1px solid var(--ink-700); border-radius: var(--radius-md);
+  }
+  .notes-title {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; color: var(--ink-400);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .notes-row {
+    display: flex; gap: 12px; padding: 7px 0;
+    font-size: 13px; line-height: 1.55; color: var(--ink-300);
+  }
+  .notes-row + .notes-row { border-top: 1px solid var(--ink-800); }
+  .notes-icon {
+    width: 16px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--signal-green-400); text-align: center;
+  }
+  .notes-icon.orange { color: var(--te-orange-500); }
+  .notes-icon.amber  { color: var(--amber-500); }
+  .notes-icon.red    { color: var(--critical-red-500); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · CAMERA · V1.1 · UNIFIED SHUTTER</div>
+    <h1 class="page-title">짧게 = 사진 / 길게 = 5초 영상</h1>
+    <p class="page-sub">PHOTO/VIDEO 모드 토글 제거. 단일 셔터로 통합 — 짧게 탭 = 사진, 길게 누르면(250ms 이상) 영상 녹화 시작, 손 떼면 정지(최대 5초 자동 정지). 셔터 외곽에 빨간 conic progress ring 으로 5초 카운트다운. 셔터 좌측 비움(갤러리 import 없음 = 인앱 촬영 only), 우측은 전후면 카메라 flip. 코너 브라켓은 메타 텍스트와 안 겹치게 안쪽(36px)으로.</p>
+  </div>
+
+  <div class="stage">
+    <div class="iphone">
+      <div class="dynamic-island"></div>
+      <div class="iphone-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <span class="sr-ico signal"></span>
+            <span class="sr-ico battery"></span>
+          </div>
+        </div>
+
+        <div class="screen-content">
+
+          <div class="top-bar">
+            <button class="icon-btn" aria-label="Close">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+            <div class="channel-tag">CH <span class="num">107.4</span></div>
+            <span class="icon-btn-placeholder" aria-hidden="true"></span>
+          </div>
+          <div class="top-divider"></div>
+
+          <div class="sub-label">
+            <span>&gt; FRAME ENTRY</span>
+            <span class="when" id="modeLabel">#025</span>
+          </div>
+
+          <div class="vf-wrap">
+            <div class="viewfinder" id="viewfinder">
+              <div class="vf-preview"></div>
+              <div class="vf-corners">
+                <span class="vf-corner tl"></span>
+                <span class="vf-corner tr"></span>
+                <span class="vf-corner bl"></span>
+                <span class="vf-corner br"></span>
+              </div>
+              <div class="vf-reticle"></div>
+              <div class="vf-meta tl" id="vfModeBadge">PHOTO</div>
+              <div class="vf-meta tr" id="vfFrameNo">#025</div>
+              <div class="vf-meta bl"><span class="live-dot"></span>CH 107.4</div>
+              <div class="vf-meta br" id="vfRoundEnd">−1H 24M</div>
+              <div class="vf-rec-timer" id="vfRecTimer">0:03</div>
+              <div class="vf-preview-shot" id="vfShot">
+                <div class="shot-meta" id="shotMeta">PHOTO · #025</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lock-notice" id="lockNotice">
+            <span class="lbl">이번 라운드 이미 송출 완료</span>
+            <span class="when">NEXT ROUND IN 1H 24M</span>
+          </div>
+
+          <div class="cam-actions" id="camActions">
+            <span class="icon-btn-placeholder" aria-hidden="true"></span>
+            <div class="capture-stack">
+              <div class="capture-hint" id="captureHint">TAP <span class="hint-eq">=</span> PHOTO &nbsp;·&nbsp; HOLD <span class="hint-eq">=</span> VIDEO 5s</div>
+              <button class="btn-capture" id="btnCapture" aria-label="Capture (tap=photo, hold=video)">
+                <span class="cap-progress"></span>
+              </button>
+            </div>
+            <button class="icon-btn" id="btnFlip" aria-label="Flip front/back camera">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 3l5 5-5 5"/>
+                <path d="M3 8h18"/>
+                <path d="M8 21l-5-5 5-5"/>
+                <path d="M21 16H3"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- caption input (preview phase only) -->
+          <div class="caption-wrap" id="captionWrap">
+            <div class="caption-input" contenteditable="true" id="captionInput" data-placeholder="이 순간을 한 줄로 (선택)" spellcheck="false"></div>
+            <span class="caption-counter" id="captionCounter">0/40</span>
+          </div>
+
+          <!-- preview phase actions (after shooting) -->
+          <div class="preview-actions" id="previewActions">
+            <button class="pa-btn retake" id="btnRetake">RETAKE</button>
+            <button class="pa-btn use" id="btnUse">USE</button>
+          </div>
+
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="notes-title">CAMERA V1.1 · UNIFIED SHUTTER + 5s VIDEO</div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>모드 토글 제거, 셔터 단일화: 짧게 탭 = 사진(즉시 preview) / 250ms 이상 누르고 있으면 영상 녹화 시작 / 손 떼면 정지(또는 5초 도달 자동 정지). 한 손가락만으로 전체 촬영 흐름 완결.</span></div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>5초 영상 진행 표시: 셔터 외곽 5px 두께 conic-gradient ring 이 빨간색으로 0~360° 채워짐. requestAnimationFrame 기반 부드러운 progress. 동시에 안쪽 dot 이 빨간 사각(4px radius)으로 변환 = 정지 버튼 메타포.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>셔터 좌측 비움 (사진첩 import 없음 = 인앱 촬영 only 의 시각 신호) / 셔터 우측 = 전후면 카메라 flip 버튼. 상단 우측 flip 은 제거(중복) → 상단은 X close + CH 107.4 만 남김.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>3:4 비율 절대 고정. 뷰파인더 자체가 aspect-ratio: 3/4. 코너 브라켓 inset: 36px 으로 안쪽 이동 → vf-meta 4귀(TL/TR/BL/BR) 텍스트와 안 겹침. 가운데 reticle = focus indicator 로 카메라스러운 정밀감.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>듀얼 톤 유지: 외곽 컨트롤(탑바, 셔터, 액션)은 페이퍼 #EDE6D7 / 뷰파인더 내부는 잉크 검정 #0A0A0A. Tune In 의 boot terminal 과 같은 방식 — 특정 영역만 다크 inset.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>vf-meta TL = 모드 상태(READY/RECORDING/LOCKED), TR = frame number(#025), BL = LED + CH 107.4, BR = 라운드 남은 시간(−1H 24M). 녹화 중에는 가운데 위에 빨간 vf-rec-timer 가 별도로 등장 (REC 0:03 형식).</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>Phase 전환: shoot ↔ preview ↔ locked. preview 는 USE(orange, 송출) / RETAKE(잉크 outline, shoot 으로 복귀). USE 누르면 라운드 잠김으로 자동 전환 (한 라운드 1송출 규칙).</span></div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>Caption 입력 (preview phase only): 40자 제한, 모노 폰트, 레트로 ▌ 오렌지 굵은 커서 (Post Detail 댓글 입력과 동일 패턴 → 디자인 시스템 일관). placeholder "이 순간을 한 줄로 (선택)". 비워둬도 USE 가능 = 캡션 선택 사항. shoot/locked 에서 자동 숨김. **shoot → preview 진입 시 captionInput 자동 focus + caret 끝 위치 = 폰에서 키보드가 바로 올라와 손가락 한 번에 멘션 입력 가능.**</span></div>
+    <div class="notes-row"><span class="notes-icon amber">·</span><span>다음 검토: (a) 셔터 누르는 순간 햅틱 (사진 = 짧은 tick / 영상 시작 = double tick) + 셔터 사운드, (b) 5초 도달 임박(4초~) 시 progress ring amber 로 변색, (c) 라운드 잠김 시 셔터 자체에 lock 아이콘 overlay, (d) 전후면 flip 시 좌우 mirror 트랜지션.</span></div>
+  </div>
+</div>
+
+<div class="demo-controls">
+  <div class="demo-row">
+    <span class="lbl">PHASE</span>
+    <button class="demo-btn active" data-phase="shoot">SHOOT</button>
+    <button class="demo-btn" data-phase="preview">PREVIEW</button>
+    <button class="demo-btn" data-phase="locked">LOCKED</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const vfFrameNo   = document.getElementById('vfFrameNo');
+const vfModeBadge = document.getElementById('vfModeBadge');
+const vfRecTimer  = document.getElementById('vfRecTimer');
+const vfShot      = document.getElementById('vfShot');
+const shotMeta    = document.getElementById('shotMeta');
+const modeLabel   = document.getElementById('modeLabel');
+const btnCapture  = document.getElementById('btnCapture');
+const camActions  = document.getElementById('camActions');
+const previewActions = document.getElementById('previewActions');
+const lockNotice  = document.getElementById('lockNotice');
+const btnRetake   = document.getElementById('btnRetake');
+const btnUse      = document.getElementById('btnUse');
+const captureHint = document.getElementById('captureHint');
+const capProgress = btnCapture.querySelector('.cap-progress');
+const captionWrap = document.getElementById('captionWrap');
+const captionInput = document.getElementById('captionInput');
+const captionCounter = document.getElementById('captionCounter');
+
+const LONG_PRESS_MS = 250;   // 이 시간 이상 누르면 영상 모드 진입
+const MAX_VIDEO_MS  = 5000;  // 최대 5초 영상
+
+let phase = 'shoot';            // 'shoot' | 'preview' | 'locked'
+let lastShotKind = 'photo';     // 'photo' | 'video' (preview 메타 표시용)
+let pressStart = 0;
+let pressTimer = null;
+let recording = false;
+let recStart = 0;
+let recRaf = null;
+let autoStopTimer = null;
+
+function setPhase(p) {
+  phase = p;
+  if (p === 'shoot') {
+    camActions.style.display = 'flex';
+    previewActions.classList.remove('visible');
+    captionWrap.classList.remove('visible');
+    lockNotice.classList.remove('visible');
+    vfShot.classList.remove('on');
+    btnCapture.classList.remove('disabled');
+    captureHint.classList.remove('hidden');
+    vfModeBadge.textContent = 'READY';
+    modeLabel.textContent = vfFrameNo.textContent;
+    stopRecording(true);
+  } else if (p === 'preview') {
+    camActions.style.display = 'none';
+    previewActions.classList.add('visible');
+    captionWrap.classList.add('visible');
+    lockNotice.classList.remove('visible');
+    vfShot.classList.add('on');
+    shotMeta.textContent = (lastShotKind === 'photo' ? 'PHOTO' : 'VIDEO 0:0' + Math.min(5, Math.max(1, Math.round((Date.now() - recStart) / 1000)))) + ' · ' + vfFrameNo.textContent;
+    // caption 초기화 + 카운터 리셋 + 자동 focus (폰에서 키보드 즉시 올라옴)
+    captionInput.textContent = '';
+    updateCaptionCounter();
+    setTimeout(() => placeCaretAtEnd(captionInput), 50);
+    stopRecording(true);
+  } else if (p === 'locked') {
+    camActions.style.display = 'flex';
+    previewActions.classList.remove('visible');
+    captionWrap.classList.remove('visible');
+    lockNotice.classList.add('visible');
+    vfShot.classList.remove('on');
+    btnCapture.classList.add('disabled');
+    captureHint.classList.add('hidden');
+    vfModeBadge.textContent = 'LOCKED';
+    modeLabel.textContent = vfFrameNo.textContent;
+    stopRecording(true);
+  }
+}
+
+// ----- Caption input 핸들링 (40자 제한 + Post Detail 와 동일 패턴) -----
+function placeCaretAtEnd(el) {
+  el.focus();
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+function updateCaptionCounter() {
+  const len = (captionInput.textContent || '').length;
+  captionCounter.textContent = len + '/40';
+  captionCounter.classList.remove('warn', 'over');
+  if (len >= 40) captionCounter.classList.add('over');
+  else if (len >= 30) captionCounter.classList.add('warn');
+}
+captionInput.addEventListener('input', () => {
+  let text = captionInput.textContent || '';
+  if (text.includes('\n')) {
+    text = text.replace(/\n/g, '');
+    captionInput.textContent = text;
+    placeCaretAtEnd(captionInput);
+  }
+  if (text.length > 40) {
+    captionInput.textContent = text.substring(0, 40);
+    placeCaretAtEnd(captionInput);
+  }
+  updateCaptionCounter();
+});
+captionInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') e.preventDefault();
+});
+captionInput.addEventListener('paste', (e) => {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text');
+  document.execCommand('insertText', false, text);
+});
+
+function startRecording() {
+  recording = true;
+  recStart = Date.now();
+  vfModeBadge.textContent = 'RECORDING';
+  vfRecTimer.classList.add('on');
+  btnCapture.classList.add('recording');
+  captureHint.classList.add('hidden');
+  capProgress.style.setProperty('--p', 0);
+
+  // progress ring update via rAF
+  function tick() {
+    if (!recording) return;
+    const elapsed = Date.now() - recStart;
+    const pct = Math.min(100, (elapsed / MAX_VIDEO_MS) * 100);
+    capProgress.style.setProperty('--p', pct);
+    const sec = Math.min(5, elapsed / 1000);
+    vfRecTimer.textContent = '0:0' + Math.floor(sec);
+    recRaf = requestAnimationFrame(tick);
+  }
+  tick();
+
+  // 5초 자동 정지
+  autoStopTimer = setTimeout(() => {
+    if (recording) {
+      lastShotKind = 'video';
+      setPhase('preview');
+    }
+  }, MAX_VIDEO_MS);
+}
+
+function stopRecording(silent) {
+  if (recRaf) cancelAnimationFrame(recRaf);
+  if (autoStopTimer) { clearTimeout(autoStopTimer); autoStopTimer = null; }
+  recording = false;
+  vfRecTimer.classList.remove('on');
+  vfRecTimer.textContent = '0:00';
+  btnCapture.classList.remove('recording');
+  capProgress.style.setProperty('--p', 0);
+  if (phase === 'shoot') captureHint.classList.remove('hidden');
+}
+
+// ----- 셔터 long-press 핸들러 -----
+function onPressStart(e) {
+  if (e.cancelable) e.preventDefault();
+  if (btnCapture.classList.contains('disabled')) return;
+  if (phase !== 'shoot') return;
+  pressStart = Date.now();
+  pressTimer = setTimeout(() => {
+    // 250ms 경과 → 영상 시작
+    if (phase === 'shoot' && !recording) {
+      lastShotKind = 'video';
+      startRecording();
+    }
+  }, LONG_PRESS_MS);
+}
+function onPressEnd(e) {
+  if (e && e.cancelable) e.preventDefault();
+  if (btnCapture.classList.contains('disabled')) return;
+  if (phase !== 'shoot') return;
+  const heldMs = Date.now() - pressStart;
+  if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+
+  if (recording) {
+    // 영상 정지 → preview
+    setPhase('preview');
+  } else if (heldMs < LONG_PRESS_MS) {
+    // 짧게 탭 → 사진
+    lastShotKind = 'photo';
+    setPhase('preview');
+  }
+}
+function onPressCancel() {
+  if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+  if (recording) {
+    setPhase('preview');
+  }
+}
+
+btnCapture.addEventListener('mousedown', onPressStart);
+btnCapture.addEventListener('touchstart', onPressStart, { passive: false });
+btnCapture.addEventListener('mouseup', onPressEnd);
+btnCapture.addEventListener('touchend', onPressEnd);
+btnCapture.addEventListener('mouseleave', onPressCancel);
+btnCapture.addEventListener('touchcancel', onPressCancel);
+
+// preview actions
+btnRetake.addEventListener('click', () => setPhase('shoot'));
+btnUse.addEventListener('click', () => setPhase('locked'));
+
+// demo phase toggle
+document.querySelectorAll('.demo-btn[data-phase]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.demo-btn[data-phase]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    setPhase(b.dataset.phase);
+  });
+});
+
+// init
+setPhase('shoot');
+</script>
+
+</body>
+</html>

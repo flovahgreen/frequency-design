@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FREQUENCY · Channel Feed · v1 (4 members)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --signal-green-300: #4DFF9E;
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --signal-green-glow: rgba(38, 250, 133, 0.35);
+    --te-orange-400: #FF6F28;
+    --te-orange-500: #F15A24;
+    --te-orange-glow: rgba(241, 90, 36, 0.45);
+    --amber-500: #F5A623;
+
+    --ink-1000: #0A0A0A;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --ink-0:    #FFFFFF;
+
+    --paper-bg:     #EDE6D7;
+    --paper-raised: #F4EEE0;
+    --paper-edge:   #CFC6B3;
+    --paper-muted:  #B6AE9B;
+    --paper-tick:   #8A8271;
+    --paper-text-mute: #6A6152;
+    --paper-ink:    #141211;
+
+    --signal-green-paper-400: #197A3E;
+    --signal-green-paper-500: #197A3E;
+    --signal-green-paper-glow: rgba(25, 122, 62, 0.40);
+
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --motion-fast: 150ms;
+    --motion-base: 200ms;
+    --ease-mechanical: cubic-bezier(0.2, 0, 0, 1);
+    --ease-detent:     cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-800);
+    color: var(--ink-50);
+    line-height: 1.5;
+    padding: 40px 24px 96px;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 560px; margin: 0 auto; }
+
+  /* ---- Page head (dark frame around the device) ---- */
+  .page-head {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--ink-700);
+  }
+  .page-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 8px;
+  }
+  .page-tag .accent { color: var(--signal-green-400); }
+  .page-title {
+    font-family: var(--font-sans); font-size: 24px;
+    font-weight: 700; letter-spacing: -0.02em;
+    color: var(--ink-0); margin-bottom: 4px;
+  }
+  .page-sub {
+    font-size: 13px; color: var(--ink-400);
+    line-height: 1.6;
+  }
+
+  /* ---- iPhone frame ---- */
+  .stage { display: flex; justify-content: center; padding: 16px 0 32px; }
+  .iphone {
+    width: 393px;
+    aspect-ratio: 393 / 852;
+    background: var(--ink-1000);
+    border-radius: 52px;
+    padding: 11px;
+    box-shadow:
+      0 0 0 1px var(--ink-600),
+      0 32px 64px -20px rgba(0, 0, 0, 0.65);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%;
+    background: var(--paper-bg);
+    color: var(--paper-ink);
+    border-radius: 44px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%;
+    transform: translateX(-50%);
+    width: 118px; height: 34px;
+    background: var(--ink-1000);
+    border-radius: 999px; z-index: 10;
+  }
+  .status-bar {
+    height: 52px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px 0 24px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+    color: var(--paper-ink); position: relative; z-index: 5;
+  }
+  .status-right { display: flex; align-items: center; gap: 6px; }
+  .sr-ico.signal {
+    width: 17px; height: 11px; background: currentColor; opacity: 0.9;
+    clip-path: polygon(0 100%,4px 100%,4px 70%,0 70%,0 100%,5px 100%,9px 100%,9px 50%,5px 50%,5px 100%,10px 100%,14px 100%,14px 30%,10px 30%,10px 100%,15px 100%,19px 100%,19px 10%,15px 10%);
+  }
+  .sr-ico.battery {
+    width: 24px; height: 12px; background: transparent;
+    border: 1px solid currentColor; border-radius: 2px;
+    position: relative; opacity: 0.9;
+  }
+  .sr-ico.battery::after {
+    content:""; position: absolute; right:-3px; top:3px;
+    width:2px; height:6px; background:currentColor;
+  }
+  .sr-ico.battery::before {
+    content:""; position: absolute; top:1px; left:1px; bottom:1px;
+    width:80%; background: currentColor; border-radius:1px;
+  }
+  .home-indicator {
+    position: absolute; bottom: 7px; left: 50%;
+    transform: translateX(-50%);
+    width: 38%; height: 5px;
+    background: var(--paper-ink); border-radius: 999px;
+    opacity: 0.4; z-index: 10;
+  }
+
+  .screen-content {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ---- Top bar (wordmark + channel) ---- */
+  .top-bar {
+    flex-shrink: 0;
+    padding: 18px 22px 10px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .wordmark {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--paper-ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .status-led {
+    width: 7px; height: 7px; border-radius: 999px;
+    background: var(--signal-green-paper-400);
+    box-shadow: 0 0 8px var(--signal-green-paper-glow);
+    animation: ledPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+  .channel-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; letter-spacing: 0.14em;
+    color: var(--paper-text-mute); text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .channel-tag .num {
+    color: var(--paper-ink);
+    font-weight: 700;
+  }
+  .top-divider {
+    margin: 0 22px;
+    height: 1px; background: var(--paper-edge);
+  }
+
+  /* ---- Feed header (sub-label + counter) ---- */
+  .feed-header {
+    flex-shrink: 0;
+    padding: 12px 22px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute);
+  }
+  .feed-header .lbl { font-weight: 700; }
+  .feed-header .cnt { color: var(--paper-ink); font-weight: 700; }
+  .feed-header .cnt .live-dot {
+    display: inline-block;
+    width: 5px; height: 5px; border-radius: 999px;
+    background: var(--signal-green-paper-500);
+    box-shadow: 0 0 5px var(--signal-green-paper-glow);
+    margin-left: 6px; vertical-align: 1px;
+    animation: ledPulse 2.4s ease-in-out infinite;
+  }
+
+  /* ---- Feed grid ---- */
+  .feed-scroll {
+    flex: 1; min-height: 0;
+    overflow-y: auto;
+    padding: 0 18px 24px;
+  }
+  .feed-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .feed-grid.grid-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .member-card {
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .member-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-sm);
+    background: var(--paper-raised);
+    border: 1px solid rgba(20, 18, 17, 0.08);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--motion-fast) var(--ease-mechanical);
+  }
+  .member-photo:active { transform: scale(0.985); }
+
+  /* Cell gradient placeholders — film-still feel, paper-tonal */
+  .cell-1 {
+    background:
+      radial-gradient(ellipse at 30% 25%, rgba(255,220,170,0.35), transparent 60%),
+      linear-gradient(135deg, #C9A878, #6E5535);
+  }
+  .cell-2 {
+    background:
+      radial-gradient(ellipse at 70% 30%, rgba(180,210,200,0.35), transparent 60%),
+      linear-gradient(135deg, #5A6B5C, #2E3A30);
+  }
+  .cell-3 {
+    background:
+      radial-gradient(ellipse at 50% 70%, rgba(200,180,150,0.4), transparent 65%),
+      linear-gradient(160deg, #8B7860, #463A2C);
+  }
+  .cell-4 {
+    background:
+      radial-gradient(ellipse at 25% 75%, rgba(150,170,200,0.35), transparent 60%),
+      linear-gradient(135deg, #475567, #20283A);
+  }
+
+  /* Frame number — film camera metaphor */
+  .frame-no {
+    position: absolute;
+    top: 9px; left: 9px;
+    font-family: var(--font-mono); font-size: 9px;
+    font-weight: 700; letter-spacing: 0.08em;
+    color: rgba(237, 230, 215, 0.85);
+    background: rgba(20, 18, 17, 0.45);
+    padding: 3px 6px;
+    border-radius: 2px;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Video badge */
+  .video-badge {
+    position: absolute;
+    bottom: 9px; left: 9px;
+    font-family: var(--font-mono); font-size: 9px;
+    font-weight: 700; letter-spacing: 0.08em;
+    color: rgba(237, 230, 215, 0.95);
+    background: rgba(20, 18, 17, 0.55);
+    padding: 3px 6px;
+    border-radius: 2px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .video-badge::before {
+    content: "";
+    width: 0; height: 0;
+    border-left: 5px solid currentColor;
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    margin-right: 1px;
+  }
+
+  /* New-post LED dot — pulses to call out fresh signal */
+  .new-dot {
+    position: absolute;
+    top: 9px; right: 9px;
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: var(--signal-green-paper-500);
+    box-shadow:
+      0 0 0 2px rgba(237, 230, 215, 0.65),
+      0 0 8px rgba(38, 250, 133, 0.6);
+    animation: ledPulse 1.8s ease-in-out infinite;
+  }
+
+  /* Empty cell — member exists but no signal yet */
+  .member-photo.empty {
+    background: var(--paper-raised);
+    border: 1px dashed var(--paper-edge);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .empty-initial {
+    font-family: var(--font-mono);
+    font-size: 36px; font-weight: 600;
+    color: var(--paper-edge);
+    letter-spacing: 0.05em;
+  }
+  .empty-tag {
+    position: absolute;
+    bottom: 9px; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 8px;
+    font-weight: 700; letter-spacing: 0.14em;
+    color: var(--paper-text-mute); text-transform: uppercase;
+  }
+
+  /* Caption row — paper photo album feel */
+  .member-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0 2px;
+  }
+  .member-name {
+    color: var(--paper-ink);
+    font-weight: 700;
+  }
+  .member-name.self {
+    color: var(--signal-green-paper-500);
+  }
+  .member-time {
+    color: var(--paper-text-mute);
+    font-weight: 600;
+  }
+
+  /* ---- Bottom action bar ---- */
+  .feed-actions {
+    flex-shrink: 0;
+    padding: 14px 22px 22px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(to top, var(--paper-bg) 70%, transparent);
+    position: relative;
+  }
+  .nav-btn {
+    width: 40px; height: 40px;
+    background: transparent;
+    border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--paper-ink);
+    transition: background var(--motion-fast) var(--ease-mechanical);
+  }
+  .nav-btn:active { background: var(--paper-raised); }
+  .nav-btn svg { display: block; }
+
+  /* Capture shutter button — film camera metaphor */
+  .btn-capture {
+    width: 64px; height: 64px;
+    border-radius: 999px;
+    background: var(--paper-bg);
+    border: 3px solid var(--te-orange-500);
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 6px 18px -4px rgba(241, 90, 36, 0.45);
+    transition: transform var(--motion-fast) var(--ease-mechanical),
+                box-shadow var(--motion-base) var(--ease-mechanical);
+  }
+  .btn-capture::after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border-radius: 999px;
+    background: var(--te-orange-500);
+    transition: inset var(--motion-fast) var(--ease-mechanical);
+  }
+  .btn-capture:active {
+    transform: scale(0.96);
+    box-shadow: 0 3px 10px -2px rgba(241, 90, 36, 0.55);
+  }
+  .btn-capture:active::after {
+    inset: 8px;
+  }
+
+  /* ---- Notes panel ---- */
+  .notes {
+    max-width: 560px; margin: 40px auto 0;
+    padding: 24px; background: var(--ink-900);
+    border: 1px solid var(--ink-700); border-radius: var(--radius-md);
+  }
+  .notes-title {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; color: var(--ink-400);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .notes-row {
+    display: flex; gap: 12px; padding: 7px 0;
+    font-size: 13px; line-height: 1.55; color: var(--ink-300);
+  }
+  .notes-row + .notes-row { border-top: 1px solid var(--ink-800); }
+  .notes-icon {
+    width: 16px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--signal-green-400); text-align: center;
+  }
+  .notes-icon.orange { color: var(--te-orange-500); }
+  .notes-icon.amber  { color: var(--amber-500); }
+
+  /* ---- Demo controls ---- */
+  .demo-controls {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 8px;
+    z-index: 100;
+  }
+  .demo-btn {
+    padding: 10px 16px;
+    background: var(--ink-700); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-200); cursor: pointer;
+  }
+  .demo-btn:active { background: var(--ink-500); color: var(--ink-50); }
+  .demo-btn .dot-prefix { color: var(--signal-green-400); margin-right: 6px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Head -->
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · CHANNEL FEED · V1 · 4 MEMBERS</div>
+    <h1 class="page-title">Channel Feed · 사람별 칸으로 모인 방</h1>
+    <p class="page-sub">방 안의 멤버 각자에게 자기 칸이 주어지는 모자이크 피드. 4명 시안: 2x2 그리드, 4:5 필름 비율. 사진은 사진대로, 라벨은 캡션 한 줄로 — 페이퍼 사진첩 메타포. 좌상단 frame number(#024)와 우상단 그린 LED 도트(새 송출)로 필름 카메라 + 무전기 신호 메타포 겹치기. 하단 셔터 버튼은 오렌지 ring + 안쪽 dot, 페이퍼 gap 으로 셔터 디테일.</p>
+  </div>
+
+  <!-- Stage -->
+  <div class="stage">
+    <div class="iphone">
+      <div class="dynamic-island"></div>
+
+      <div class="iphone-screen">
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <span class="sr-ico signal"></span>
+            <span class="sr-ico battery"></span>
+          </div>
+        </div>
+
+        <div class="screen-content">
+
+          <!-- Top bar -->
+          <div class="top-bar">
+            <div class="wordmark">
+              FREQUENCY
+              <span class="status-led"></span>
+            </div>
+            <div class="channel-tag">
+              CH <span class="num">107.4</span>
+            </div>
+          </div>
+          <div class="top-divider"></div>
+
+          <!-- Feed header -->
+          <div class="feed-header">
+            <span class="lbl">&gt; CHANNEL FEED</span>
+            <span class="cnt">4 / 9 LIVE<span class="live-dot"></span></span>
+          </div>
+
+          <!-- Feed grid -->
+          <div class="feed-scroll">
+            <div class="feed-grid grid-4">
+
+              <!-- Cell 1: 본인 (self) -->
+              <div class="member-card">
+                <div class="member-photo cell-1">
+                  <div class="frame-no">#024</div>
+                </div>
+                <div class="member-meta">
+                  <span class="member-name self">YOU</span>
+                  <span class="member-time">12'</span>
+                </div>
+              </div>
+
+              <!-- Cell 2: 다른 멤버, 새 송출 -->
+              <div class="member-card">
+                <div class="member-photo cell-2">
+                  <div class="frame-no">#018</div>
+                  <div class="new-dot"></div>
+                </div>
+                <div class="member-meta">
+                  <span class="member-name">HANI</span>
+                  <span class="member-time">3'</span>
+                </div>
+              </div>
+
+              <!-- Cell 3: 영상 (video badge) -->
+              <div class="member-card">
+                <div class="member-photo cell-3">
+                  <div class="frame-no">#011</div>
+                  <div class="video-badge">0:08</div>
+                </div>
+                <div class="member-meta">
+                  <span class="member-name">JIN</span>
+                  <span class="member-time">1H</span>
+                </div>
+              </div>
+
+              <!-- Cell 4: 빈 칸 (멤버는 있지만 송출 없음) -->
+              <div class="member-card">
+                <div class="member-photo empty">
+                  <span class="empty-initial">M</span>
+                  <span class="empty-tag">NO SIGNAL</span>
+                </div>
+                <div class="member-meta">
+                  <span class="member-name">MIN</span>
+                  <span class="member-time">—</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom actions -->
+          <div class="feed-actions">
+            <button class="nav-btn" aria-label="Members">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                <circle cx="9" cy="9" r="3.2"/>
+                <circle cx="17" cy="10" r="2.4"/>
+                <path d="M3 19c0-3 2.7-5 6-5s6 2 6 5"/>
+                <path d="M14 17c0-2 2-3.5 4-3.5s3.5 1.5 3.5 3.5"/>
+              </svg>
+            </button>
+
+            <button class="btn-capture" aria-label="Capture"></button>
+
+            <button class="nav-btn" aria-label="Channel info">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 8v.01M11 12h1v5h1"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Designer notes -->
+  <div class="notes">
+    <div class="notes-title">FEED V1 · 4 MEMBERS · MOSAIC LAYOUT</div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>구조 결정: 일반적 시간순 단일 피드(인스타/setlog)가 아닌 "사람별 칸 분할 모자이크". 방 안의 각 멤버가 자기 칸을 차지 → 채팅 없이도 "누가 있고 누가 뭘 보냈는지"가 한 화면에서 즉각.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>인원수 자동 적응 (예정): 1명 풀스크린 / 2명 1x2 / 3명 1+2 비대칭 / 4명 2x2 / 5~6명 비대칭 모자이크 / 7~9명 3x3 균등. 이번 시안은 4명 = 2x2, 4:5 필름 사진 비율.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>셀 상태 4종을 한 화면에 모두 노출: (1) 본인 YOU = 그린 라벨, (2) 다른 멤버 신규 송출 = 우상단 그린 LED 도트 호흡 펄스, (3) 영상 콘텐츠 = 좌하단 ▶ + 길이 배지, (4) 빈 칸 NO SIGNAL = dashed 테두리 + 큰 이니셜.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>필름 카메라 메타포: 좌상단 frame number (#024). 무전기 메타포: 우상단 그린 LED 도트, 상단 헤더 "4/9 LIVE + 펄스 도트". 두 메타포가 같은 셀 위에서 겹치는 게 이 앱의 정체성.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>캡션 처리: 사진 위 텍스트 오버레이 최소화 → 사진 아래 한 줄 (이름 좌, 시간 우). 페이퍼 사진첩 + 모노 캡션. 시간은 모노 약식 ("3'", "1H", "—").</span></div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>셔터 버튼: 외곽 3px 오렌지 ring + 안쪽 오렌지 dot, 사이에 페이퍼 gap. 누르면 안쪽 dot이 작아지면서 셔터가 닫히는 듯한 inset 변화. 화면 내 유일한 컬러 액센트 위치 유지.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>네비 좌(멤버 아이콘) / 가운데(셔터) / 우(채널 정보) 3개 버튼. SVG 1.7px stroke, 잉크 블랙. nav 버튼은 페이퍼 edge 1.5px outline, 누르면 raised paper로 살짝 올라옴.</span></div>
+    <div class="notes-row"><span class="notes-icon amber">·</span><span>다음 검토: (a) 9명 시안 (3x3, 1:1 비율) 분기 처리, (b) 셀 탭 → Post Detail 화면, (c) 사진 placeholder를 실제 이미지로 교체, (d) "방 첫 진입" 시 셀 fill-in 애니메이션 (좌상단부터 순차로 LED on).</span></div>
+  </div>
+
+</div>
+
+<!-- Demo controls -->
+<div class="demo-controls">
+  <button class="demo-btn" id="demoToggleNew"><span class="dot-prefix">&gt;</span>TOGGLE NEW DOT</button>
+</div>
+
+<script>
+'use strict';
+// Demo: toggle pulse on all new-dots
+const btnToggle = document.getElementById('demoToggleNew');
+btnToggle.addEventListener('click', () => {
+  document.querySelectorAll('.new-dot').forEach(el => {
+    el.style.animationPlayState =
+      el.style.animationPlayState === 'paused' ? 'running' : 'paused';
+  });
+});
+</script>
+
+</body>
+</html>

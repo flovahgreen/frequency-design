@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motion System v2.0 · Retro Computer Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --paper-50: #FAF8F4;
+    --paper-100: #F4F1EC;
+    --paper-200: #ECE7DE;
+    --bone-300: #E0DACF;
+    --bone-400: #C9C3B8;
+    --graphite-500: #8C8880;
+    --graphite-600: #5E5C56;
+    --graphite-700: #3D3B37;
+    --ink-900: #1C1B19;
+    --orange-500: #E85A2A;
+    --orange-100: #FBE4D8;
+    --navy-500: #2B3F5E;
+    --navy-100: #D7DCE5;
+    --brick-500: #A8412B;
+
+    /* DURATION TOKENS */
+    --motion-instant:   0ms;
+    --motion-fast:      120ms;
+    --motion-moderate:  200ms;
+    --motion-slow:      320ms;
+    --motion-xslow:     480ms;
+
+    /* RETRO-SPECIFIC DURATIONS */
+    --motion-blink:      1000ms;
+    --motion-type-step:  60ms;
+    --motion-spin-step:  200ms;
+
+    /* EASING TOKENS (precise) */
+    --ease-linear:      linear;
+    --ease-standard:    cubic-bezier(0.4, 0.0, 0.2, 1);
+    --ease-decelerate:  cubic-bezier(0.0, 0.0, 0.2, 1);
+    --ease-accelerate:  cubic-bezier(0.4, 0.0, 1, 1);
+    --ease-crisp:       cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* EASING TOKENS (retro · step-based) */
+    --ease-step-hard:   step-end;
+    --ease-step-2:      steps(2, end);
+    --ease-step-4:      steps(4, end);
+    --ease-step-8:      steps(8, end);
+
+    --font-kr: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+    --font-en: "Manrope", sans-serif;
+    --font-mono: "Space Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-kr);
+    background: var(--paper-100);
+    color: var(--ink-900);
+    line-height: 1.5;
+    padding: 48px 32px 96px;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+
+  .cover {
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--bone-400);
+    margin-bottom: 64px;
+  }
+  .cover-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .cover-title {
+    font-family: var(--font-en);
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    margin-bottom: 8px;
+  }
+  .cover-subtitle {
+    font-size: 18px;
+    color: var(--graphite-600);
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .cover-lede {
+    font-size: 14px;
+    color: var(--graphite-700);
+    max-width: 760px;
+    line-height: 1.65;
+  }
+  .cover-terminal {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: var(--ink-900);
+    color: var(--paper-50);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+  }
+  .cover-terminal .pfx { color: var(--orange-500); }
+  .cover-terminal .cmt { color: var(--graphite-500); }
+
+  section { margin-bottom: 72px; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--bone-300);
+  }
+  .sec-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--orange-500);
+    letter-spacing: 0.1em;
+  }
+  .sec-title {
+    font-family: var(--font-en);
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .sec-desc {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--graphite-600);
+    max-width: 440px;
+    text-align: right;
+  }
+
+  /* PRINCIPLES */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .p-card {
+    padding: 22px 20px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+  }
+  .p-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--orange-500);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .p-title {
+    font-family: var(--font-en);
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .p-body {
+    font-size: 12px;
+    color: var(--graphite-700);
+    line-height: 1.55;
+  }
+
+  /* DURATION ROWS */
+  .token-row {
+    display: grid;
+    grid-template-columns: 160px 80px 1fr 220px;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--paper-50);
+    border-bottom: 1px solid var(--bone-300);
+  }
+  .token-row:first-of-type { border-top: 1px solid var(--bone-300); }
+  .tk-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-900);
+    font-weight: 700;
+  }
+  .tk-val {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--graphite-600);
+  }
+  .tk-bar-track {
+    height: 12px;
+    background: var(--paper-200);
+    position: relative;
+    overflow: hidden;
+  }
+  .tk-bar {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 100%;
+    background: var(--orange-500);
+    transform: translateX(-100%);
+    animation-name: barSweep;
+    animation-iteration-count: infinite;
+    animation-timing-function: var(--ease-standard);
+    animation-duration: 2400ms;
+  }
+  @keyframes barSweep {
+    0%   { transform: translateX(-100%); }
+    45%  { transform: translateX(0); }
+    55%  { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+  }
+  .tk-use {
+    font-size: 12px;
+    color: var(--graphite-600);
+  }
+
+  /* EASING GRID */
+  .easing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .easing-card {
+    padding: 18px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ec-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-900);
+    letter-spacing: 0.04em;
+  }
+  .ec-ball-track {
+    height: 16px;
+    background: var(--paper-200);
+    position: relative;
+    overflow: hidden;
+  }
+  .ec-ball {
+    position: absolute;
+    top: 2px; left: 0;
+    width: 12px;
+    height: 12px;
+    background: var(--orange-500);
+    animation: ballRun 2.4s infinite;
+  }
+  .ec-ball.square { border-radius: 0; }
+  .ec-ball.round { border-radius: 999px; }
+  @keyframes ballRun {
+    0%   { left: 0; }
+    45%  { left: calc(100% - 12px); }
+    55%  { left: calc(100% - 12px); }
+    100% { left: 0; }
+  }
+  .ec-1 .ec-ball { animation-timing-function: var(--ease-linear); }
+  .ec-2 .ec-ball { animation-timing-function: var(--ease-standard); }
+  .ec-3 .ec-ball { animation-timing-function: var(--ease-decelerate); }
+  .ec-4 .ec-ball { animation-timing-function: var(--ease-accelerate); }
+  .ec-5 .ec-ball { animation-timing-function: var(--ease-crisp); }
+  .ec-6 .ec-ball { animation-timing-function: var(--ease-step-hard); }
+  .ec-7 .ec-ball { animation-timing-function: var(--ease-step-2); }
+  .ec-8 .ec-ball { animation-timing-function: var(--ease-step-4); }
+  .ec-9 .ec-ball { animation-timing-function: var(--ease-step-8); }
+  .ec-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 6px;
+    display: inline-block;
+    width: fit-content;
+    letter-spacing: 0.1em;
+  }
+  .ec-tag-p { background: var(--navy-100); color: var(--navy-500); }
+  .ec-tag-r { background: var(--orange-100); color: var(--brick-500); }
+  .ec-use {
+    font-size: 11px;
+    color: var(--graphite-600);
+    line-height: 1.5;
+  }
+  .ec-value {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--graphite-500);
+    word-break: break-all;
+  }
+
+  /* PATTERN */
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .pattern {
+    padding: 28px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+  }
+  .pattern.retro-tint {
+    background: var(--paper-50);
+    border-left: 3px solid var(--orange-500);
+  }
+  .pattern-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--orange-500);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .pattern-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 6px;
+    letter-spacing: 0.1em;
+  }
+  .badge-retro { background: var(--ink-900); color: var(--paper-50); }
+  .badge-precise { background: var(--navy-100); color: var(--navy-500); }
+  .pattern-title {
+    font-family: var(--font-en);
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .pattern-desc {
+    font-size: 13px;
+    color: var(--graphite-700);
+    line-height: 1.55;
+    margin-bottom: 20px;
+  }
+  .pattern-ref {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--graphite-500);
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+  .pattern-ref b { color: var(--orange-500); }
+  .pattern-stage {
+    background: var(--paper-100);
+    border: 1px dashed var(--bone-400);
+    padding: 32px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    position: relative;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .pattern-stage.dark {
+    background: var(--ink-900);
+  }
+  .pattern-spec {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--graphite-600);
+    padding: 12px 14px;
+    background: var(--paper-200);
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+  }
+  .pattern-spec b { color: var(--ink-900); font-weight: 700; }
+  .pattern-hint {
+    display: block;
+    font-size: 11px;
+    color: var(--graphite-500);
+    text-align: center;
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* === RETRO DEMOS === */
+
+  /* BLOCK CURSOR INPUT (retro) */
+  .retro-input-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    background: var(--paper-200);
+    padding: 16px 18px;
+    border: 2px solid var(--bone-400);
+    font-family: var(--font-mono);
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    min-width: 260px;
+    justify-content: flex-start;
+  }
+  .retro-input-wrap.focused {
+    border-color: var(--ink-900);
+    background: var(--paper-50);
+  }
+  .retro-input-field {
+    outline: none;
+    min-width: 4px;
+    caret-color: transparent;
+    color: var(--ink-900);
+    font-family: inherit;
+    font-size: inherit;
+    letter-spacing: inherit;
+  }
+  .block-cursor {
+    display: inline-block;
+    width: 11px;
+    height: 20px;
+    background: var(--orange-500);
+    vertical-align: -3px;
+    animation: blink 1000ms step-end infinite;
+  }
+  .retro-input-wrap:not(.focused) .block-cursor { display: none; }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* BUTTON INVERT (retro) */
+  .retro-btn {
+    background: var(--ink-900);
+    color: var(--paper-50);
+    padding: 14px 28px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--motion-instant) var(--ease-step-hard),
+                color var(--motion-instant) var(--ease-step-hard);
+  }
+  .retro-btn:active {
+    background: var(--orange-500);
+    color: var(--ink-900);
+  }
+  .retro-btn-ghost {
+    background: var(--paper-200);
+    color: var(--ink-900);
+    padding: 14px 28px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 2px solid var(--ink-900);
+    cursor: pointer;
+    transition: background-color var(--motion-instant) var(--ease-step-hard),
+                color var(--motion-instant) var(--ease-step-hard);
+  }
+  .retro-btn-ghost:active {
+    background: var(--ink-900);
+    color: var(--paper-50);
+  }
+
+  /* PROGRESS BLOCKS (retro loader) */
+  .progress-blocks {
+    display: flex;
+    gap: 4px;
+  }
+  .progress-blocks .blk {
+    width: 18px;
+    height: 22px;
+    background: var(--paper-200);
+    animation: blockFill 1800ms infinite var(--ease-step-hard);
+  }
+  .progress-blocks .blk:nth-child(1) { animation-delay: 0ms; }
+  .progress-blocks .blk:nth-child(2) { animation-delay: 180ms; }
+  .progress-blocks .blk:nth-child(3) { animation-delay: 360ms; }
+  .progress-blocks .blk:nth-child(4) { animation-delay: 540ms; }
+  .progress-blocks .blk:nth-child(5) { animation-delay: 720ms; }
+  .progress-blocks .blk:nth-child(6) { animation-delay: 900ms; }
+  .progress-blocks .blk:nth-child(7) { animation-delay: 1080ms; }
+  @keyframes blockFill {
+    0%, 20%   { background: var(--paper-200); }
+    30%, 70%  { background: var(--orange-500); }
+    80%, 100% { background: var(--paper-200); }
+  }
+
+  /* STEP SPINNER */
+  .step-spinner {
+    font-family: var(--font-mono);
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--ink-900);
+    width: 40px;
+    text-align: center;
+  }
+
+  /* TYPEWRITER TEXT */
+  .typewriter {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--ink-900);
+    min-height: 30px;
+    letter-spacing: 0.08em;
+  }
+  .typewriter .tw-cursor {
+    display: inline-block;
+    width: 12px;
+    height: 22px;
+    background: var(--ink-900);
+    vertical-align: -4px;
+    animation: blink 1000ms step-end infinite;
+  }
+
+  /* STAMP 2-STEP */
+  .retro-stamp {
+    width: 52px;
+    height: 52px;
+    background: var(--paper-200);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    border: 2px solid var(--bone-400);
+    transition: transform var(--motion-instant) var(--ease-step-hard),
+                background-color var(--motion-instant) var(--ease-step-hard);
+  }
+  .retro-stamp.popped {
+    animation: stampSprite 200ms steps(2, end) forwards;
+    background: var(--orange-100);
+    border-color: var(--orange-500);
+  }
+  @keyframes stampSprite {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.25); }
+    100% { transform: scale(1); }
+  }
+
+  /* SHUTTER HARD PRESS */
+  .shutter-btn {
+    width: 84px;
+    height: 84px;
+    background: var(--paper-50);
+    border: 4px solid var(--ink-900);
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    transition:
+      background-color var(--motion-instant) var(--ease-step-hard),
+      border-color var(--motion-instant) var(--ease-step-hard),
+      transform var(--motion-fast) var(--ease-standard);
+  }
+  .shutter-btn::after {
+    content: "";
+    position: absolute;
+    top: 6px; left: 6px; right: 6px; bottom: 6px;
+    background: var(--orange-500);
+    border-radius: 999px;
+    transition:
+      background-color var(--motion-instant) var(--ease-step-hard);
+  }
+  .shutter-btn:active {
+    background: var(--ink-900);
+    border-color: var(--orange-500);
+    transform: scale(0.94);
+  }
+  .shutter-btn:active::after {
+    background: var(--paper-50);
+  }
+
+  /* TAB SWITCH HARD CUT */
+  .retro-tabs {
+    display: flex;
+    background: var(--paper-200);
+    border: 2px solid var(--ink-900);
+  }
+  .retro-tab {
+    padding: 12px 20px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink-900);
+    background: var(--paper-200);
+    border-right: 2px solid var(--ink-900);
+    transition: background-color var(--motion-instant) var(--ease-step-hard),
+                color var(--motion-instant) var(--ease-step-hard);
+  }
+  .retro-tab:last-child { border-right: none; }
+  .retro-tab.active {
+    background: var(--ink-900);
+    color: var(--paper-50);
+  }
+
+  /* BOTTOM SHEET (precise, kept) */
+  .sheet-stage {
+    height: 280px;
+    background: linear-gradient(var(--paper-200), var(--paper-100));
+    position: relative;
+    overflow: hidden;
+    border: 1px dashed var(--bone-400);
+  }
+  .sheet-trigger {
+    position: absolute;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+  }
+  .sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 27, 25, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--motion-moderate) var(--ease-standard);
+  }
+  .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: var(--paper-50);
+    padding: 24px 20px 32px;
+    transform: translateY(100%);
+    transition: transform var(--motion-slow) var(--ease-decelerate);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    box-shadow: 0 12px 32px -8px rgba(28, 27, 25, 0.18);
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-grabber {
+    width: 36px; height: 4px;
+    background: var(--bone-400);
+    margin: 0 auto 16px;
+  }
+  .sheet-title {
+    font-family: var(--font-en);
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .sheet-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+  .tiny-btn {
+    padding: 10px 16px;
+    background: var(--paper-200);
+    border: 1px solid var(--bone-400);
+    font-family: var(--font-en);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .tiny-btn:hover { background: var(--bone-300); }
+
+  /* BOOT SEQUENCE */
+  .boot-stage {
+    background: var(--ink-900);
+    padding: 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--paper-50);
+    line-height: 1.8;
+    min-height: 180px;
+  }
+  .boot-line {
+    opacity: 0;
+    animation: bootLineIn 180ms forwards;
+  }
+  .boot-line .amber { color: var(--orange-500); }
+  .boot-line .dim { color: var(--graphite-500); }
+  @keyframes bootLineIn {
+    to { opacity: 1; }
+  }
+  .boot-cursor {
+    display: inline-block;
+    width: 9px;
+    height: 14px;
+    background: var(--orange-500);
+    vertical-align: -2px;
+    margin-left: 4px;
+    animation: blink 800ms step-end infinite;
+  }
+
+  /* TOAST TYPING */
+  .toast-stage {
+    height: 160px;
+    background: linear-gradient(var(--paper-200), var(--paper-100));
+    position: relative;
+    overflow: hidden;
+    border: 1px dashed var(--bone-400);
+    padding: 16px;
+  }
+  .retro-toast {
+    position: absolute;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink-900);
+    color: var(--paper-50);
+    padding: 12px 20px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    min-width: 260px;
+    text-align: center;
+    display: none;
+  }
+  .retro-toast.on { display: block; }
+  .retro-toast .rt-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--orange-500);
+    vertical-align: -2px;
+    margin-left: 2px;
+    animation: blink 800ms step-end infinite;
+  }
+
+  /* HAPTIC TABLE */
+  .haptic-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    margin-top: 16px;
+  }
+  .haptic-table th, .haptic-table td {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid var(--bone-300);
+    vertical-align: top;
+  }
+  .haptic-table th {
+    background: var(--paper-200);
+    font-family: var(--font-en);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-700);
+  }
+  .haptic-table tr:last-child td { border-bottom: none; }
+  .haptic-table td:first-child { font-weight: 600; }
+  .haptic-table .mono { font-family: var(--font-mono); font-size: 11px; color: var(--ink-900); }
+
+  /* SUMMARY */
+  .summary {
+    padding: 32px;
+    background: var(--ink-900);
+    color: var(--paper-50);
+    margin-top: 64px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+  }
+  .summary-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .summary-title {
+    font-family: var(--font-en);
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+    color: var(--paper-50);
+  }
+  .summary-body {
+    color: var(--bone-300);
+    max-width: 760px;
+  }
+  .summary-body b { color: var(--orange-500); }
+  .summary-pfx { color: var(--orange-500); }
+
+  .note-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--orange-100);
+    border-left: 3px solid var(--orange-500);
+    margin-bottom: 32px;
+  }
+  .note-icon {
+    width: 20px; height: 20px;
+    background: var(--orange-500);
+    color: var(--paper-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .note-text {
+    font-size: 13px;
+    color: var(--ink-900);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cover">
+    <div class="cover-tag">Motion System · v2.0 · Retro Computer Edition · 2026-04-21</div>
+    <h1 class="cover-title">How it clicks.</h1>
+    <p class="cover-subtitle">낡은 터미널의 딸깍, 블록 커서의 깜빡임, 글자가 한 자씩 찍히는 감각</p>
+    <p class="cover-lede">
+      v1이 'precise, no-bounce'를 원칙으로 삼았다면, v2는 그 DNA 위에 <b>steps() 기반 레트로 레이어</b>를 얹었습니다.
+      키를 누르면 화면이 즉시 반응하고, 커서는 부드럽게 페이드가 아닌 <b>하드한 깜빡임</b>으로 나타나며, 로딩은 블록이 하나씩 채워지는 식으로 보여집니다.
+      정밀함을 잃지 않으면서, 손끝에 '오래된 기계를 만지는' 감각이 돌아옵니다.
+    </p>
+    <div class="cover-terminal">
+      <span class="pfx">&gt;</span> booting quiet room · v2.0<br>
+      <span class="pfx">&gt;</span> loading motion tokens.......<span class="cmt">[OK]</span><br>
+      <span class="pfx">&gt;</span> enabling step-timing........<span class="cmt">[OK]</span><br>
+      <span class="pfx">&gt;</span> initializing haptic pairs...<span class="cmt">[OK]</span><br>
+      <span class="pfx">&gt;</span> ready<span class="block-cursor" style="margin-left:6px"></span>
+    </div>
+  </header>
+
+  <div class="note-row">
+    <div class="note-icon">!</div>
+    <div class="note-text">아래 데모를 실제로 <b>눌러보고, 포커스하고, 타이핑해보세요</b>. 문서가 아니라 손으로 느낄 용도입니다.</div>
+  </div>
+
+  <!-- 1. PRINCIPLES -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">Principles</h2>
+      <p class="sec-desc">네 가지 원칙. 의심스러울 땐 여기로 돌아옵니다.</p>
+    </div>
+    <div class="principles">
+      <div class="p-card">
+        <div class="p-tag">Principle 01</div>
+        <div class="p-title">Short & confident</div>
+        <div class="p-body">120-320ms에 끝난다. 도구처럼 즉각 반응하고, 주저하지 않는다.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-tag">Principle 02</div>
+        <div class="p-title">No bounce, no overshoot</div>
+        <div class="p-body">스프링·바운스 금지. 모든 움직임은 목표값에 precise하게 착지한다.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-tag">Principle 03 · NEW</div>
+        <div class="p-title">Step over smooth, when it fits</div>
+        <div class="p-body">커서·로딩·버튼·포커스처럼 '기계적'이어야 할 곳은 steps() 이징으로 하드하게. 사이 값을 만들지 않는다.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-tag">Principle 04</div>
+        <div class="p-title">Paired with haptics</div>
+        <div class="p-body">주요 상호작용은 햅틱과 함께 설계. 시각·촉각이 같은 시점에 발생해야 기계감이 산다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. DURATION -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Duration Tokens</h2>
+      <p class="sec-desc">공용 5개 + 레트로 전용 3개.</p>
+    </div>
+    <div>
+      <div class="token-row"><span class="tk-name">--motion-instant</span><span class="tk-val">0ms</span><div class="tk-bar-track"></div><span class="tk-use">즉시 전환 (step-end와 짝)</span></div>
+      <div class="token-row"><span class="tk-name">--motion-fast</span><span class="tk-val">120ms</span><div class="tk-bar-track"><div class="tk-bar"></div></div><span class="tk-use">포커스, 색 전환</span></div>
+      <div class="token-row"><span class="tk-name">--motion-moderate</span><span class="tk-val">200ms</span><div class="tk-bar-track"><div class="tk-bar" style="animation-delay: -300ms"></div></div><span class="tk-use">스탬프, 토스트 진입</span></div>
+      <div class="token-row"><span class="tk-name">--motion-slow</span><span class="tk-val">320ms</span><div class="tk-bar-track"><div class="tk-bar" style="animation-delay: -600ms"></div></div><span class="tk-use">바텀시트, 모달 (precise 유지)</span></div>
+      <div class="token-row"><span class="tk-name">--motion-xslow</span><span class="tk-val">480ms</span><div class="tk-bar-track"><div class="tk-bar" style="animation-delay: -900ms"></div></div><span class="tk-use">캡처 플래시, 부트 시퀀스</span></div>
+      <div class="token-row" style="margin-top:24px"><span class="tk-name">--motion-blink</span><span class="tk-val">1000ms</span><div class="tk-bar-track"></div><span class="tk-use">블록 커서 깜빡임 사이클</span></div>
+      <div class="token-row"><span class="tk-name">--motion-type-step</span><span class="tk-val">60ms</span><div class="tk-bar-track"></div><span class="tk-use">타자기 등장: 글자 하나당 시간</span></div>
+      <div class="token-row"><span class="tk-name">--motion-spin-step</span><span class="tk-val">200ms</span><div class="tk-bar-track"></div><span class="tk-use">스텝 스피너 프레임당 시간</span></div>
+    </div>
+  </section>
+
+  <!-- 3. EASING -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Easing Tokens</h2>
+      <p class="sec-desc">Precise 5개 (둥근 공) + Retro 4개 (사각 블록). 각 공이 같은 거리를 다른 리듬으로 달립니다.</p>
+    </div>
+    <div class="easing-grid">
+      <div class="easing-card ec-1">
+        <span class="ec-tag ec-tag-p">PRECISE</span>
+        <div class="ec-name">linear</div>
+        <div class="ec-ball-track"><div class="ec-ball round"></div></div>
+        <div class="ec-value">linear</div>
+        <div class="ec-use">로딩 바, 프로그레스.</div>
+      </div>
+      <div class="easing-card ec-2">
+        <span class="ec-tag ec-tag-p">PRECISE</span>
+        <div class="ec-name">standard</div>
+        <div class="ec-ball-track"><div class="ec-ball round"></div></div>
+        <div class="ec-value">cubic-bezier(0.4, 0, 0.2, 1)</div>
+        <div class="ec-use">대부분의 상태 전환 기본값.</div>
+      </div>
+      <div class="easing-card ec-3">
+        <span class="ec-tag ec-tag-p">PRECISE</span>
+        <div class="ec-name">decelerate</div>
+        <div class="ec-ball-track"><div class="ec-ball round"></div></div>
+        <div class="ec-value">cubic-bezier(0, 0, 0.2, 1)</div>
+        <div class="ec-use">들어올 때. 부드럽게 착지.</div>
+      </div>
+      <div class="easing-card ec-4">
+        <span class="ec-tag ec-tag-p">PRECISE</span>
+        <div class="ec-name">accelerate</div>
+        <div class="ec-ball-track"><div class="ec-ball round"></div></div>
+        <div class="ec-value">cubic-bezier(0.4, 0, 1, 1)</div>
+        <div class="ec-use">나갈 때. 빠르게 사라짐.</div>
+      </div>
+      <div class="easing-card ec-5">
+        <span class="ec-tag ec-tag-p">PRECISE</span>
+        <div class="ec-name">crisp</div>
+        <div class="ec-ball-track"><div class="ec-ball round"></div></div>
+        <div class="ec-value">cubic-bezier(0.22, 1, 0.36, 1)</div>
+        <div class="ec-use">큰 전환에 쓰는 precise 시그니처 (바텀시트 등).</div>
+      </div>
+      <div class="easing-card ec-6">
+        <span class="ec-tag ec-tag-r">RETRO</span>
+        <div class="ec-name">step-end</div>
+        <div class="ec-ball-track"><div class="ec-ball square"></div></div>
+        <div class="ec-value">step-end</div>
+        <div class="ec-use">즉시 점프. 커서 깜빡임, 버튼 색 인버트. v2 시그니처.</div>
+      </div>
+      <div class="easing-card ec-7">
+        <span class="ec-tag ec-tag-r">RETRO</span>
+        <div class="ec-name">steps-2</div>
+        <div class="ec-ball-track"><div class="ec-ball square"></div></div>
+        <div class="ec-value">steps(2, end)</div>
+        <div class="ec-use">2프레임 스프라이트 팝. 스탬프 반응.</div>
+      </div>
+      <div class="easing-card ec-8">
+        <span class="ec-tag ec-tag-r">RETRO</span>
+        <div class="ec-name">steps-4</div>
+        <div class="ec-ball-track"><div class="ec-ball square"></div></div>
+        <div class="ec-value">steps(4, end)</div>
+        <div class="ec-use">4프레임 스피너에 사용.</div>
+      </div>
+      <div class="easing-card ec-9">
+        <span class="ec-tag ec-tag-r">RETRO</span>
+        <div class="ec-name">steps-8</div>
+        <div class="ec-ball-track"><div class="ec-ball square"></div></div>
+        <div class="ec-value">steps(8, end)</div>
+        <div class="ec-use">더 촘촘한 스텝 애니메이션이 필요할 때.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. PATTERNS -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">Motion Patterns</h2>
+      <p class="sec-desc">레트로 10개 + 정밀 1개. RETRO 배지가 붙은 건 steps() 기반입니다.</p>
+    </div>
+
+    <div class="pattern-grid">
+
+      <!-- PATTERN 01: BLOCK CURSOR (retro hero) -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 01</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Block Cursor</div>
+        <div class="pattern-desc">타이핑의 존재감. 얇은 세로선 대신 두꺼운 █ 블록. 1초 주기로 하드하게 깜빡이고, 타이핑 중에는 멈춥니다. 필드 경계는 포커스 시 검은 2px 보더로 반응.</div>
+        <div class="pattern-ref">Ref: <b>MS-DOS · Apple II · Classic Mac terminal</b></div>
+        <div class="pattern-stage">
+          <div class="retro-input-wrap" id="retroInput" tabindex="0">
+            <span class="retro-input-field" contenteditable="true" spellcheck="false" oninput="stopBlink(this)" onblur="resumeBlink(this)">K7X-</span><span class="block-cursor"></span>
+          </div>
+        </div>
+        <div class="pattern-spec">
+          cursor <b>11px × 20px solid block</b> · blink <b>1000ms step-end</b><br>
+          border <b>transparent → ink-900 (2px)</b> · bg <b>paper-200 → paper-50</b><br>
+          타이핑 중 <b>깜빡임 일시 정지</b>
+        </div>
+        <span class="pattern-hint">↑ 클릭하여 타이핑해보기</span>
+      </div>
+
+      <!-- PATTERN 02: BUTTON INVERT -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 02</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Button Invert</div>
+        <div class="pattern-desc">누르는 순간 색이 <b>즉시 반전</b>. scale도 opacity도 아닌 하드한 색 스왑으로 '키를 눌렀다'는 물리적 신호. 페이드 없이 0ms에 전환.</div>
+        <div class="pattern-ref">Ref: <b>Classic Mac, NeXTSTEP, Working Copy app</b></div>
+        <div class="pattern-stage">
+          <button class="retro-btn">Capture</button>
+          <button class="retro-btn-ghost" style="margin-left:12px">Comment</button>
+        </div>
+        <div class="pattern-spec">
+          bg/color <b>instant swap on :active</b><br>
+          duration <b>0ms (step-end)</b><br>
+          haptic <b>.light</b>
+        </div>
+        <span class="pattern-hint">↑ 탭 앤 홀드로 반전 확인</span>
+      </div>
+
+      <!-- PATTERN 03: PROGRESS BLOCKS -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 03</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Progress Blocks</div>
+        <div class="pattern-desc">부드러운 점 3개 대신 <b>블록 7칸</b>이 순차적으로 채워집니다. 보간 없이 step-end로 하드 전환. Windows 95 설치 진행 바의 직계.</div>
+        <div class="pattern-ref">Ref: <b>Windows 95 install · DOS progress</b></div>
+        <div class="pattern-stage">
+          <div class="progress-blocks">
+            <div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div>
+          </div>
+        </div>
+        <div class="pattern-spec">
+          7 blocks · each <b>18×22px</b> · stagger <b>180ms</b><br>
+          fill sequence <b>paper-200 → orange-500 → paper-200</b><br>
+          cycle <b>1800ms</b> · easing <b>step-end</b>
+        </div>
+        <span class="pattern-hint">자동 반복</span>
+      </div>
+
+      <!-- PATTERN 04: STEP SPINNER -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 04</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Step Spinner</div>
+        <div class="pattern-desc">유닉스 터미널의 바로 그 스피너. <b>/</b> · <b>−</b> · <b>\</b> · <b>|</b> 네 문자를 200ms 간격으로 교체. 스무스한 회전 없음.</div>
+        <div class="pattern-ref">Ref: <b>Unix terminal, npm install, curl progress</b></div>
+        <div class="pattern-stage">
+          <div class="step-spinner" id="spinner">/</div>
+        </div>
+        <div class="pattern-spec">
+          chars <b>/ − \ |</b> · 프레임당 <b>200ms</b><br>
+          cycle <b>800ms</b> · easing <b>step-end (JS cycle)</b>
+        </div>
+        <span class="pattern-hint">자동 반복</span>
+      </div>
+
+      <!-- PATTERN 05: TYPEWRITER -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 05</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Typewriter Reveal</div>
+        <div class="pattern-desc">환영 화면, 방 입장 성공 메시지 같은 <b>hero 순간에만</b> 사용. 한 글자당 60ms로 찍히고, 끝에 블록 커서가 깜빡입니다. 일반 UI 텍스트엔 쓰지 않습니다.</div>
+        <div class="pattern-ref">Ref: <b>BBS, terminal boot, Metal Gear codec</b></div>
+        <div class="pattern-stage" style="flex-direction:column; gap:12px">
+          <div class="typewriter" id="typewriter"></div>
+          <button class="retro-btn-ghost" style="padding:8px 16px; font-size:11px" onclick="runTypewriter()">Type again</button>
+        </div>
+        <div class="pattern-spec">
+          per char <b>60ms</b> · cursor <b>12×22px block blink 1000ms</b><br>
+          usage <b>hero 순간만</b> · 일반 UI 금지
+        </div>
+        <span class="pattern-hint">↑ 다시 재생</span>
+      </div>
+
+      <!-- PATTERN 06: STAMP 2-STEP -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 06</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Stamp Sprite Pop</div>
+        <div class="pattern-desc">스탬프 찍기. 부드러운 보간 없이 <b>2프레임 스프라이트</b>처럼 작은 1x → 1.25x → 1x 도약. 8비트 게임 피드백과 동일.</div>
+        <div class="pattern-ref">Ref: <b>NES/Game Boy sprite pop</b></div>
+        <div class="pattern-stage">
+          <div style="display:flex; gap:14px">
+            <div class="retro-stamp" onclick="popStamp(this)">♥</div>
+            <div class="retro-stamp" onclick="popStamp(this)">◎</div>
+            <div class="retro-stamp" onclick="popStamp(this)">✦</div>
+          </div>
+        </div>
+        <div class="pattern-spec">
+          scale <b>1 → 1.25 → 1 via steps(2, end)</b><br>
+          bg <b>paper-200 → orange-100</b> · border <b>bone-400 → orange-500</b><br>
+          duration <b>200ms</b> · haptic <b>.soft</b>
+        </div>
+        <span class="pattern-hint">↑ 탭하여 찍기</span>
+      </div>
+
+      <!-- PATTERN 07: SHUTTER HARD PRESS -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 07</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Shutter Hard Press</div>
+        <div class="pattern-desc">촬영 버튼. CRT 플래시 대신 <b>버튼이 눌리는 감각</b>에 집중. 누르는 순간 색이 즉시 반전되고, scale이 0.94로 살짝 눌렸다 되돌아옵니다. 과한 이펙트 없이 '키를 눌렀다'는 물리적 신호만.</div>
+        <div class="pattern-ref">Ref: <b>Classic Mac button press · NeXTSTEP toolbar</b></div>
+        <div class="pattern-stage">
+          <div class="shutter-btn"></div>
+        </div>
+        <div class="pattern-spec">
+          bg/border <b>instant invert on :active</b><br>
+          scale <b>1 → 0.94 → 1</b> · duration <b>120ms standard</b><br>
+          haptic <b>.medium</b> · sound <b>aperture_click_80ms</b>
+        </div>
+        <span class="pattern-hint">↑ 탭 앤 홀드로 셔터 확인</span>
+      </div>
+
+      <!-- PATTERN 08: TAB HARD CUT -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 08</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Tab Hard Cut</div>
+        <div class="pattern-desc">탭 전환. 부드러운 필 슬라이드 대신 <b>즉시 색 반전</b>. 현재 탭은 검정 배경 + 종이색 텍스트, 나머지는 반대. 동시에 탭 선택 햅틱.</div>
+        <div class="pattern-ref">Ref: <b>Classic Mac toolbar · early web tabs</b></div>
+        <div class="pattern-stage">
+          <div class="retro-tabs" id="retroTabs">
+            <div class="retro-tab active" onclick="switchRetroTab(event)">Feed</div>
+            <div class="retro-tab" onclick="switchRetroTab(event)">Members</div>
+            <div class="retro-tab" onclick="switchRetroTab(event)">Settings</div>
+          </div>
+        </div>
+        <div class="pattern-spec">
+          active <b>ink-900 bg + paper-50 text</b> · inactive <b>paper-200 bg + ink-900 text</b><br>
+          duration <b>0ms (step-end)</b> · haptic <b>.selection</b>
+        </div>
+        <span class="pattern-hint">↑ 탭 전환</span>
+      </div>
+
+      <!-- PATTERN 09: TYPING TOAST -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 09</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Typing Toast</div>
+        <div class="pattern-desc">토스트가 나타나는 순간 내용이 <b>한 글자씩</b> 찍힘. 일반 앱의 fade-in 대신 터미널 로그가 출력되는 느낌.</div>
+        <div class="pattern-ref">Ref: <b>Terminal log output · BBS status line</b></div>
+        <div class="pattern-stage toast-stage">
+          <button class="retro-btn" onclick="triggerRetroToast()" style="margin:60px auto 0; display:block">Show Toast</button>
+          <div class="retro-toast" id="retroToast"></div>
+        </div>
+        <div class="pattern-spec">
+          typing <b>60ms per char</b> · hold <b>2400ms after complete</b> · instant hide<br>
+          haptic <b>.success notification</b>
+        </div>
+        <span class="pattern-hint">↑ 토스트 보기</span>
+      </div>
+
+      <!-- PATTERN 10: BOTTOM SHEET (precise, kept) -->
+      <div class="pattern">
+        <div class="pattern-tag"><span>Pattern 10</span><span class="pattern-badge badge-precise">PRECISE</span></div>
+        <div class="pattern-title">Bottom Sheet</div>
+        <div class="pattern-desc">큰 공간 전환은 <b>하드컷 대신 precise한 슬라이드</b>로 유지. 여기까지 스텝 타이밍을 쓰면 앱 전체가 '단속적'이 됩니다. 주요 화면 전환에는 부드러움이 필요합니다.</div>
+        <div class="pattern-ref">Ref: <b>iOS native bottom sheet</b></div>
+        <div class="pattern-stage sheet-stage">
+          <button class="retro-btn sheet-trigger" onclick="toggleSheet()">Open Sheet</button>
+          <div class="sheet-backdrop" id="backdrop" onclick="toggleSheet()"></div>
+          <div class="sheet" id="sheet">
+            <div class="sheet-grabber"></div>
+            <div class="sheet-title">Leave this room?</div>
+            <div class="sheet-actions">
+              <button class="tiny-btn" onclick="toggleSheet()">Cancel</button>
+              <button class="tiny-btn" style="background:var(--brick-500); color:var(--paper-50); border:none" onclick="toggleSheet()">Leave</button>
+            </div>
+          </div>
+        </div>
+        <div class="pattern-spec">
+          transform <b>translateY(100% → 0)</b> · backdrop opacity <b>0 → 0.45</b><br>
+          duration <b>--motion-slow (320ms)</b> · easing <b>--ease-decelerate</b><br>
+          haptic <b>.soft (on open complete)</b>
+        </div>
+        <span class="pattern-hint">↑ 시트 열기/닫기</span>
+      </div>
+
+      <!-- PATTERN 11: BOOT SEQUENCE -->
+      <div class="pattern retro-tint">
+        <div class="pattern-tag"><span>Pattern 11</span><span class="pattern-badge badge-retro">RETRO</span></div>
+        <div class="pattern-title">Boot Sequence (Room Entry)</div>
+        <div class="pattern-desc">새 방에 처음 입장하는 순간만 사용. 부트 로그가 한 줄씩 등장하고 마지막에 'READY' + 커서. 단 한 번 보여주는 이벤트. 두 번째 입장부터는 없음.</div>
+        <div class="pattern-ref">Ref: <b>DOS/BIOS boot · Unix login</b></div>
+        <div class="pattern-stage dark" id="bootStage" style="padding:24px; flex-direction:column; align-items:flex-start">
+          <button class="retro-btn-ghost" onclick="runBoot()" style="margin-bottom:12px; padding:8px 16px; font-size:11px">Run boot</button>
+          <div class="boot-stage" id="bootLog" style="width:100%; background:transparent; padding:0"></div>
+        </div>
+        <div class="pattern-spec">
+          line-in stagger <b>180ms</b> · per-line reveal <b>instant</b> (fade 180ms)<br>
+          final cursor <b>blink 800ms step-end</b><br>
+          haptic <b>.success at END</b> · sound <b>door_soft_240ms</b>
+        </div>
+        <span class="pattern-hint">↑ 부트 시퀀스 실행</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. HAPTIC -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">Haptic Pairing</h2>
+      <p class="sec-desc">레트로 모션이라도 햅틱은 그대로. iOS UIFeedbackGenerator 기준.</p>
+    </div>
+    <table class="haptic-table">
+      <thead>
+        <tr><th style="width: 24%">인터랙션</th><th style="width: 28%">iOS Haptic</th><th style="width: 18%">강도</th><th>언제 발생</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>버튼 색 인버트</td><td class="mono">UIImpactFeedbackGenerator .light</td><td>약함</td><td>버튼 press 순간 (색 반전과 동시)</td></tr>
+        <tr><td>스탬프 스프라이트 팝</td><td class="mono">UIImpactFeedbackGenerator .soft</td><td>약함</td><td>스탬프 선택, 토글 on</td></tr>
+        <tr><td>캡처 셔터 프레스</td><td class="mono">UIImpactFeedbackGenerator .medium</td><td>중간</td><td>셔터 press 순간 (색 반전과 동시)</td></tr>
+        <tr><td>캡처 성공</td><td class="mono">UINotificationFeedbackGenerator .success</td><td>중간·패턴</td><td>업로드 완료 직후</td></tr>
+        <tr><td>탭 하드 컷</td><td class="mono">UISelectionFeedbackGenerator</td><td>매우 약함</td><td>탭 전환 즉시</td></tr>
+        <tr><td>방 입장 부트 종료</td><td class="mono">UINotificationFeedbackGenerator .success</td><td>중간·패턴</td><td>부트 시퀀스 마지막 READY 노출</td></tr>
+        <tr><td>코드 오류</td><td class="mono">UINotificationFeedbackGenerator .error</td><td>강함·패턴</td><td>잘못된 초대 코드</td></tr>
+        <tr><td>되돌릴 수 없는 액션 확정</td><td class="mono">UIImpactFeedbackGenerator .heavy</td><td>강함</td><td>방 나가기, 사진 삭제 확인</td></tr>
+        <tr><td>바텀시트 열림</td><td class="mono">UIImpactFeedbackGenerator .soft</td><td>약함</td><td>시트 완전 도달 시점</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 6. SOUND -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <h2 class="sec-title">Sound Design (Retro Flavored)</h2>
+      <p class="sec-desc">기본 OFF, 설정에서 ON 가능. 톤은 오래된 기계의 결.</p>
+    </div>
+    <table class="haptic-table">
+      <thead>
+        <tr><th style="width: 28%">이벤트</th><th style="width: 30%">사운드 성격</th><th>비고</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>버튼 press</td><td>없음 (햅틱만)</td><td>연속 사용 시 피로</td></tr>
+        <tr><td>캡처 셔터</td><td class="mono">aperture_click_80ms.wav</td><td>고전 카메라 셔터. 80ms 이내</td></tr>
+        <tr><td>캡처 성공</td><td class="mono">modem_bleep_2note.wav</td><td>낡은 모뎀이 연결될 때의 짧은 2음 벨</td></tr>
+        <tr><td>코드 오류</td><td class="mono">terminal_beep_60ms.wav</td><td>터미널 경고 단음. PC 스피커 톤</td></tr>
+        <tr><td>방 입장 부트 종료</td><td class="mono">boot_ready_320ms.wav</td><td>예전 부팅 종료 시 나오는 단음 펄스</td></tr>
+        <tr><td>타이핑 등장</td><td class="mono">keyclick_soft_40ms.wav</td><td>타자기 키 소리. 글자당 재생 (이벤트성 hero만)</td></tr>
+        <tr><td>스탬프</td><td>없음 (햅틱만)</td><td>연속 피로 방지</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:16px; font-size:13px; color:var(--graphite-600); line-height:1.6">
+      사운드 파일 제작은 시스템 완성 후 별도 단계. 현재는 성격과 길이만 정의.
+    </p>
+  </section>
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <div class="summary-eyebrow">The v2 Rule</div>
+    <h3 class="summary-title">Steps where it clicks. Smooth where it carries.</h3>
+    <p class="summary-body">
+      <span class="summary-pfx">&gt;</span> <b>Short & confident</b>: 모든 모션은 120-320ms에 완결.<br>
+      <span class="summary-pfx">&gt;</span> <b>No bounce</b>: 오버슈트·스프링 금지.<br>
+      <span class="summary-pfx">&gt;</span> <b>Step over smooth, when it fits</b>: 커서·로딩·버튼·포커스처럼 기계적이어야 할 곳은 steps() 이징으로 하드하게.<br>
+      <span class="summary-pfx">&gt;</span> <b>Paired with haptics</b>: 시각과 촉각이 동시에 발생.<br><br>
+      이 네 가지가 지켜지면 새 기능이 붙어도 '오래된 기계' 감각은 유지됩니다. 의심스러울 땐 <b>steps()로 갈까 smooth로 갈까</b>를 먼저 자문하세요.
+    </p>
+  </div>
+
+</div>
+
+<script>
+  // Block cursor input
+  const retroInput = document.getElementById('retroInput');
+  retroInput.addEventListener('click', () => {
+    retroInput.classList.add('focused');
+    const field = retroInput.querySelector('.retro-input-field');
+    field.focus();
+    placeCaretEnd(field);
+  });
+  document.addEventListener('click', (e) => {
+    if (!retroInput.contains(e.target)) retroInput.classList.remove('focused');
+  });
+  function placeCaretEnd(el) {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+  let typingTimeout;
+  function stopBlink(el) {
+    const cursor = retroInput.querySelector('.block-cursor');
+    cursor.style.animation = 'none';
+    cursor.style.opacity = '1';
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      cursor.style.animation = '';
+    }, 400);
+  }
+  function resumeBlink(el) {
+    const cursor = retroInput.querySelector('.block-cursor');
+    cursor.style.animation = '';
+  }
+
+  // Step spinner
+  const spinChars = ['/', '−', '\\', '|'];
+  let spinIdx = 0;
+  setInterval(() => {
+    spinIdx = (spinIdx + 1) % spinChars.length;
+    document.getElementById('spinner').textContent = spinChars[spinIdx];
+  }, 200);
+
+  // Typewriter
+  const twMessage = 'WELCOME TO QUIET ROOM_';
+  let twTimer;
+  function runTypewriter() {
+    clearInterval(twTimer);
+    const el = document.getElementById('typewriter');
+    el.innerHTML = '<span class="tw-cursor"></span>';
+    let i = 0;
+    twTimer = setInterval(() => {
+      if (i >= twMessage.length) {
+        clearInterval(twTimer);
+        return;
+      }
+      el.innerHTML = twMessage.substring(0, i + 1) + '<span class="tw-cursor"></span>';
+      i++;
+    }, 60);
+  }
+  runTypewriter();
+
+  // Stamp pop
+  function popStamp(el) {
+    el.classList.remove('popped');
+    void el.offsetWidth;
+    el.classList.toggle('popped');
+  }
+
+  // Retro tabs
+  function switchRetroTab(evt) {
+    const tabs = document.querySelectorAll('#retroTabs .retro-tab');
+    tabs.forEach(t => t.classList.remove('active'));
+    evt.target.classList.add('active');
+  }
+
+  // Bottom sheet
+  function toggleSheet() {
+    document.getElementById('sheet').classList.toggle('open');
+    document.getElementById('backdrop').classList.toggle('open');
+  }
+
+  // Retro toast (typing)
+  const toastMsg = 'PHOTO SAVED TO CREEK HOUSE';
+  let toastTimer, toastTypeTimer;
+  function triggerRetroToast() {
+    const t = document.getElementById('retroToast');
+    clearTimeout(toastTimer);
+    clearInterval(toastTypeTimer);
+    t.classList.add('on');
+    let i = 0;
+    t.innerHTML = '<span class="rt-cursor"></span>';
+    toastTypeTimer = setInterval(() => {
+      if (i >= toastMsg.length) {
+        clearInterval(toastTypeTimer);
+        toastTimer = setTimeout(() => t.classList.remove('on'), 2400);
+        return;
+      }
+      t.innerHTML = toastMsg.substring(0, i + 1) + '<span class="rt-cursor"></span>';
+      i++;
+    }, 60);
+  }
+
+  // Boot sequence
+  const bootLines = [
+    ['&gt; booting quiet room v2.0', ''],
+    ['&gt; authenticating invite code K7X-2M9', 'dim'],
+    ['&gt; establishing room connection...', 'dim'],
+    ['&gt; fetching 4 members.........', 'dim'],
+    ['&gt; sync photo history..........', 'dim'],
+    ['&gt; <span class="amber">READY</span>', 'amber-line']
+  ];
+  function runBoot() {
+    const log = document.getElementById('bootLog');
+    log.innerHTML = '';
+    bootLines.forEach((line, i) => {
+      const div = document.createElement('div');
+      div.className = 'boot-line';
+      div.style.animationDelay = (i * 180) + 'ms';
+      if (line[1] === 'dim') div.innerHTML = '<span class="dim">' + line[0] + '</span>';
+      else div.innerHTML = line[0];
+      if (i === bootLines.length - 1) {
+        div.innerHTML += '<span class="boot-cursor"></span>';
+      }
+      log.appendChild(div);
+    });
+  }
+  runBoot();
+</script>
+</body>
+</html>

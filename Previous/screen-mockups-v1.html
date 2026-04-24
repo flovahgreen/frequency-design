@@ -1,0 +1,2485 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen Mockup Set · Core 6 · v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --paper-50: #FAF8F4;
+    --paper-100: #F4F1EC;
+    --paper-200: #ECE7DE;
+    --bone-300: #E0DACF;
+    --bone-400: #C9C3B8;
+    --graphite-500: #8C8880;
+    --graphite-600: #5E5C56;
+    --graphite-700: #3D3B37;
+    --ink-900: #1C1B19;
+    --orange-500: #E85A2A;
+    --orange-100: #FBE4D8;
+    --navy-500: #2B3F5E;
+    --navy-100: #D7DCE5;
+    --brick-500: #A8412B;
+    --brick-100: #F4D9D2;
+    --sage-500: #5C7A55;
+
+    --radius-tight: 4px;
+    --radius-card: 0px;
+    --radius-round: 999px;
+
+    --font-kr: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+    --font-en: "Manrope", sans-serif;
+    --font-mono: "Space Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-kr);
+    background: var(--paper-100);
+    color: var(--ink-900);
+    line-height: 1.5;
+    padding: 48px 32px 96px;
+  }
+  .wrap { max-width: 1440px; margin: 0 auto; }
+
+  /* COVER */
+  .cover {
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--bone-400);
+    margin-bottom: 48px;
+  }
+  .cover-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .cover-title {
+    font-family: var(--font-en);
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    margin-bottom: 8px;
+  }
+  .cover-subtitle {
+    font-size: 18px;
+    color: var(--graphite-600);
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .cover-lede {
+    font-size: 14px;
+    color: var(--graphite-700);
+    max-width: 760px;
+    line-height: 1.65;
+  }
+  .cover-terminal {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: var(--ink-900);
+    color: var(--paper-50);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+  }
+  .cover-terminal .pfx { color: var(--orange-500); }
+  .cover-terminal .cmt { color: var(--graphite-500); }
+  .cover-terminal .blink {
+    display: inline-block;
+    width: 9px; height: 14px;
+    background: var(--orange-500);
+    vertical-align: -2px; margin-left: 4px;
+    animation: blink 1000ms step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* TOKEN CHIP STRIP */
+  .chips {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 64px;
+  }
+  .chip {
+    padding: 8px 12px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--graphite-700);
+  }
+  .chip b { color: var(--orange-500); }
+
+  /* SCREEN GRID */
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px 32px;
+  }
+  @media (max-width: 1180px) {
+    .screens-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .frame-cell { display: flex; flex-direction: column; }
+  .frame-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .screen-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--orange-500);
+    letter-spacing: 0.12em;
+  }
+  .screen-name {
+    font-family: var(--font-en);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .screen-desc {
+    font-size: 12px;
+    color: var(--graphite-600);
+    margin-left: auto;
+    text-align: right;
+    line-height: 1.4;
+    max-width: 180px;
+  }
+
+  /* IPHONE FRAME (15 Pro proportions ~ 19.5:9) */
+  .iphone {
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 393 / 852;
+    margin: 0 auto;
+    background: var(--ink-900);
+    border-radius: 44px;
+    padding: 10px;
+    box-shadow:
+      0 0 0 1px var(--bone-400),
+      0 24px 48px -20px rgba(28,27,25,0.25);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%;
+    background: var(--paper-50);
+    border-radius: 34px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute;
+    top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 100px; height: 28px;
+    background: var(--ink-900);
+    border-radius: 999px;
+    z-index: 10;
+  }
+  .status-bar {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px 0 20px;
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-900);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 5;
+  }
+  .status-bar.on-dark { color: var(--paper-50); }
+  .status-right {
+    display: flex; align-items: center; gap: 5px;
+  }
+  .sr-ico { width: 14px; height: 10px; background: currentColor; opacity: 0.9; }
+  .sr-ico.signal {
+    width: 16px; height: 10px;
+    clip-path: polygon(0 100%, 4px 100%, 4px 70%, 0 70%, 0 100%, 5px 100%, 9px 100%, 9px 50%, 5px 50%, 5px 100%, 10px 100%, 14px 100%, 14px 30%, 10px 30%, 10px 100%, 15px 100%, 19px 100%, 19px 10%, 15px 10%);
+  }
+  .sr-ico.battery {
+    width: 22px; height: 11px;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    position: relative;
+  }
+  .sr-ico.battery::after {
+    content:"";
+    position: absolute;
+    right: -3px; top: 3px;
+    width: 2px; height: 5px;
+    background: currentColor;
+  }
+  .sr-ico.battery::before {
+    content:"";
+    position: absolute;
+    top: 1px; left: 1px; bottom: 1px;
+    width: 80%;
+    background: currentColor;
+    border-radius: 1px;
+  }
+  .home-indicator {
+    position: absolute;
+    bottom: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 38%; height: 4px;
+    background: var(--ink-900);
+    border-radius: 999px;
+    z-index: 10;
+  }
+  .home-indicator.on-dark { background: var(--paper-50); opacity: 0.9; }
+
+  /* SCREEN CONTENT BASE */
+  .screen-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* COMMON UI ATOMS */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ink-900);
+    color: var(--paper-50);
+    padding: 14px 18px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: var(--radius-tight);
+    border: none;
+    width: 100%;
+  }
+  .btn-primary.accent { background: var(--orange-500); color: var(--ink-900); }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: var(--ink-900);
+    padding: 12px 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: var(--radius-tight);
+    border: 1.5px solid var(--ink-900);
+  }
+  .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--brick-500);
+    color: var(--paper-50);
+    padding: 14px 18px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: var(--radius-tight);
+    border: none;
+    width: 100%;
+  }
+  .label-s {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+  }
+
+  /* === SCREEN 01 · ROOM ENTRY (terminal) === */
+  .s-entry {
+    padding: 24px 22px 28px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink-900);
+    color: var(--paper-50);
+    font-family: var(--font-mono);
+  }
+  .s-entry-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .wordmark {
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--paper-50);
+  }
+  .wordmark .dot { color: var(--orange-500); }
+  .s-entry-top .label-s { color: var(--graphite-400); }
+
+  .entry-divider {
+    height: 1px;
+    background: rgba(250,248,244,0.12);
+    margin: 14px 0;
+  }
+
+  /* Boot log rows */
+  .entry-boot {
+    font-size: 11px;
+    line-height: 1.75;
+    letter-spacing: 0.04em;
+  }
+  .entry-boot .row { display: block; }
+  .entry-boot .pfx { color: var(--orange-500); margin-right: 6px; }
+  .entry-boot .cmt { color: var(--graphite-400); }
+  .entry-boot .ok { color: var(--orange-500); margin-left: 6px; }
+
+  /* Prompt area (invite code input) */
+  .entry-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+  }
+  .entry-label {
+    font-size: 10px;
+    color: var(--graphite-400);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .entry-label .pfx { color: var(--orange-500); margin-right: 6px; }
+
+  .entry-field {
+    background: transparent;
+    border: none;
+    padding: 6px 2px 8px;
+    border-bottom: 1px solid rgba(250,248,244,0.25);
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--paper-50);
+    display: flex;
+    align-items: center;
+  }
+  .entry-cursor {
+    display: inline-block;
+    width: 14px; height: 26px;
+    background: var(--orange-500);
+    margin-left: 3px;
+    animation: blink 1000ms step-end infinite;
+  }
+  .entry-hint {
+    font-size: 10px;
+    color: var(--graphite-400);
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+  .entry-hint .pfx { color: var(--orange-500); margin-right: 5px; }
+
+  .entry-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .entry-btn-terminal {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--orange-500);
+    color: var(--ink-900);
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-radius: var(--radius-tight);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .entry-btn-terminal .pfx { opacity: 0.8; }
+  .entry-alt {
+    text-align: center;
+    font-size: 11px;
+    color: var(--graphite-400);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+  .entry-alt .pfx { color: var(--orange-500); margin-right: 5px; }
+  .entry-alt b {
+    color: var(--paper-50);
+    font-weight: 700;
+  }
+
+  /* === SCREEN 02 · FEED === */
+  .feed-head {
+    padding: 12px 18px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--bone-300);
+    flex-shrink: 0;
+  }
+  .feed-room {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .feed-room-name {
+    font-family: var(--font-en);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .feed-room-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+  }
+  .feed-room-meta .live {
+    color: var(--orange-500);
+    font-weight: 700;
+  }
+  .feed-actions { display: flex; gap: 8px; align-items: center; }
+  .icon-btn {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-tight);
+    background: var(--paper-100);
+    color: var(--ink-900);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .avatar-stack {
+    display: flex; gap: -6px;
+  }
+  .avatar-s {
+    width: 22px; height: 22px;
+    border-radius: 999px;
+    border: 1.5px solid var(--paper-50);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper-50);
+    margin-left: -6px;
+  }
+  .avatar-s:first-child { margin-left: 0; }
+  .av-1 { background: var(--sage-500); }
+  .av-2 { background: var(--orange-500); color: var(--ink-900); }
+  .av-3 { background: var(--navy-500); }
+  .av-4 { background: var(--brick-500); }
+  /* SVG icon sizing inside circular avatars */
+  .member-av svg { width: 22px; height: 22px; display: block; color: currentColor; }
+  .detail-av svg { width: 16px; height: 16px; display: block; color: currentColor; }
+  .cmt-av svg    { width: 14px; height: 14px; display: block; color: currentColor; }
+  .avatar-s svg  { width: 14px; height: 14px; display: block; color: currentColor; }
+  .av-2 svg { color: var(--ink-900); }
+
+  /* Feed scroll (horizontal carousel) */
+  .feed-scroll {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 12px 0 90px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .feed-scroll::-webkit-scrollbar { display: none; }
+
+  .time-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .time-col:first-child { padding-left: 14px; }
+  .time-col:last-child { padding-right: 14px; }
+
+  /* Central focal time readout (syncs with swipe position) */
+  .feed-focus {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 0 12px;
+    font-family: var(--font-mono);
+    line-height: 1;
+    border-bottom: 1px solid var(--bone-300);
+  }
+  .feed-focus .focus-status {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--orange-500);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .feed-focus .focus-status::before {
+    content: "";
+    width: 7px; height: 7px;
+    background: var(--orange-500);
+    border-radius: 999px;
+  }
+  .feed-focus .focus-status.past {
+    color: var(--ink-900);
+  }
+  .feed-focus .focus-status.past::before {
+    background: var(--graphite-400);
+  }
+  .feed-focus .focus-sub {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .feed-focus .focus-sub .chev {
+    opacity: 0.55;
+  }
+
+  /* Small per-column axis tick labels (irregular hours) */
+  .time-tick {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    align-self: flex-end;
+    padding-right: 2px;
+    opacity: 0.75;
+  }
+  .time-col.now .time-tick {
+    color: var(--orange-500);
+    font-weight: 700;
+    opacity: 1;
+  }
+  .time-photos {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, 200px);
+    grid-auto-columns: 150px;
+    gap: 6px;
+  }
+  .time-photos .photo-card {
+    width: 100%;
+    height: 100%;
+  }
+  .time-photos .photo-card .meta {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Swipe hint — centered, stacked above tab bar */
+  .swipe-hint {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 86px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .swipe-hint .pager {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .swipe-hint .dot {
+    width: 4px; height: 4px;
+    background: var(--bone-400);
+    border-radius: 999px;
+  }
+  .swipe-hint .dot.on {
+    background: var(--orange-500);
+    width: 14px;
+    border-radius: 2px;
+  }
+  .swipe-hint .label {
+    opacity: 0.85;
+  }
+
+  .photo-card {
+    background: var(--paper-200);
+    aspect-ratio: 3 / 4;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+  }
+  .photo-card .meta {
+    position: absolute;
+    left: 8px; bottom: 8px;
+    background: rgba(28,27,25,0.72);
+    color: var(--paper-50);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    padding: 3px 6px;
+  }
+  /* Profile color match for nickname tags */
+  .photo-card .meta.av-1 { background: var(--sage-500);   color: var(--paper-50); }
+  .photo-card .meta.av-2 { background: var(--orange-500); color: var(--ink-900); }
+  .photo-card .meta.av-3 { background: var(--navy-500);   color: var(--paper-50); }
+  .photo-card .meta.av-4 { background: var(--brick-500);  color: var(--paper-50); }
+  .photo-card .stamp-tag {
+    position: absolute;
+    top: 8px; right: 8px;
+    font-size: 11px;
+    background: var(--paper-50);
+    color: var(--ink-900);
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+  .pc-1 { background: linear-gradient(135deg, #C9BFA8 0%, #8A7F6A 100%); }
+  .pc-2 { background: linear-gradient(135deg, #E85A2A 0%, #A8412B 100%); }
+  .pc-3 { background: linear-gradient(135deg, #E0DACF 0%, #5E5C56 100%); }
+  .pc-4 { background: linear-gradient(135deg, #2B3F5E 0%, #1C1B19 100%); }
+  .pc-5 { background: linear-gradient(135deg, #D7DCE5 0%, #2B3F5E 100%); }
+  .pc-6 { background: linear-gradient(135deg, #FBE4D8 0%, #E85A2A 100%); }
+
+  /* tab bar */
+  .tab-bar {
+    position: absolute;
+    left: 10px; right: 10px; bottom: 10px;
+    height: 64px;
+    background: var(--paper-50);
+    border-top: 1.5px solid var(--ink-900);
+    display: flex;
+    align-items: stretch;
+    padding: 0 8px 10px;
+  }
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+  }
+  .tab-item.active { color: var(--ink-900); font-weight: 700; }
+  .tab-item.capture {
+    justify-content: flex-start;
+    padding-top: 0;
+  }
+  .tab-shutter {
+    width: 44px; height: 44px;
+    border-radius: 999px;
+    background: var(--paper-50);
+    border: 3px solid var(--ink-900);
+    position: relative;
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+  .tab-shutter::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    background: var(--orange-500);
+    border-radius: 999px;
+  }
+  .tab-icon {
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--font-en);
+  }
+  .tab-icon.grid {
+    background-image:
+      linear-gradient(currentColor,currentColor),
+      linear-gradient(currentColor,currentColor),
+      linear-gradient(currentColor,currentColor),
+      linear-gradient(currentColor,currentColor);
+    background-repeat: no-repeat;
+    background-size: 7px 7px;
+    background-position: 0 0, 100% 0, 0 100%, 100% 100%;
+    background-color: transparent;
+  }
+  .tab-icon.people {
+    position: relative;
+  }
+  .tab-icon.people::before {
+    content: "";
+    position: absolute;
+    top: 1px; left: 50%;
+    transform: translateX(-50%);
+    width: 7px; height: 7px;
+    background: currentColor;
+    border-radius: 999px;
+  }
+  .tab-icon.people::after {
+    content: "";
+    position: absolute;
+    bottom: 1px; left: 50%;
+    transform: translateX(-50%);
+    width: 14px; height: 7px;
+    background: currentColor;
+    border-radius: 7px 7px 0 0;
+  }
+
+  /* === SCREEN 03 · CAPTURE === */
+  .s-capture {
+    background: var(--ink-900);
+    color: var(--paper-50);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .cap-head {
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .cap-close {
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--paper-50);
+    color: var(--paper-50);
+    font-family: var(--font-mono);
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-tight);
+  }
+  .cap-rec {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--orange-500);
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .cap-rec .dot {
+    width: 8px; height: 8px;
+    background: var(--orange-500);
+    border-radius: 999px;
+    animation: blink 1000ms step-end infinite;
+  }
+  .cap-mode {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--paper-50);
+    padding: 4px 8px;
+    border: 1px solid var(--paper-50);
+    border-radius: var(--radius-tight);
+  }
+  .cap-mode.disabled {
+    color: var(--graphite-400);
+    border-color: var(--graphite-500);
+    opacity: 0.7;
+  }
+  .viewfinder {
+    flex: 1;
+    background: linear-gradient(170deg, #2a2a26 0%, #1C1B19 60%, #0e0d0c 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .viewfinder::before {
+    content: "";
+    position: absolute;
+    inset: 24px;
+    border: 1px dashed rgba(250,248,244,0.18);
+  }
+  .viewfinder .crosshair {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px; height: 28px;
+  }
+  .viewfinder .crosshair::before,
+  .viewfinder .crosshair::after {
+    content: "";
+    position: absolute;
+    background: rgba(250,248,244,0.7);
+  }
+  .viewfinder .crosshair::before {
+    top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-0.5px);
+  }
+  .viewfinder .crosshair::after {
+    left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-0.5px);
+  }
+  .view-corners {
+    position: absolute; inset: 24px;
+    pointer-events: none;
+  }
+  .view-corners span {
+    position: absolute;
+    width: 14px; height: 14px;
+    border: 2px solid var(--orange-500);
+  }
+  .view-corners span:nth-child(1) { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+  .view-corners span:nth-child(2) { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+  .view-corners span:nth-child(3) { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+  .view-corners span:nth-child(4) { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+  .cap-bottom {
+    padding: 14px 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .cap-thumb {
+    width: 44px; height: 44px;
+  }
+  .cap-shutter {
+    width: 72px; height: 72px;
+    border-radius: 999px;
+    background: var(--paper-50);
+    border: 4px solid var(--paper-50);
+    position: relative;
+    box-shadow: 0 0 0 2px var(--ink-900);
+  }
+  .cap-shutter::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    background: var(--orange-500);
+    border-radius: 999px;
+  }
+  .cap-switch {
+    width: 44px; height: 44px;
+    border: 1.5px solid var(--paper-50);
+    border-radius: var(--radius-tight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--paper-50);
+    letter-spacing: 0.08em;
+  }
+
+  /* Capture cooldown state */
+  .cap-rec.waiting {
+    color: var(--graphite-400);
+  }
+  .cap-rec.waiting .dot {
+    background: var(--graphite-400);
+    animation: none;
+  }
+  .viewfinder.cooldown {
+    background: linear-gradient(170deg, #1a1a18 0%, #121110 60%, #0a0a09 100%);
+  }
+  .viewfinder.cooldown .view-corners span {
+    border-color: var(--graphite-500);
+    opacity: 0.6;
+  }
+  .cap-cooldown {
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    pointer-events: none;
+    padding: 0 28px;
+  }
+  .cap-cooldown .cd-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: var(--graphite-400);
+    text-transform: uppercase;
+  }
+  .cap-cooldown .cd-time {
+    font-family: var(--font-mono);
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--paper-50);
+    line-height: 1;
+  }
+  .cap-cooldown .cd-hint {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--paper-200);
+    opacity: 0.8;
+    text-align: center;
+    letter-spacing: 0.02em;
+    margin-top: 4px;
+  }
+  .cap-shutter.disabled {
+    background: transparent;
+    border-color: var(--graphite-500);
+    box-shadow: 0 0 0 2px var(--ink-900);
+    opacity: 0.55;
+  }
+  .cap-shutter.disabled::after {
+    background: var(--graphite-500);
+  }
+
+  /* FEED STAMPS (mini overlay on cards) */
+  .feed-stamps {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .feed-stamps span {
+    position: absolute;
+    font-size: 18px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
+  }
+
+  /* === SCREEN 04 · PHOTO DETAIL === */
+  .s-detail {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper-50);
+  }
+  .detail-top {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .detail-top-left {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .detail-av {
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper-50);
+  }
+  .detail-meta {
+    display: flex; flex-direction: column;
+    line-height: 1.25;
+  }
+  .detail-uploader {
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .detail-time {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+  }
+  .detail-photo {
+    background: linear-gradient(135deg, #C9BFA8 0%, #E85A2A 65%, #A8412B 100%);
+    aspect-ratio: 1 / 1;
+    margin: 0 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Positioned stamps on the photo */
+  .photo-stamp {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transform: translate(-50%, -50%);
+  }
+  .ps-emoji {
+    font-size: 22px;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.45));
+    line-height: 1;
+  }
+  .ps-auth {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: rgba(28,27,25,0.82);
+    color: var(--paper-50);
+    padding: 1px 4px;
+    border-radius: 0;
+  }
+  /* Profile color match for stamp author tags */
+  .ps-auth.av-1 { background: var(--sage-500);   color: var(--paper-50); }
+  .ps-auth.av-2 { background: var(--orange-500); color: var(--ink-900); }
+  .ps-auth.av-3 { background: var(--navy-500);   color: var(--paper-50); }
+  .ps-auth.av-4 { background: var(--brick-500);  color: var(--paper-50); }
+  .photo-stamp.mine .ps-emoji {
+    filter: drop-shadow(0 0 0 2px var(--orange-500)) drop-shadow(0 1px 3px rgba(0,0,0,0.45));
+  }
+  .photo-stamp.mine .ps-auth {
+    background: var(--orange-500);
+    color: var(--ink-900);
+  }
+
+  /* Stamp visibility toggle (eye icon, top-right of photo) */
+  .stamp-toggle {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 32px; height: 32px;
+    background: rgba(250,248,244,0.92);
+    border: 1.5px solid var(--ink-900);
+    border-radius: var(--radius-tight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-900);
+    z-index: 3;
+  }
+  .stamp-toggle.off {
+    background: var(--ink-900);
+    color: var(--paper-50);
+    border-color: var(--ink-900);
+  }
+  .stamp-toggle svg { width: 16px; height: 16px; }
+
+  .detail-caption {
+    padding: 8px 18px 8px;
+    font-size: 12px;
+    color: var(--graphite-700);
+    line-height: 1.55;
+  }
+
+  /* STAMP PICKER (tap photo → pick emoji) */
+  .stamp-picker-row {
+    padding: 6px 18px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sp-hint {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .sp-picker {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    overflow: hidden;
+  }
+  .sp-chip {
+    width: 30px; height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper-100);
+    border: 1px solid var(--bone-400);
+    border-radius: var(--radius-tight);
+    font-size: 15px;
+  }
+  .sp-chip { position: relative; }
+  .sp-chip.sel {
+    background: var(--orange-100);
+    border-color: var(--orange-500);
+  }
+  .sp-chip.sel .placed-dot {
+    position: absolute;
+    top: -4px; right: -4px;
+    width: 9px; height: 9px;
+    background: var(--orange-500);
+    border: 1.5px solid var(--paper-50);
+    border-radius: 999px;
+  }
+  .sp-chip.more {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--graphite-600);
+  }
+  .sp-chip.remove {
+    background: var(--paper-50);
+    border-color: var(--brick-500);
+    color: var(--brick-500);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .sp-hint b { color: var(--orange-500); }
+
+  /* COMMENTS */
+  .comments-sec {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    border-top: 1px solid var(--bone-300);
+    padding: 10px 18px 0;
+  }
+  .cmt-head {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cmt-head b { color: var(--ink-900); font-weight: 700; }
+  .cmt-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .cmt-av {
+    width: 22px; height: 22px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--paper-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .cmt-body { flex: 1; min-width: 0; }
+  .cmt-head-line {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 11px;
+  }
+  .cmt-head-line b {
+    font-family: var(--font-en);
+    font-weight: 700;
+    color: var(--ink-900);
+  }
+  .cmt-head-line .t {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--graphite-500);
+    letter-spacing: 0.06em;
+  }
+  .cmt-txt {
+    font-size: 12px;
+    color: var(--graphite-700);
+    line-height: 1.45;
+  }
+
+  .cmt-input {
+    margin-top: auto;
+    padding: 10px 14px 12px;
+    border-top: 1px solid var(--bone-300);
+    background: var(--paper-50);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cmt-input .cmt-field {
+    flex: 1;
+    background: var(--paper-100);
+    padding: 10px 12px;
+    border: 1px solid var(--bone-400);
+    font-family: var(--font-kr);
+    font-size: 12px;
+    color: var(--graphite-500);
+    border-radius: var(--radius-tight);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cmt-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--orange-500);
+    animation: blink 1000ms step-end infinite;
+  }
+  .cmt-input .cmt-post {
+    padding: 10px 14px;
+    background: var(--ink-900);
+    color: var(--paper-50);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    border-radius: var(--radius-tight);
+  }
+
+  /* === SCREEN 05 · MEMBERS === */
+  .members-top {
+    padding: 12px 18px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--bone-300);
+    flex-shrink: 0;
+  }
+  .members-title {
+    font-family: var(--font-en);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .members-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--graphite-600);
+  }
+  .members-count b { color: var(--orange-500); }
+  .members-list {
+    flex: 1;
+    overflow: hidden;
+    padding: 8px 18px 90px;
+  }
+  .member-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--paper-200);
+  }
+  .member-av {
+    width: 40px; height: 40px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--paper-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .member-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .member-name {
+    font-family: var(--font-en);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .role-badge {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    padding: 2px 5px;
+    border-radius: 0;
+  }
+  .role-host {
+    background: var(--ink-900);
+    color: var(--paper-50);
+  }
+  .role-guest {
+    background: var(--paper-200);
+    color: var(--graphite-600);
+  }
+  .member-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--graphite-500);
+    letter-spacing: 0.06em;
+  }
+  .member-stats {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--graphite-600);
+    text-align: right;
+  }
+  .member-stats b { color: var(--orange-500); font-weight: 700; }
+  .slot-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--bone-400);
+  }
+  .slot-av {
+    width: 40px; height: 40px;
+    border-radius: 999px;
+    border: 1.5px dashed var(--bone-400);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--graphite-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .slot-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--graphite-500);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .members-invite {
+    position: absolute;
+    left: 18px; right: 18px; bottom: 28px;
+  }
+
+  /* === SCREEN 07 · REVIEW & POST === */
+  .s-review {
+    background: var(--ink-900);
+    color: var(--paper-50);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .rev-head {
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .rev-cancel {
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--paper-50);
+    color: var(--paper-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    border-radius: var(--radius-tight);
+  }
+  .rev-post {
+    padding: 9px 18px;
+    background: var(--orange-500);
+    color: var(--ink-900);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    border-radius: var(--radius-tight);
+    border: none;
+    text-transform: uppercase;
+  }
+  .rev-photo {
+    margin: 6px 14px 0;
+    aspect-ratio: 4 / 5;
+    background: linear-gradient(135deg, #C9BFA8 0%, #E85A2A 65%, #A8412B 100%);
+    position: relative;
+    border: 1px solid rgba(250,248,244,0.2);
+  }
+  .rev-caption-label {
+    margin: 14px 14px 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--bone-400);
+    text-transform: uppercase;
+  }
+  .rev-caption {
+    margin: 0 14px;
+    background: var(--paper-50);
+    color: var(--ink-900);
+    padding: 12px 14px;
+    font-family: var(--font-kr);
+    font-size: 12px;
+    min-height: 52px;
+    display: flex;
+    align-items: flex-start;
+    gap: 2px;
+    border-radius: var(--radius-tight);
+  }
+  .rev-caption .cmt-cursor { margin-top: 2px; }
+  .rev-spacer { flex: 1; min-height: 10px; }
+  .rev-retake-wrap { margin: 0 14px 14px; }
+  .rev-retake {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: var(--paper-50);
+    border: 1.5px solid var(--paper-50);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    border-radius: var(--radius-tight);
+    text-transform: uppercase;
+  }
+
+  /* === SCREEN 08 · UPLOADING === */
+  .s-upload {
+    background: var(--ink-900);
+    color: var(--paper-50);
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 22px;
+  }
+  .upload-terminal {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    line-height: 2.0;
+    color: var(--paper-50);
+  }
+  .upload-terminal .pfx { color: var(--orange-500); margin-right: 4px; }
+  .upload-terminal .ok { color: var(--graphite-500); }
+  .upload-terminal .blink {
+    display: inline-block;
+    width: 8px; height: 13px;
+    background: var(--orange-500);
+    vertical-align: -2px;
+    margin-left: 3px;
+    animation: blink 1000ms step-end infinite;
+  }
+  .upload-thumb {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #C9BFA8 0%, #E85A2A 65%, #A8412B 100%);
+    margin: 0 auto 20px;
+    border: 1px solid rgba(250,248,244,0.25);
+  }
+
+  /* === SCREEN 09 · NEW CARD on FEED === */
+  .photo-card.fresh { box-shadow: inset 0 0 0 2px var(--orange-500); }
+  .new-pill {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: var(--orange-500);
+    color: var(--ink-900);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    padding: 3px 6px;
+  }
+  .pc-fresh { background: linear-gradient(135deg, #FBE4D8 0%, #E85A2A 50%, #A8412B 100%); }
+
+  /* === SCREEN 06 · SETTINGS === */
+  .settings-top {
+    padding: 12px 18px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--bone-300);
+    flex-shrink: 0;
+  }
+  .settings-body {
+    flex: 1;
+    overflow: hidden;
+    padding: 14px 18px 28px;
+  }
+  .set-group { margin-bottom: 20px; }
+  .set-group-head {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .set-group-head.danger { color: var(--brick-500); }
+  .set-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--paper-200);
+    font-size: 13px;
+  }
+  .set-row:last-child { border-bottom: none; }
+  .set-label {
+    color: var(--ink-900);
+    font-weight: 500;
+  }
+  .set-value {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--graphite-600);
+    letter-spacing: 0.04em;
+  }
+  .set-value.arrow::after { content: "›"; margin-left: 6px; color: var(--graphite-500); }
+  .set-row.danger .set-label { color: var(--brick-500); font-weight: 600; }
+  .toggle {
+    width: 40px; height: 22px;
+    background: var(--bone-400);
+    border-radius: 999px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: "";
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 18px; height: 18px;
+    background: var(--paper-50);
+    border-radius: 999px;
+  }
+  .toggle.on {
+    background: var(--orange-500);
+  }
+  .toggle.on::after {
+    left: auto; right: 2px;
+    background: var(--ink-900);
+  }
+  .set-desc {
+    font-size: 11px;
+    color: var(--graphite-600);
+    line-height: 1.55;
+    margin-top: 4px;
+  }
+
+  /* FOOTER NOTES */
+  .notes {
+    margin-top: 80px;
+    padding: 32px;
+    background: var(--ink-900);
+    color: var(--paper-50);
+  }
+  .notes-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .notes-title {
+    font-family: var(--font-en);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 40px;
+    color: var(--bone-300);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .notes-grid b { color: var(--orange-500); }
+  .notes-grid .pfx { color: var(--orange-500); margin-right: 4px; }
+
+  /* frame notes under frame */
+  .frame-notes {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    font-size: 11px;
+    color: var(--graphite-700);
+    line-height: 1.6;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  .frame-notes b { color: var(--ink-900); }
+</style>
+</head>
+<body>
+
+<!-- Profile icon system · SVG defs (29 icons) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="ic-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-sun"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></g>
+    <g id="ic-star"><path d="M12 3.5l2.7 5.5 6 .9-4.4 4.2 1 6L12 17.3 6.7 20.1l1-6L3.3 9.9l6-.9z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-cloud"><path d="M7 17h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.5A3.5 3.5 0 0 0 7 17z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-wave"><path d="M3 12 C 4.5 7.5, 7.5 7.5, 9 12 C 10.5 16.5, 13.5 16.5, 15 12 C 16.5 7.5, 19.5 7.5, 21 12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-mtn"><path d="M3 19l5-9 4 5 3-4 6 8z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-leaf"><path d="M5 19c0-10 5-14 15-14 0 10-5 14-15 14z M5 19l8-8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-flower" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"><g transform="rotate(0 12 12)"><path d="M12 3.5 C 9 6.5, 9 9.5, 12 11 C 15 9.5, 15 6.5, 12 3.5 Z"/></g><g transform="rotate(72 12 12)"><path d="M12 3.5 C 9 6.5, 9 9.5, 12 11 C 15 9.5, 15 6.5, 12 3.5 Z"/></g><g transform="rotate(144 12 12)"><path d="M12 3.5 C 9 6.5, 9 9.5, 12 11 C 15 9.5, 15 6.5, 12 3.5 Z"/></g><g transform="rotate(216 12 12)"><path d="M12 3.5 C 9 6.5, 9 9.5, 12 11 C 15 9.5, 15 6.5, 12 3.5 Z"/></g><g transform="rotate(288 12 12)"><path d="M12 3.5 C 9 6.5, 9 9.5, 12 11 C 15 9.5, 15 6.5, 12 3.5 Z"/></g><circle cx="12" cy="12" r="1.6"/></g>
+    <g id="ic-coffee"><path d="M5 9h13v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4zM18 11h1.5a2.5 2.5 0 0 1 0 5H18M9 3v2M12 3v2M15 3v2" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-book"><path d="M4 5a2 2 0 0 1 2-2h5v17H6a2 2 0 0 1-2-2zM20 5a2 2 0 0 0-2-2h-5v17h5a2 2 0 0 0 2-2z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-note"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="18" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="17" cy="16" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/></g>
+    <g id="ic-film" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="6.5" r="1.3"/><circle cx="16.8" cy="14.5" r="1.3"/><circle cx="7.2" cy="14.5" r="1.3"/></g>
+    <g id="ic-cam"><rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="13.5" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 7l1.5-3h5L16 7" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></g>
+    <g id="ic-bulb"><path d="M9 17h6M10 20h4M8 13a5 5 0 1 1 8 0 3 3 0 0 0-1 2.5V17h-6v-1.5a3 3 0 0 0-1-2.5z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-key"><circle cx="8" cy="12" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 12h9v3M17 12v3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-pin"><path d="M12 3a6 6 0 0 1 6 6c0 5-6 12-6 12S6 14 6 9a6 6 0 0 1 6-6z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><circle cx="12" cy="9" r="2" stroke="currentColor" stroke-width="1.5" fill="none"/></g>
+    <g id="ic-cat" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"><path d="M5 5 L 8.5 10 C 10 9.3, 14 9.3, 15.5 10 L 19 5 L 17.5 11 C 18.6 12.8, 18.8 15.5, 17.5 17.5 C 16 19.3, 14 20, 12 20 C 10 20, 8 19.3, 6.5 17.5 C 5.2 15.5, 5.4 12.8, 6.5 11 Z"/><circle cx="10" cy="13.8" r="0.7" fill="currentColor" stroke="none"/><circle cx="14" cy="13.8" r="0.7" fill="currentColor" stroke="none"/><path d="M11.3 16.3 C 11.5 17, 12.5 17, 12.7 16.3" stroke-width="1.1"/><path d="M6.5 15 L 9.5 15.3 M 17.5 15 L 14.5 15.3" stroke-width="0.9"/></g>
+    <g id="ic-bird" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 C 4 15, 6 13, 8 12 C 5 13, 4 12, 3.5 11 C 6 10, 8 11, 9.5 11 C 7.5 10, 6.5 8, 7 6 C 10 7, 12 9, 13 11 C 13.5 9, 14.5 7, 16 6 C 17.5 5, 19.5 5.5, 21 6 C 20 7.5, 18.5 8, 17.5 9 C 18 10, 18.5 12, 17.5 14 C 15.5 17, 11 17.5, 8 17 C 6 17, 4.5 17.5, 3 17 Z"/></g>
+    <g id="ic-fish"><path d="M4 12c3-4 8-5 11-5s5 2 6 5c-1 3-3 5-6 5s-8-1-11-5z M4 12l-1-2M4 12l-1 2" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="11" r="0.8" fill="currentColor"/></g>
+    <g id="ic-butterfly" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6 V 19"/><path d="M12 8 C 9 5, 4 5, 3.5 9 C 3 11.5, 5 12.5, 8 13 C 5 14, 3.5 16, 4.5 18 C 6.5 19, 10 17.5, 12 14"/><path d="M12 8 C 15 5, 20 5, 20.5 9 C 21 11.5, 19 12.5, 16 13 C 19 14, 20.5 16, 19.5 18 C 17.5 19, 14 17.5, 12 14"/><circle cx="12" cy="7" r="0.6" fill="currentColor" stroke="none"/></g>
+    <g id="ic-dog" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"><path d="M7 7 C 4 8, 3 11, 4 14 C 4.5 15.5, 6 17, 7 17 C 7 18.5, 9 20, 12 20 C 15 20, 17 18.5, 17 17 C 18 17, 19.5 15.5, 20 14 C 21 11, 20 8, 17 7 C 17 9.5, 16.5 10.5, 16 11 C 14.5 10, 13 10, 12 10 C 11 10, 9.5 10, 8 11 C 7.5 10.5, 7 9.5, 7 7 Z"/><circle cx="10" cy="13.5" r="0.7" fill="currentColor" stroke="none"/><circle cx="14" cy="13.5" r="0.7" fill="currentColor" stroke="none"/><ellipse cx="12" cy="16" rx="1.3" ry="0.9" fill="currentColor" stroke="none"/><path d="M12 17 L 12 18 M 10.5 18.5 L 13.5 18.5" stroke-width="1"/></g>
+    <g id="ic-frog" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"><path d="M4 13 C 4 10, 6 8, 9 8 M 20 13 C 20 10, 18 8, 15 8"/><path d="M4 13 C 4 17, 7 19.5, 12 19.5 C 17 19.5, 20 17, 20 13"/><circle cx="8" cy="7.5" r="2.2"/><circle cx="16" cy="7.5" r="2.2"/><circle cx="8" cy="7.8" r="0.7" fill="currentColor" stroke="none"/><circle cx="16" cy="7.8" r="0.7" fill="currentColor" stroke="none"/><path d="M8 15 C 10 16.2, 14 16.2, 16 15"/></g>
+    <g id="ic-circle"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/></g>
+    <g id="ic-tri"><path d="M12 5l7 13H5z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></g>
+    <g id="ic-sq"><rect x="5" y="5" width="14" height="14" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></g>
+    <g id="ic-heart"><path d="M12 19s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 9c0 5.5-7 10-7 10z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="ic-spade" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 C 14.5 7, 18.5 10, 18.5 13.5 C 18.5 15.5, 17 17, 15 17 C 14 17, 13 16.3, 12.2 15.3 C 11.4 16.3, 10.4 17, 9.4 17 C 7.4 17, 5.9 15.5, 5.9 13.5 C 5.9 10, 9.9 7, 12 4 Z"/><path d="M10 20 C 10.8 18.5, 11.5 17, 12 15.3 C 12.5 17, 13.2 18.5, 14 20 Z"/></g>
+    <g id="ic-diamond" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"><path d="M12 4 L 19 12 L 12 20 L 5 12 Z"/></g>
+    <g id="ic-club" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"><circle cx="12" cy="8" r="2.8"/><circle cx="8" cy="13.3" r="2.8"/><circle cx="16" cy="13.3" r="2.8"/><path d="M10 20 C 11 17.5, 11.5 16, 12 14.3 C 12.5 16, 13 17.5, 14 20 Z"/></g>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <header class="cover">
+    <div class="cover-tag">Screen Mockup Set · Core 6 + Post Sequence + Cooldown · iPhone 15 Pro · v1.9 · 2026-04-22</div>
+    <h1 class="cover-title">Nine screens you'll actually touch.</h1>
+    <p class="cover-subtitle">Room Entry, Feed, Capture, Photo Detail, Members, Settings · Review, Uploading, Just Posted</p>
+    <p class="cover-lede">
+      지금까지 합의한 토큰(컬러 축소 팔레트 · Pretendard+Manrope+Space Mono · softened retro radius · motion v2)을
+      실제 화면 여섯 개에 그대로 물려본 결과입니다. 각 화면은 일상 루프(입장 → 캡처 → 피드)와
+      방 관리 루프(멤버 → 설정)를 아우르는 최소 완결 세트입니다.
+      v1.8에서 핵심 규칙이 하나 더 얹혔습니다: <b>한 사람이 한 시간당 1장</b>. 이 상한 덕에 열당 카드 수가 방 인원수로 자연스럽게 묶이고, 아무도 올리지 않은 시간대는 피드에서 열 자체가 사라집니다. 그래서 시간 축은 균등 간격이 아니라 <b>실제 포스팅이 있었던 시각들의 불규칙한 릴</b>이 됩니다(Now / 13:00 / 10:00 / 08:00 / 02:00 / 22:00 / 18:00 같은 식).
+      중앙 포커스 라벨은 좌우 스와이프에 따라 활성 열의 시각만 크게 읽어 주고, 열별로는 아주 작은 tick 라벨이 시간 축만 조용히 표기합니다. v1.9에서는 Room Entry가 풀-다크 <b>터미널 컨셉</b>으로 바뀌었고, Capture의 셔터가 <b>탭=사진 / 홀드=최대 5초 영상</b>으로 통합되어 우상단 모드 토글이 사라지고 TAP·HOLD 5s 힌트 태그로 대체되었습니다.
+      기능 규칙은 그대로: 게시물은 24시간이 되는 순간 오래된 열부터 조용히 떨어져 나가고, 스탬프는 1인 1개, 사진을 덮더라도 눈 아이콘 한 번으로 원본만 볼 수 있습니다.
+    </p>
+    <div class="cover-terminal">
+      <span class="pfx">&gt;</span> rendering mockups with tokens v1.....<span class="cmt">[OK]</span><br>
+      <span class="pfx">&gt;</span> typography: pretendard + manrope + space mono<span class="cmt">[OK]</span><br>
+      <span class="pfx">&gt;</span> radius: softened retro (4px / 0px / round)<span class="cmt">[OK]</span><br>
+      <span class="pfx">&gt;</span> motion: static frames (live demo in motion-system-v2)<br>
+      <span class="pfx">&gt;</span> nine screens ready<span class="blink"></span>
+    </div>
+  </header>
+
+  <div class="chips">
+    <div class="chip"><b>PAPER</b> FAF8F4 · F4F1EC · ECE7DE</div>
+    <div class="chip"><b>INK</b> 1C1B19</div>
+    <div class="chip"><b>ORANGE</b> E85A2A (key)</div>
+    <div class="chip"><b>NAVY</b> 2B3F5E</div>
+    <div class="chip"><b>BRICK</b> A8412B (danger)</div>
+    <div class="chip"><b>RADIUS</b> 4px btn · 0 card · round av</div>
+  </div>
+
+  <div class="screens-grid">
+
+    <!-- === 01 · ROOM ENTRY === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">01</span>
+        <span class="screen-name">Room Entry</span>
+        <span class="screen-desc">초대 코드 입력 · 첫 진입의 유일한 문</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar on-dark">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="s-entry">
+              <div class="s-entry-top">
+                <div class="wordmark">QUIET<span class="dot">.</span>ROOM</div>
+                <span class="label-s">v1.0</span>
+              </div>
+              <div class="entry-divider"></div>
+              <div class="entry-boot">
+                <div class="row"><span class="pfx">&gt;</span>비공개 룸 프로토콜 초기화<span class="ok">[OK]</span></div>
+                <div class="row cmt">&nbsp;&nbsp;암호화 · 초대 전용 · 최대 8인</div>
+                <div class="row cmt">&nbsp;</div>
+                <div class="row"><span class="pfx">&gt;</span>초대 코드 대기 중<span class="blink" style="display:inline-block;width:7px;height:12px;background:var(--orange-500);vertical-align:-1px;margin-left:4px;animation:blink 1000ms step-end infinite;"></span></div>
+              </div>
+              <div class="entry-body">
+                <div class="entry-label"><span class="pfx">&gt;</span>초대 코드 입력</div>
+                <div class="entry-field">K7X-<span class="entry-cursor"></span></div>
+                <div class="entry-hint"><span class="pfx">&gt;</span>6자 · 호스트가 공유한 코드를 입력</div>
+              </div>
+              <div class="entry-actions">
+                <button class="entry-btn-terminal"><span class="pfx">&gt;</span>JOIN ROOM</button>
+                <div class="entry-alt"><span class="pfx">&gt;</span>코드가 없다면 <b>새 룸 만들기</b></div>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator on-dark"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; 풀-다크 터미널</b> 컨셉 · <b>&gt; 부트 로그</b> 프리픽스로 톤 설정 · <b>&gt; 블록 커서</b> 주황 키 컬러 · <b>&gt; CTA</b> 오렌지 필 + mono
+      </div>
+    </div>
+
+    <!-- === 02 · FEED === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">02</span>
+        <span class="screen-name">Feed</span>
+        <span class="screen-desc">이 방에서 찍힌 모든 사진 · 날짜 구분</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="feed-head">
+              <div class="feed-room">
+                <div class="feed-room-name">Creek House</div>
+                <div class="feed-room-meta"><span class="live">●</span> 4 MEMBERS · 12 PHOTOS</div>
+              </div>
+              <div class="feed-actions">
+                <div class="avatar-stack">
+                  <span class="avatar-s av-1"><svg viewBox="0 0 24 24"><use href="#ic-leaf"/></svg></span>
+                  <span class="avatar-s av-2"><svg viewBox="0 0 24 24"><use href="#ic-sun"/></svg></span>
+                  <span class="avatar-s av-3"><svg viewBox="0 0 24 24"><use href="#ic-moon"/></svg></span>
+                </div>
+              </div>
+            </div>
+            <div class="feed-focus">
+              <div class="focus-status">Now</div>
+              <div class="focus-sub">14:00 · KST</div>
+            </div>
+            <div class="feed-scroll">
+              <div class="time-col now">
+                <div class="time-tick">14:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-2"><div class="meta av-2">ren</div></div>
+                  <div class="photo-card pc-1">
+                    <div class="feed-stamps">
+                      <span style="top: 28%; left: 22%">❤️</span>
+                      <span style="top: 62%; left: 58%">☕</span>
+                      <span style="top: 44%; left: 78%">✨</span>
+                    </div>
+                    <div class="meta av-1">jun</div>
+                  </div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">13:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-5">
+                    <div class="feed-stamps">
+                      <span style="top: 34%; left: 50%">🌀</span>
+                    </div>
+                    <div class="meta av-3">mina</div>
+                  </div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">10:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-3">
+                    <div class="feed-stamps">
+                      <span style="top: 46%; left: 32%">☕</span>
+                    </div>
+                    <div class="meta av-1">jun</div>
+                  </div>
+                  <div class="photo-card pc-6">
+                    <div class="feed-stamps">
+                      <span style="top: 40%; left: 60%">🔥</span>
+                    </div>
+                    <div class="meta av-2">ren</div>
+                  </div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">08:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-4"><div class="meta av-4">aki</div></div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">02:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-1"><div class="meta av-3">mina</div></div>
+                  <div class="photo-card pc-2"><div class="meta av-1">jun</div></div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">22:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-5"><div class="meta av-2">ren</div></div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">18:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-3"><div class="meta av-4">aki</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="swipe-hint">
+              <div class="pager">
+                <span class="dot on"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              <span class="label">← Swipe for history</span>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item active">
+                <div class="tab-icon grid"></div>
+                Feed
+              </div>
+              <div class="tab-item capture">
+                <div class="tab-shutter"></div>
+                Capture
+              </div>
+              <div class="tab-item">
+                <div class="tab-icon people"></div>
+                Members
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; 가로 캐로셀</b> 세로 스크롤 없음 · <b>&gt; 중앙 포커스 라벨</b> 스와이프 위치에 따라 시간 표시 전환 · <b>&gt; 스와이프 힌트</b> 하단 중앙, pager + label 세로 스택
+      </div>
+    </div>
+
+    <!-- === 03 · CAPTURE === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">03</span>
+        <span class="screen-name">Capture</span>
+        <span class="screen-desc">앱 내 촬영만 · 갤러리 업로드 없음</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar on-dark">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="s-capture">
+              <div class="cap-head">
+                <div class="cap-close">×</div>
+                <div class="cap-rec"><span class="dot"></span>READY</div>
+                <div class="cap-mode">TAP · HOLD 5s</div>
+              </div>
+              <div class="viewfinder">
+                <div class="view-corners">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="crosshair"></div>
+              </div>
+              <div class="cap-bottom">
+                <div class="cap-thumb"></div>
+                <div class="cap-shutter"></div>
+                <div class="cap-switch">FLIP</div>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator on-dark"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; 풀-다크 뷰파인더</b> · <b>&gt; 오렌지 코너 마커</b>로 프레임 감각 · <b>&gt; 셔터</b>는 motion-v2 Shutter Hard Press · <b>&gt; 좌하단 비움</b> 앨범 경로 없음
+      </div>
+    </div>
+
+    <!-- === 04 · PHOTO DETAIL === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">04</span>
+        <span class="screen-name">Photo Detail</span>
+        <span class="screen-desc">1인 1스탬프 · 가리기 · 댓글</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="s-detail">
+              <div class="detail-top">
+                <div class="detail-top-left">
+                  <div class="detail-av av-2"><svg viewBox="0 0 24 24"><use href="#ic-sun"/></svg></div>
+                  <div class="detail-meta">
+                    <div class="detail-uploader">ren</div>
+                    <div class="detail-time">APR 21 · 14:22</div>
+                  </div>
+                </div>
+                <div class="cap-close" style="border-color: var(--ink-900); color: var(--ink-900)">×</div>
+              </div>
+              <div class="detail-photo">
+                <button class="stamp-toggle" aria-label="Hide stamps">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+                <div class="photo-stamp" style="top: 28%; left: 22%">
+                  <span class="ps-emoji">❤️</span>
+                  <span class="ps-auth av-1">jun</span>
+                </div>
+                <div class="photo-stamp" style="top: 58%; left: 68%">
+                  <span class="ps-emoji">☕</span>
+                  <span class="ps-auth av-3">mina</span>
+                </div>
+                <div class="photo-stamp mine" style="top: 76%; left: 40%">
+                  <span class="ps-emoji">✨</span>
+                  <span class="ps-auth av-2">YOU</span>
+                </div>
+              </div>
+              <div class="detail-caption">개울 다녀오는 길. 해가 벌써 낮아짐.</div>
+              <div class="stamp-picker-row">
+                <div class="sp-hint"><b>REPLACE</b> →</div>
+                <div class="sp-picker">
+                  <div class="sp-chip sel">✨<span class="placed-dot"></span></div>
+                  <div class="sp-chip">❤️</div>
+                  <div class="sp-chip">☕</div>
+                  <div class="sp-chip">🔥</div>
+                  <div class="sp-chip">🌀</div>
+                  <div class="sp-chip remove">×</div>
+                </div>
+              </div>
+              <div class="comments-sec">
+                <div class="cmt-head">
+                  <span><b>COMMENTS</b> · 2</span>
+                  <span>SEEN 3 / 4</span>
+                </div>
+                <div class="cmt-row">
+                  <div class="cmt-av av-1"><svg viewBox="0 0 24 24"><use href="#ic-leaf"/></svg></div>
+                  <div class="cmt-body">
+                    <div class="cmt-head-line"><b>jun</b><span class="t">14:40</span></div>
+                    <div class="cmt-txt">분위기 너무 좋다</div>
+                  </div>
+                </div>
+                <div class="cmt-row">
+                  <div class="cmt-av av-3"><svg viewBox="0 0 24 24"><use href="#ic-moon"/></svg></div>
+                  <div class="cmt-body">
+                    <div class="cmt-head-line"><b>mina</b><span class="t">15:02</span></div>
+                    <div class="cmt-txt">여기 어디야</div>
+                  </div>
+                </div>
+              </div>
+              <div class="cmt-input">
+                <div class="cmt-field"><span class="cmt-cursor"></span></div>
+                <div class="cmt-post">POST</div>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; 1인 1스탬프</b> 작가별로 하나, YOU는 주황 · <b>&gt; 눈 아이콘</b> 탭하면 스탬프 전부 가려져 원본만 보임 · <b>&gt; REPLACE</b> 내 스탬프는 주황 점, ×로 제거
+      </div>
+    </div>
+
+    <!-- === 05 · MEMBERS === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">05</span>
+        <span class="screen-name">Members</span>
+        <span class="screen-desc">최대 8명 · 빈 슬롯까지 명시</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content" style="position: relative">
+            <div class="members-top">
+              <div class="members-title">Members</div>
+              <div class="members-count"><b>4</b> / 8</div>
+            </div>
+            <div class="members-list">
+              <div class="member-row">
+                <div class="member-av av-1"><svg viewBox="0 0 24 24"><use href="#ic-leaf"/></svg></div>
+                <div class="member-info">
+                  <div class="member-name">jun <span class="role-badge role-host">HOST</span></div>
+                </div>
+              </div>
+              <div class="member-row">
+                <div class="member-av av-2"><svg viewBox="0 0 24 24"><use href="#ic-sun"/></svg></div>
+                <div class="member-info">
+                  <div class="member-name">ren <span class="role-badge role-guest">GUEST</span></div>
+                </div>
+              </div>
+              <div class="member-row">
+                <div class="member-av av-3"><svg viewBox="0 0 24 24"><use href="#ic-moon"/></svg></div>
+                <div class="member-info">
+                  <div class="member-name">mina <span class="role-badge role-guest">GUEST</span></div>
+                </div>
+              </div>
+              <div class="member-row">
+                <div class="member-av av-4"><svg viewBox="0 0 24 24"><use href="#ic-coffee"/></svg></div>
+                <div class="member-info">
+                  <div class="member-name">aki <span class="role-badge role-guest">GUEST</span></div>
+                </div>
+              </div>
+              <div class="slot-row">
+                <div class="slot-av">+</div>
+                <div class="slot-label">EMPTY SLOT</div>
+              </div>
+              <div class="slot-row">
+                <div class="slot-av">+</div>
+                <div class="slot-label">EMPTY SLOT</div>
+              </div>
+            </div>
+            <div class="members-invite">
+              <button class="btn-primary">INVITE · 4 SLOTS LEFT</button>
+            </div>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; 아바타 round</b> / <b>&gt; 역할 배지 sharp</b> · <b>&gt; 빈 슬롯을 점선</b>으로 명시 · <b>&gt; active dot</b>은 orange
+      </div>
+    </div>
+
+    <!-- === 06 · ROOM SETTINGS === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">06</span>
+        <span class="screen-name">Room Settings</span>
+        <span class="screen-desc">방 정보 · 알림 · 위험 구역</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="settings-top">
+              <div class="members-title">Settings</div>
+              <div class="cap-close" style="border-color: var(--ink-900); color: var(--ink-900); width: 28px; height: 28px; font-size:14px">×</div>
+            </div>
+            <div class="settings-body">
+              <div class="set-group">
+                <div class="set-group-head">룸</div>
+                <div class="set-row">
+                  <div class="set-label">이름</div>
+                  <div class="set-value arrow">Creek House</div>
+                </div>
+                <div class="set-row">
+                  <div class="set-label">초대 코드</div>
+                  <div class="set-value">K7X-2M9</div>
+                </div>
+                <div class="set-row">
+                  <div class="set-label">생성일</div>
+                  <div class="set-value">APR 2, 2026</div>
+                </div>
+              </div>
+              <div class="set-group">
+                <div class="set-group-head">알림</div>
+                <div class="set-row">
+                  <div class="set-label">새 사진</div>
+                  <div class="toggle on"></div>
+                </div>
+                <div class="set-row">
+                  <div class="set-label">새 멤버</div>
+                  <div class="toggle on"></div>
+                </div>
+                <div class="set-row">
+                  <div class="set-label">레트로 사운드</div>
+                  <div class="toggle"></div>
+                </div>
+              </div>
+              <div class="set-group">
+                <div class="set-group-head danger">위험 구역</div>
+                <div class="set-row danger">
+                  <div class="set-label">이 룸에서 나가기</div>
+                  <div class="set-value arrow" style="color: var(--brick-500)">&nbsp;</div>
+                </div>
+                <div class="set-row danger">
+                  <div class="set-label">룸 영구 종료</div>
+                  <div class="set-value arrow" style="color: var(--brick-500)">HOST</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; 토글 on</b> orange · <b>&gt; danger zone</b> brick-500로 시각적 격리 · <b>&gt; 값은 mono</b>로 정보 밀도
+      </div>
+    </div>
+
+    <!-- === 07 · REVIEW & POST === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">07</span>
+        <span class="screen-name">Review & Post</span>
+        <span class="screen-desc">셔터 직후 · 사진+캡션 한 화면 · RETAKE/POST</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar on-dark">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="s-review">
+              <div class="rev-head">
+                <div class="rev-cancel">×</div>
+                <button class="rev-post">POST</button>
+              </div>
+              <div class="rev-photo"></div>
+              <div class="rev-caption-label">Caption · Optional</div>
+              <div class="rev-caption">
+                <span class="cmt-cursor"></span>
+              </div>
+              <div class="rev-spacer"></div>
+              <div class="rev-retake-wrap">
+                <button class="rev-retake">↺ Retake</button>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator on-dark"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; 다크 배경</b>으로 Capture에서 시각적 연결 · <b>&gt; POST</b> 주황, 화면 우상단 일관 · <b>&gt; 주황 커서</b>로 입력 신호 통일
+      </div>
+    </div>
+
+    <!-- === 08 · UPLOADING === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">08</span>
+        <span class="screen-name">Uploading</span>
+        <span class="screen-desc">1-2초 전송 상태 · 탭 없음 · 피드로 자동 복귀</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar on-dark">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="s-upload">
+              <div class="upload-terminal">
+                <div class="upload-thumb"></div>
+                <span class="pfx">&gt;</span> posting.........<span class="ok">[OK]</span><br>
+                <span class="pfx">&gt;</span> compressing image....<span class="ok">[OK]</span><br>
+                <span class="pfx">&gt;</span> uploading to room....<span class="ok">[OK]</span><br>
+                <span class="pfx">&gt;</span> refreshing feed<span class="blink"></span>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator on-dark"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; 터미널 톤</b> Cover와 동일 언어 · <b>&gt; 자동 전환</b> 사용자 탭 없음 · <b>&gt; 오프라인</b>이면 이 화면이 에러 상태로 분기
+      </div>
+    </div>
+
+    <!-- === 09 · FEED (JUST POSTED) === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">09</span>
+        <span class="screen-name">Feed · Just Posted</span>
+        <span class="screen-desc">방금 올린 카드가 최상단 · NEW 핀 · 아직 반응 없음</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="feed-head">
+              <div class="feed-room">
+                <div class="feed-room-name">Creek House</div>
+                <div class="feed-room-meta"><span class="live">●</span> 4 MEMBERS · 13 PHOTOS</div>
+              </div>
+              <div class="feed-actions">
+                <div class="avatar-stack">
+                  <span class="avatar-s av-2"><svg viewBox="0 0 24 24"><use href="#ic-sun"/></svg></span>
+                  <span class="avatar-s av-1"><svg viewBox="0 0 24 24"><use href="#ic-leaf"/></svg></span>
+                  <span class="avatar-s av-3"><svg viewBox="0 0 24 24"><use href="#ic-moon"/></svg></span>
+                </div>
+              </div>
+            </div>
+            <div class="feed-focus">
+              <div class="focus-status">Now</div>
+              <div class="focus-sub">14:00 · KST</div>
+            </div>
+            <div class="feed-scroll">
+              <div class="time-col now">
+                <div class="time-tick">14:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-fresh fresh">
+                    <div class="new-pill">NEW</div>
+                    <div class="meta av-2">you</div>
+                  </div>
+                  <div class="photo-card pc-2"><div class="meta av-2">ren</div></div>
+                  <div class="photo-card pc-1">
+                    <div class="feed-stamps">
+                      <span style="top: 28%; left: 22%">❤️</span>
+                      <span style="top: 62%; left: 58%">☕</span>
+                      <span style="top: 44%; left: 78%">✨</span>
+                    </div>
+                    <div class="meta av-1">jun</div>
+                  </div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">13:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-5">
+                    <div class="feed-stamps">
+                      <span style="top: 34%; left: 50%">🌀</span>
+                    </div>
+                    <div class="meta av-3">mina</div>
+                  </div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">10:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-3">
+                    <div class="feed-stamps">
+                      <span style="top: 46%; left: 32%">☕</span>
+                    </div>
+                    <div class="meta av-1">jun</div>
+                  </div>
+                  <div class="photo-card pc-6">
+                    <div class="feed-stamps">
+                      <span style="top: 40%; left: 60%">🔥</span>
+                    </div>
+                    <div class="meta av-2">ren</div>
+                  </div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">08:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-4"><div class="meta av-4">aki</div></div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">02:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-1"><div class="meta av-3">mina</div></div>
+                  <div class="photo-card pc-2"><div class="meta av-1">jun</div></div>
+                </div>
+              </div>
+              <div class="time-col">
+                <div class="time-tick">22:00</div>
+                <div class="time-photos">
+                  <div class="photo-card pc-5"><div class="meta av-2">ren</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="swipe-hint">
+              <div class="pager">
+                <span class="dot on"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              <span class="label">← Swipe for history</span>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item active">
+                <div class="tab-icon grid"></div>
+                Feed
+              </div>
+              <div class="tab-item capture">
+                <div class="tab-shutter"></div>
+                Capture
+              </div>
+              <div class="tab-item">
+                <div class="tab-icon people"></div>
+                Members
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; NEW 핀</b> 방금 올린 카드가 Now 열 맨 앞 · <b>&gt; 빈 stamps</b> 아직 반응 없음 · <b>&gt; 아바타 스택 Y</b> 주황으로 본인 표시
+      </div>
+    </div>
+
+    <!-- === 10 · CAPTURE (COOLDOWN) === -->
+    <div class="frame-cell">
+      <div class="frame-head">
+        <span class="screen-num">10</span>
+        <span class="screen-name">Capture · Cooldown</span>
+        <span class="screen-desc">한 사람 한 시간당 1장 · 다음 정시까지 대기</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar on-dark">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="s-capture">
+              <div class="cap-head">
+                <div class="cap-close">×</div>
+                <div class="cap-rec waiting"><span class="dot"></span>WAITING</div>
+                <div class="cap-mode disabled">TAP · HOLD 5s</div>
+              </div>
+              <div class="viewfinder cooldown">
+                <div class="view-corners">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="cap-cooldown">
+                  <div class="cd-label">Next slot opens in</div>
+                  <div class="cd-time">23:47</div>
+                  <div class="cd-hint">이미 한 장 올렸어요. 15:00부터 다시 찍을 수 있어요.</div>
+                </div>
+              </div>
+              <div class="cap-bottom">
+                <div class="cap-thumb"></div>
+                <div class="cap-shutter disabled"></div>
+                <div class="cap-switch">FLIP</div>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator on-dark"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>&gt; 셔터 비활성</b> 내부 원 회색 · <b>&gt; WAITING 플래그</b> 오렌지 → 그래파이트 · <b>&gt; 카운트다운</b> 뷰파인더 중앙 · <b>&gt; 코너 마커</b> 흐려짐
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NOTES -->
+  <div class="notes">
+    <div class="notes-eyebrow">Observations · v1</div>
+    <h3 class="notes-title">여섯 화면에서 시스템이 어떻게 읽히는가.</h3>
+    <div class="notes-grid">
+      <div>
+        <span class="pfx">&gt;</span> <b>도구감 vs. 따뜻함</b><br>
+        mono 레이블과 주황 액센트가 '도구', 종이톤 바탕이 '따뜻함'을 맡고 있습니다. 다만 Room Entry(01)와 Capture(03·10)는 의도적으로 풀-다크로 반전시켜 "시스템 진입 / 캡처 순간"을 계기반처럼 다룹니다. 터미널 부트 로그와 오렌지 프리픽스가 첫 화면에서 톤을 설정하고, 종이톤은 피드 이후로 따뜻함을 이어 받습니다.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>캡처가 시스템의 중심</b><br>
+        탭 바의 가운데 셔터, 뷰파인더의 오렌지 코너, 플래시 없는 하드 프레스. 캡처 한 경로가 앱의 유일한 엔트리라는 신호가 일관됩니다. 좌하단은 기본 카메라 앱이라면 앨범 썸네일이 있을 자리인데, 여기선 아예 비워 뒀습니다. 아무것도 없는 여백이 "갤러리 업로드 경로가 없다"는 규칙을 조용히 전달.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>조용한 롤링 감쇠</b><br>
+        각 게시물은 올린 지 24시간이 되면 개별적으로 사라집니다. 한 번에 비우는 배치 리셋이 아니라, 가장 오래된 열이 가로 캐로셀의 오른쪽 끝에서 FIFO 순서로 떨어져 나가는 롤링 방식. 카운트다운 칩도 타이머 스트립도 일부러 두지 않았어요. 피드는 계속 회전하되 시계처럼 보이지 않는 것이 목표.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>세로 스크롤 없는 피드</b><br>
+        피드는 위아래로 긁어 올리는 타임라인이 아니라, 좌우로 넘기는 시간의 두루마리입니다. 중앙 상단의 큰 포커스 라벨(Now · 14:00)이 스와이프 위치에 따라 갱신되고, 열별로는 작은 tick 라벨이 실제 포스팅 있었던 시각을 불규칙하게 표시합니다. 방 전체의 하루가 "한 줄"로 느껴지는 것이 설계 의도.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>시간당 1장 제한</b><br>
+        한 사람이 한 시간 안에 올릴 수 있는 건 사진 또는 영상 1개. 이 상한이 피드의 밀도와 분위기를 동시에 결정합니다. 8인방도 시간당 최대 8장이라 열이 폭주하지 않고, 아무도 올리지 않은 시간은 열 자체가 존재하지 않아 피드는 "비어 있는 시간"을 보여 주지 않습니다. 이미 올린 사람은 Capture에서 셔터가 회색으로 비활성화되고, 다음 정시까지 카운트다운이 뷰파인더 중앙에 커다랗게 표시됩니다. 금지가 아니라 리듬을 만드는 장치.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>1인 1스탬프 · 가리기 토글</b><br>
+        한 사람당 스탬프 하나만 가능(최대 8명 방이므로 최대 8개). 좋아요 스팸 방지 + 각 스탬프의 무게를 지킵니다. 아이 아이콘을 누르면 모든 스탬프가 숨겨져 원본 사진만 온전히 보이고, 다시 누르면 복귀. 반응은 남기되 언제든 원본으로 돌아갈 수 있다는 균형.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>댓글은 있지만 chat은 아니다</b><br>
+        Photo Detail에 포스트당 댓글 스레드를 부착. 스크롤형 타임라인이 아니라 '이 사진에 붙는 말'이라 기존 quietness를 깨지 않습니다.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>8명 제한이 구조</b><br>
+        Members 화면에서 빈 슬롯을 점선으로 명시. 제한이 단점이 아니라 방의 고유한 밀도로 제시됩니다.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>Danger는 파묻지 않는다</b><br>
+        Settings 최하단 brick 컬러로 분리. 숨기지 않음으로써 신뢰 줌. 삭제·나가기 모두 돌이킬 수 없다는 톤.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>게시 루프 닫힘</b><br>
+        Review 화면에서 다크 배경을 유지해 Capture와 시각적으로 이어집니다. POST를 누르면 Uploading의 터미널 피드백으로 넘어가고, 1-2초 후 자동으로 Feed에 새 카드가 최상단에 놓입니다. 이 한 경로가 앱 안에서 사진이 만들어지는 유일한 방법입니다.
+      </div>
+      <div>
+        <span class="pfx">&gt;</span> <b>다음 패스 후보</b><br>
+        방 생성 플로우, 초대 공유 시트, 빈 피드 / 업로드 에러 / 코드 오류 상태, 스탬프 선택 모달, 첫 진입 온보딩.
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

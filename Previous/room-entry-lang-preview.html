@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta charset="UTF-8">
+<title>Room Entry · EN vs KR</title>
+<style>
+  :root {
+    --ink-900: #1C1B19;
+    --paper-50: #FAF8F4;
+    --paper-200: #EBE6DC;
+    --bone-300: #D9D2C2;
+    --graphite-400: #8A8578;
+    --graphite-500: #6B675C;
+    --orange-500: #E8612C;
+    --radius-tight: 4px;
+    --font-en: 'Manrope', 'Helvetica Neue', sans-serif;
+    --font-sans: 'Pretendard', -apple-system, 'Helvetica Neue', sans-serif;
+    --font-mono: 'Space Mono', 'D2Coding', 'Pretendard', ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 48px 32px 80px;
+    background: var(--paper-200);
+    font-family: var(--font-sans);
+    color: var(--ink-900);
+    min-height: 100vh;
+  }
+  .page-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 8px;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; font-weight: 700; letter-spacing: -0.01em; }
+  .sub { font-size: 13px; color: var(--graphite-500); margin-bottom: 36px; line-height: 1.6; max-width: 680px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 960px;
+    margin: 0 auto 40px;
+  }
+  .unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .unit-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .unit-label .tag {
+    background: var(--ink-900);
+    color: var(--paper-50);
+    padding: 3px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.12em;
+  }
+
+  /* iPhone frame */
+  .iphone {
+    width: 340px;
+    height: 738px;
+    background: var(--ink-900);
+    border-radius: 48px;
+    padding: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%;
+    border-radius: 40px;
+    overflow: hidden;
+    background: var(--ink-900);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .dynamic-island {
+    position: absolute;
+    top: 14px; left: 50%;
+    transform: translateX(-50%);
+    width: 100px; height: 30px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 2;
+  }
+  .status-bar {
+    padding: 14px 24px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--paper-50);
+  }
+  .status-right { display: flex; gap: 5px; }
+  .status-right .ico { width: 14px; height: 10px; background: var(--paper-50); border-radius: 2px; opacity: 0.9; }
+  .home-indicator {
+    position: absolute;
+    left: 50%; bottom: 7px;
+    transform: translateX(-50%);
+    width: 120px; height: 4px;
+    background: var(--paper-50);
+    border-radius: 999px;
+    opacity: 0.9;
+  }
+
+  .screen {
+    flex: 1;
+    padding: 24px 22px 28px;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink-900);
+    color: var(--paper-50);
+    font-family: var(--font-mono);
+  }
+  .s-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .wordmark {
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .wordmark .dot { color: var(--orange-500); }
+  .s-top .ver { color: var(--graphite-400); font-size: 11px; }
+
+  .divider { height: 1px; background: rgba(250,248,244,0.12); margin: 14px 0; }
+
+  .boot {
+    font-size: 11px;
+    line-height: 1.75;
+    letter-spacing: 0.04em;
+  }
+  .boot .row { display: block; }
+  .boot .pfx { color: var(--orange-500); margin-right: 6px; }
+  .boot .cmt { color: var(--graphite-400); }
+  .boot .ok { color: var(--orange-500); margin-left: 6px; }
+
+  @keyframes blink { 50% { opacity: 0; } }
+  .cursor-inline {
+    display: inline-block;
+    width: 7px; height: 12px;
+    background: var(--orange-500);
+    vertical-align: -1px;
+    margin-left: 4px;
+    animation: blink 1000ms step-end infinite;
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+  }
+  .label-line {
+    font-size: 10px;
+    color: var(--graphite-400);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .label-line .pfx { color: var(--orange-500); margin-right: 6px; }
+  .field {
+    background: transparent;
+    border-bottom: 1px solid rgba(250,248,244,0.25);
+    padding: 6px 2px 8px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--paper-50);
+    display: flex;
+    align-items: center;
+  }
+  .cursor-big {
+    display: inline-block;
+    width: 12px; height: 22px;
+    background: var(--orange-500);
+    margin-left: 3px;
+    animation: blink 1000ms step-end infinite;
+  }
+  .hint {
+    font-size: 10px;
+    color: var(--graphite-400);
+    letter-spacing: 0.04em;
+  }
+  .hint .pfx { color: var(--orange-500); margin-right: 5px; }
+
+  .actions { display: flex; flex-direction: column; gap: 14px; }
+  .btn {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--orange-500);
+    color: var(--ink-900);
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-radius: var(--radius-tight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .btn .pfx { opacity: 0.8; }
+  .alt {
+    text-align: center;
+    font-size: 11px;
+    color: var(--graphite-400);
+    letter-spacing: 0.06em;
+  }
+  .alt .pfx { color: var(--orange-500); margin-right: 5px; }
+  .alt b { color: var(--paper-50); font-weight: 700; }
+
+  .notes {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 22px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-900);
+  }
+  .notes .k {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-right: 6px;
+  }
+  .notes .row + .row { margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div style="max-width: 960px; margin: 0 auto;">
+  <div class="page-title">ROOM ENTRY · LANG PREVIEW</div>
+  <h1>터미널 내용 EN vs KR</h1>
+  <p class="sub">
+    두 화면은 레이아웃·색·커서·프리픽스 모두 동일하고 문구만 한국어로 치환된 버전입니다.
+    프로토콜 용어는 영한 혼용이 자연스러울 수 있어, 아래 "바리에이션" 섹션에서 대안도 같이 제시합니다.
+  </p>
+</div>
+
+<div class="grid">
+
+  <!-- EN -->
+  <div class="unit">
+    <div class="unit-label"><span class="tag">EN</span> 현재 적용본</div>
+    <div class="iphone">
+      <div class="iphone-screen">
+        <div class="dynamic-island"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right"><span class="ico"></span><span class="ico"></span></div>
+        </div>
+        <div class="screen">
+          <div class="s-top">
+            <div class="wordmark">QUIET<span class="dot">.</span>ROOM</div>
+            <span class="ver">v1.0</span>
+          </div>
+          <div class="divider"></div>
+          <div class="boot">
+            <div class="row"><span class="pfx">&gt;</span>init private room protocol<span class="ok">[OK]</span></div>
+            <div class="row cmt">&nbsp;&nbsp;encrypted · invite-only · max 8 users</div>
+            <div class="row cmt">&nbsp;</div>
+            <div class="row"><span class="pfx">&gt;</span>awaiting invite code<span class="cursor-inline"></span></div>
+          </div>
+          <div class="body">
+            <div class="label-line"><span class="pfx">&gt;</span>Enter invite code</div>
+            <div class="field">K7X-<span class="cursor-big"></span></div>
+            <div class="hint"><span class="pfx">&gt;</span>6 chars · host가 공유한 코드를 입력</div>
+          </div>
+          <div class="actions">
+            <button class="btn"><span class="pfx">&gt;</span>JOIN ROOM</button>
+            <div class="alt"><span class="pfx">&gt;</span>no code? <b>create new room</b></div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KR -->
+  <div class="unit">
+    <div class="unit-label"><span class="tag">KR</span> 한국어 시안</div>
+    <div class="iphone">
+      <div class="iphone-screen">
+        <div class="dynamic-island"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right"><span class="ico"></span><span class="ico"></span></div>
+        </div>
+        <div class="screen">
+          <div class="s-top">
+            <div class="wordmark">QUIET<span class="dot">.</span>ROOM</div>
+            <span class="ver">v1.0</span>
+          </div>
+          <div class="divider"></div>
+          <div class="boot">
+            <div class="row"><span class="pfx">&gt;</span>비공개 룸 프로토콜 초기화<span class="ok">[OK]</span></div>
+            <div class="row cmt">&nbsp;&nbsp;암호화 · 초대 전용 · 최대 8인</div>
+            <div class="row cmt">&nbsp;</div>
+            <div class="row"><span class="pfx">&gt;</span>초대 코드 대기 중<span class="cursor-inline"></span></div>
+          </div>
+          <div class="body">
+            <div class="label-line"><span class="pfx">&gt;</span>초대 코드 입력</div>
+            <div class="field">K7X-<span class="cursor-big"></span></div>
+            <div class="hint"><span class="pfx">&gt;</span>6자 · 호스트가 공유한 코드를 입력</div>
+          </div>
+          <div class="actions">
+            <button class="btn"><span class="pfx">&gt;</span>JOIN ROOM</button>
+            <div class="alt"><span class="pfx">&gt;</span>코드가 없다면 <b>새 룸 만들기</b></div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="notes">
+  <div class="row" style="margin-bottom: 10px;"><b>번역 결정 포인트</b></div>
+  <div class="row"><span class="k">용어</span><b>private room</b> → "비공개 룸". "프라이빗 룸"도 가능하나 "비공개"가 더 중립적이고 한글 호흡에 잘 맞음.</div>
+  <div class="row"><span class="k">브래킷</span><b>[OK]</b>는 그대로 유지. 터미널 관용구라 영문이 더 자연스러움. 대안: [완료] / [준비]</div>
+  <div class="row"><span class="k">상태</span><b>awaiting</b> → "대기 중". 깜빡이는 커서가 뒤따르므로 "입력 대기"까지 쓸 필요 없이 간결하게.</div>
+  <div class="row"><span class="k">CTA</span><b>JOIN ROOM</b> → 영문 그대로 유지. 터미널 프롬프트 톤과 좌측의 <code>&gt;</code> 프리픽스가 영문 명령어 느낌을 이어가는 데에 영문이 더 부합.</div>
+  <div class="row"><span class="k">서브</span><b>no code? create new room</b> → "코드가 없다면 새 룸 만들기". 물음표+응답 대신 조건절로 바꿔 모노톤 유지.</div>
+  <div class="row" style="margin-top: 14px; color: var(--graphite-500); font-size: 12px;">
+    참고: Space Mono는 한글이 없어 KR 쪽 한글은 Pretendard로 폴백됩니다. 실제 앱에서는 한글 모노 폰트(D2Coding 등)나 Pretendard를 메인으로 쓸지 결정 필요. 지금 프리뷰의 한글 간격이 영문보다 다소 좁게 보이는 건 폴백 때문.
+  </div>
+</div>
+
+</body>
+</html>

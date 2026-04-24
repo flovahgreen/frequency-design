@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motion System v1.0 · Private Photo Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --paper-50: #FAF8F4;
+    --paper-100: #F4F1EC;
+    --paper-200: #ECE7DE;
+    --bone-300: #E0DACF;
+    --bone-400: #C9C3B8;
+    --graphite-500: #8C8880;
+    --graphite-600: #5E5C56;
+    --graphite-700: #3D3B37;
+    --ink-900: #1C1B19;
+    --orange-500: #E85A2A;
+    --orange-100: #FBE4D8;
+    --navy-500: #2B3F5E;
+    --navy-100: #D7DCE5;
+    --brick-500: #A8412B;
+
+    /* DURATION TOKENS */
+    --motion-instant:   0ms;
+    --motion-fast:      120ms;
+    --motion-moderate:  200ms;
+    --motion-slow:      320ms;
+    --motion-xslow:     480ms;
+
+    /* EASING TOKENS */
+    --ease-linear:      linear;
+    --ease-standard:    cubic-bezier(0.4, 0.0, 0.2, 1);
+    --ease-decelerate:  cubic-bezier(0.0, 0.0, 0.2, 1);
+    --ease-accelerate:  cubic-bezier(0.4, 0.0, 1, 1);
+    --ease-crisp:       cubic-bezier(0.22, 1, 0.36, 1);
+
+    --font-kr: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+    --font-en: "Manrope", sans-serif;
+    --font-mono: "Space Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-kr);
+    background: var(--paper-100);
+    color: var(--ink-900);
+    line-height: 1.5;
+    padding: 48px 32px 96px;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+
+  /* HEADER */
+  .cover {
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--bone-400);
+    margin-bottom: 64px;
+  }
+  .cover-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .cover-title {
+    font-family: var(--font-en);
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    margin-bottom: 8px;
+  }
+  .cover-subtitle {
+    font-size: 18px;
+    color: var(--graphite-600);
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .cover-lede {
+    font-size: 14px;
+    color: var(--graphite-700);
+    max-width: 760px;
+    line-height: 1.65;
+  }
+
+  section { margin-bottom: 72px; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--bone-300);
+  }
+  .sec-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--orange-500);
+    letter-spacing: 0.1em;
+  }
+  .sec-title {
+    font-family: var(--font-en);
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .sec-desc {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--graphite-600);
+    max-width: 440px;
+    text-align: right;
+  }
+
+  /* PHILOSOPHY */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .p-card {
+    padding: 24px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+  }
+  .p-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--orange-500);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .p-title {
+    font-family: var(--font-en);
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .p-body {
+    font-size: 13px;
+    color: var(--graphite-700);
+    line-height: 1.55;
+  }
+
+  /* DURATION */
+  .duration-row {
+    display: grid;
+    grid-template-columns: 140px 80px 1fr 200px;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--paper-50);
+    border-bottom: 1px solid var(--bone-300);
+  }
+  .duration-row:first-of-type { border-top: 1px solid var(--bone-300); }
+  .dt-token {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-900);
+    font-weight: 700;
+  }
+  .dt-ms {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--graphite-600);
+  }
+  .dt-bar-track {
+    height: 12px;
+    background: var(--paper-200);
+    position: relative;
+    overflow: hidden;
+  }
+  .dt-bar {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 100%;
+    background: var(--orange-500);
+    transform: translateX(-100%);
+    animation-name: barSweep;
+    animation-iteration-count: infinite;
+    animation-timing-function: var(--ease-standard);
+  }
+  @keyframes barSweep {
+    0%   { transform: translateX(-100%); }
+    45%  { transform: translateX(0); }
+    55%  { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+  }
+  .dt-use {
+    font-size: 12px;
+    color: var(--graphite-600);
+  }
+
+  /* EASING CURVES */
+  .easing-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  .easing-card {
+    padding: 20px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ec-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-900);
+    letter-spacing: 0.04em;
+  }
+  .ec-curve {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--paper-200);
+    position: relative;
+  }
+  .ec-ball-track {
+    height: 16px;
+    background: var(--paper-200);
+    position: relative;
+    overflow: hidden;
+  }
+  .ec-ball {
+    position: absolute;
+    top: 2px; left: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--orange-500);
+    animation: ballRun 2.4s infinite;
+  }
+  @keyframes ballRun {
+    0%   { left: 0; }
+    45%  { left: calc(100% - 12px); }
+    55%  { left: calc(100% - 12px); }
+    100% { left: 0; }
+  }
+  .ec-1 .ec-ball { animation-timing-function: var(--ease-linear); }
+  .ec-2 .ec-ball { animation-timing-function: var(--ease-standard); }
+  .ec-3 .ec-ball { animation-timing-function: var(--ease-decelerate); }
+  .ec-4 .ec-ball { animation-timing-function: var(--ease-accelerate); }
+  .ec-5 .ec-ball { animation-timing-function: var(--ease-crisp); }
+  .ec-use {
+    font-size: 11px;
+    color: var(--graphite-600);
+    line-height: 1.5;
+  }
+  .ec-value {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--graphite-500);
+    word-break: break-all;
+  }
+
+  /* PATTERN DEMOS */
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .pattern {
+    padding: 28px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+  }
+  .pattern-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--orange-500);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .pattern-title {
+    font-family: var(--font-en);
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .pattern-desc {
+    font-size: 13px;
+    color: var(--graphite-700);
+    line-height: 1.55;
+    margin-bottom: 20px;
+  }
+  .pattern-stage {
+    background: var(--paper-100);
+    border: 1px dashed var(--bone-400);
+    padding: 36px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .pattern-spec {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--graphite-600);
+    padding: 12px 14px;
+    background: var(--paper-200);
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+  }
+  .pattern-spec b { color: var(--ink-900); font-weight: 700; }
+  .pattern-hint {
+    display: block;
+    font-size: 11px;
+    color: var(--graphite-500);
+    text-align: center;
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* DEMO: BUTTON PRESS */
+  .demo-btn-primary {
+    background: var(--orange-500);
+    color: var(--paper-50);
+    padding: 16px 32px;
+    font-family: var(--font-en);
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform var(--motion-fast) var(--ease-crisp),
+                opacity var(--motion-fast) var(--ease-crisp),
+                background-color var(--motion-fast) var(--ease-crisp);
+  }
+  .demo-btn-primary:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+    background-color: #C74C21;
+  }
+  .demo-btn-secondary {
+    background: var(--paper-200);
+    color: var(--ink-900);
+    padding: 16px 32px;
+    font-family: var(--font-en);
+    font-size: 15px;
+    font-weight: 600;
+    border: 1px solid var(--bone-400);
+    cursor: pointer;
+    transition: transform var(--motion-fast) var(--ease-crisp),
+                background-color var(--motion-fast) var(--ease-crisp);
+  }
+  .demo-btn-secondary:active {
+    transform: scale(0.97);
+    background-color: var(--bone-300);
+  }
+
+  /* DEMO: INPUT FOCUS */
+  .demo-input {
+    width: 100%;
+    max-width: 260px;
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--paper-200);
+    border: 2px solid transparent;
+    color: var(--ink-900);
+    outline: none;
+    letter-spacing: 0.08em;
+    transition: border-color var(--motion-fast) var(--ease-standard),
+                background-color var(--motion-fast) var(--ease-standard);
+    text-align: center;
+  }
+  .demo-input:focus {
+    border-color: var(--ink-900);
+    background: var(--paper-50);
+  }
+
+  /* DEMO: STAMP */
+  .demo-stamp {
+    width: 48px;
+    height: 48px;
+    background: var(--paper-200);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    border: 1px solid var(--bone-400);
+    transition: transform var(--motion-fast) var(--ease-crisp),
+                background-color var(--motion-fast) var(--ease-crisp);
+  }
+  .demo-stamp:hover { background: var(--bone-300); }
+  .demo-stamp:active { transform: scale(0.85); }
+  .demo-stamp.popped {
+    animation: stampPop 240ms var(--ease-crisp);
+    background: var(--orange-100);
+  }
+  @keyframes stampPop {
+    0%   { transform: scale(0.85); }
+    40%  { transform: scale(1.18); }
+    100% { transform: scale(1.0); }
+  }
+
+  /* DEMO: CAPTURE */
+  .demo-capture {
+    width: 80px;
+    height: 80px;
+    background: var(--paper-50);
+    border: 4px solid var(--ink-900);
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    transition: transform var(--motion-fast) var(--ease-crisp);
+  }
+  .demo-capture::after {
+    content: "";
+    position: absolute;
+    top: 6px; left: 6px; right: 6px; bottom: 6px;
+    background: var(--orange-500);
+    border-radius: 999px;
+    transition: transform var(--motion-fast) var(--ease-crisp);
+  }
+  .demo-capture:active { transform: scale(0.94); }
+  .demo-capture:active::after { transform: scale(0.88); }
+  .demo-capture.flashed::before {
+    content: "";
+    position: absolute;
+    top: -12px; left: -12px; right: -12px; bottom: -12px;
+    border: 2px solid var(--orange-500);
+    border-radius: 999px;
+    animation: captureFlash 480ms var(--ease-decelerate) forwards;
+    pointer-events: none;
+  }
+  @keyframes captureFlash {
+    0%   { transform: scale(0.9); opacity: 1; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+
+  /* DEMO: SHEET */
+  .sheet-stage {
+    height: 280px;
+    background: linear-gradient(var(--paper-200), var(--paper-100));
+    position: relative;
+    overflow: hidden;
+    border: 1px dashed var(--bone-400);
+  }
+  .sheet-trigger {
+    position: absolute;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+  }
+  .sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 27, 25, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--motion-moderate) var(--ease-standard);
+  }
+  .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: var(--paper-50);
+    padding: 24px 20px 32px;
+    transform: translateY(100%);
+    transition: transform var(--motion-slow) var(--ease-decelerate);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    box-shadow: 0 12px 32px -8px rgba(28, 27, 25, 0.18);
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-grabber {
+    width: 36px; height: 4px;
+    background: var(--bone-400);
+    margin: 0 auto 16px;
+  }
+  .sheet-title {
+    font-family: var(--font-en);
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .sheet-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+  .tiny-btn {
+    padding: 10px 16px;
+    background: var(--paper-200);
+    border: 1px solid var(--bone-400);
+    font-family: var(--font-en);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .tiny-btn:hover { background: var(--bone-300); }
+
+  /* DEMO: TOAST */
+  .toast-stage {
+    height: 180px;
+    background: linear-gradient(var(--paper-200), var(--paper-100));
+    position: relative;
+    overflow: hidden;
+    border: 1px dashed var(--bone-400);
+    padding: 16px;
+  }
+  .toast {
+    position: absolute;
+    top: 20px; left: 50%;
+    transform: translate(-50%, -140%);
+    background: var(--ink-900);
+    color: var(--paper-50);
+    padding: 12px 20px;
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 500;
+    min-width: 240px;
+    text-align: center;
+    opacity: 0;
+    transition: transform var(--motion-moderate) var(--ease-decelerate),
+                opacity var(--motion-moderate) var(--ease-standard);
+  }
+  .toast.in {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+
+  /* DEMO: TAB SWITCH */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    background: var(--paper-200);
+    width: fit-content;
+    margin: 0 auto;
+    position: relative;
+  }
+  .tab {
+    padding: 10px 20px;
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--graphite-600);
+    position: relative;
+    z-index: 2;
+    transition: color var(--motion-fast) var(--ease-standard);
+  }
+  .tab.active { color: var(--paper-50); }
+  .tab-pill {
+    position: absolute;
+    top: 6px; bottom: 6px;
+    background: var(--ink-900);
+    z-index: 1;
+    transition: transform var(--motion-moderate) var(--ease-crisp),
+                width var(--motion-moderate) var(--ease-crisp);
+  }
+
+  /* DEMO: LOADING DOTS */
+  .loading {
+    display: flex;
+    gap: 8px;
+  }
+  .loading .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--graphite-600);
+    border-radius: 999px;
+    animation: dotPulse 1.2s infinite var(--ease-standard);
+  }
+  .loading .dot:nth-child(2) { animation-delay: 0.15s; }
+  .loading .dot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 0.3; transform: translateY(0); }
+    50%      { opacity: 1; transform: translateY(-4px); background: var(--orange-500); }
+  }
+
+  /* HAPTIC TABLE */
+  .haptic-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    margin-top: 16px;
+  }
+  .haptic-table th, .haptic-table td {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid var(--bone-300);
+    vertical-align: top;
+  }
+  .haptic-table th {
+    background: var(--paper-200);
+    font-family: var(--font-en);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-700);
+  }
+  .haptic-table tr:last-child td { border-bottom: none; }
+  .haptic-table td:first-child { font-weight: 600; }
+  .haptic-table .mono { font-family: var(--font-mono); font-size: 11px; color: var(--ink-900); }
+
+  /* SUMMARY BOX */
+  .summary {
+    padding: 32px;
+    background: var(--navy-500);
+    color: var(--paper-50);
+    margin-top: 64px;
+  }
+  .summary-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--navy-100);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .summary-title {
+    font-family: var(--font-en);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+  .summary-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--bone-300);
+    max-width: 720px;
+  }
+  .summary-body b { color: var(--orange-500); }
+
+  /* INSTRUCTION NOTE */
+  .note-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--orange-100);
+    border-left: 3px solid var(--orange-500);
+    margin-bottom: 32px;
+  }
+  .note-icon {
+    width: 20px; height: 20px;
+    border-radius: 999px;
+    background: var(--orange-500);
+    color: var(--paper-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .note-text {
+    font-size: 13px;
+    color: var(--ink-900);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cover">
+    <div class="cover-tag">Motion System · v1.0 · 2026-04-21</div>
+    <h1 class="cover-title">How it feels.</h1>
+    <p class="cover-subtitle">움직임은 '도구처럼 느껴지는' 마지막 1%를 완성합니다</p>
+    <p class="cover-lede">
+      Teenage Engineering 기기의 '딸깍', Rams 시계의 초침 낙하, 촬영 순간의 찰나.
+      이 앱의 움직임은 장식이 아니라 손끝에 닿는 물성입니다. 모든 모션은 60ms에서 480ms 사이의 짧은 시간 안에 끝나고, 바운스 없이 precise하게 착지합니다.
+    </p>
+  </header>
+
+  <div class="note-row">
+    <div class="note-icon">!</div>
+    <div class="note-text">
+      아래 데모는 실제로 눌러보고 탭해보세요. 문서가 아니라 <b>데모</b>입니다. 모든 값은 실제 앱에 그대로 쓰입니다.
+    </div>
+  </div>
+
+  <!-- 1. PHILOSOPHY -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">Principles</h2>
+      <p class="sec-desc">모션 결정이 흔들릴 때 돌아올 세 가지 원칙.</p>
+    </div>
+    <div class="principles">
+      <div class="p-card">
+        <div class="p-tag">Principle 01</div>
+        <div class="p-title">Short and confident</div>
+        <div class="p-body">120-320ms 사이에 끝난다. 그 이상이면 앱이 '느려 보이고', 그 이하면 '눈치채지 못한다'. 도구처럼 즉각 반응한다.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-tag">Principle 02</div>
+        <div class="p-title">No bounce, no overshoot</div>
+        <div class="p-body">스프링·바운스 이징 금지. 모든 움직임은 목표값에 precise하게 착지한다. 오버슈트는 톤과 충돌한다.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-tag">Principle 03</div>
+        <div class="p-title">Paired with haptics</div>
+        <div class="p-body">주요 상호작용은 반드시 햅틱(진동)과 함께 설계한다. 시각과 촉각이 같은 시점에 발생해야 '진짜 있는 물건' 느낌이 난다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. DURATION -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Duration Tokens</h2>
+      <p class="sec-desc">다섯 개의 고정된 지속시간. 그 외 값은 만들지 않는다.</p>
+    </div>
+    <div>
+      <div class="duration-row">
+        <span class="dt-token">--motion-instant</span>
+        <span class="dt-ms">0ms</span>
+        <div class="dt-bar-track"><div class="dt-bar" style="animation-duration:1ms; animation-iteration-count:1"></div></div>
+        <span class="dt-use">상태 즉시 전환 (중간값 없음)</span>
+      </div>
+      <div class="duration-row">
+        <span class="dt-token">--motion-fast</span>
+        <span class="dt-ms">120ms</span>
+        <div class="dt-bar-track"><div class="dt-bar" style="animation-duration:2400ms"></div></div>
+        <span class="dt-use">버튼 누름, 포커스, 색 전환</span>
+      </div>
+      <div class="duration-row">
+        <span class="dt-token">--motion-moderate</span>
+        <span class="dt-ms">200ms</span>
+        <div class="dt-bar-track"><div class="dt-bar" style="animation-duration:2400ms; animation-delay: -300ms"></div></div>
+        <span class="dt-use">탭 전환, 토스트 진입, 스탬프</span>
+      </div>
+      <div class="duration-row">
+        <span class="dt-token">--motion-slow</span>
+        <span class="dt-ms">320ms</span>
+        <div class="dt-bar-track"><div class="dt-bar" style="animation-duration:2400ms; animation-delay: -600ms"></div></div>
+        <span class="dt-use">바텀시트·모달 진입, 화면 전환</span>
+      </div>
+      <div class="duration-row">
+        <span class="dt-token">--motion-xslow</span>
+        <span class="dt-ms">480ms</span>
+        <div class="dt-bar-track"><div class="dt-bar" style="animation-duration:2400ms; animation-delay: -900ms"></div></div>
+        <span class="dt-use">환영 화면, 캡처 플래시, 성공 애니메이션</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. EASING -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Easing Tokens</h2>
+      <p class="sec-desc">각각의 공이 같은 거리를 다른 방식으로 달립니다. 이징이 움직임의 성격을 결정합니다.</p>
+    </div>
+    <div class="easing-grid">
+      <div class="easing-card ec-1">
+        <div class="ec-name">linear</div>
+        <div class="ec-ball-track"><div class="ec-ball"></div></div>
+        <div class="ec-value">linear</div>
+        <div class="ec-use">로딩 바, 프로그레스. 균일한 진행.</div>
+      </div>
+      <div class="easing-card ec-2">
+        <div class="ec-name">standard</div>
+        <div class="ec-ball-track"><div class="ec-ball"></div></div>
+        <div class="ec-value">cubic-bezier(0.4, 0, 0.2, 1)</div>
+        <div class="ec-use">대부분의 상태 전환 기본값.</div>
+      </div>
+      <div class="easing-card ec-3">
+        <div class="ec-name">decelerate</div>
+        <div class="ec-ball-track"><div class="ec-ball"></div></div>
+        <div class="ec-value">cubic-bezier(0, 0, 0.2, 1)</div>
+        <div class="ec-use">들어올 때. 빠르게 시작해 부드럽게 착지.</div>
+      </div>
+      <div class="easing-card ec-4">
+        <div class="ec-name">accelerate</div>
+        <div class="ec-ball-track"><div class="ec-ball"></div></div>
+        <div class="ec-value">cubic-bezier(0.4, 0, 1, 1)</div>
+        <div class="ec-use">나갈 때. 천천히 시작해 빠르게 사라짐.</div>
+      </div>
+      <div class="easing-card ec-5">
+        <div class="ec-name">crisp</div>
+        <div class="ec-ball-track"><div class="ec-ball"></div></div>
+        <div class="ec-value">cubic-bezier(0.22, 1, 0.36, 1)</div>
+        <div class="ec-use">버튼·탭·스탬프. '딸깍' 느낌. 이 앱의 시그니처.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. PATTERNS -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">Motion Patterns</h2>
+      <p class="sec-desc">실제로 눌러보세요. 값은 모두 위 토큰 조합입니다.</p>
+    </div>
+
+    <div class="pattern-grid">
+      <!-- BUTTON PRESS -->
+      <div class="pattern">
+        <div class="pattern-tag">Pattern 01</div>
+        <div class="pattern-title">Button Press</div>
+        <div class="pattern-desc">가장 자주 발생하는 상호작용. 0.97배 축소와 불투명도 감소, 그리고 즉각 원상복귀.</div>
+        <div class="pattern-stage">
+          <button class="demo-btn-primary">Capture</button>
+          <button class="demo-btn-secondary" style="margin-left:12px">Comment</button>
+        </div>
+        <div class="pattern-spec">
+          transform <b>scale(0.97)</b> · opacity <b>0.9</b><br>
+          duration <b>--motion-fast (120ms)</b> · easing <b>--ease-crisp</b><br>
+          haptic <b>.light</b>
+        </div>
+        <span class="pattern-hint">↑ 탭 앤 홀드해보기</span>
+      </div>
+
+      <!-- INPUT FOCUS -->
+      <div class="pattern">
+        <div class="pattern-tag">Pattern 02</div>
+        <div class="pattern-title">Input Focus</div>
+        <div class="pattern-desc">타이핑 시작 순간의 신호. 배경이 밝아지고 테두리가 짙어져 '지금 여기'를 알립니다. 자극적이지 않도록 색 없이 무채색으로.</div>
+        <div class="pattern-stage">
+          <input class="demo-input" placeholder="K7X-2M9" maxlength="7">
+        </div>
+        <div class="pattern-spec">
+          border-color <b>transparent → ink-900</b> · bg <b>paper-200 → paper-50</b><br>
+          duration <b>--motion-fast (120ms)</b> · easing <b>--ease-standard</b><br>
+          haptic <b>없음</b> (키보드가 자체 제공)
+        </div>
+        <span class="pattern-hint">↑ 탭하여 포커스</span>
+      </div>
+
+      <!-- STAMP -->
+      <div class="pattern">
+        <div class="pattern-tag">Pattern 03</div>
+        <div class="pattern-title">Stamp Reaction</div>
+        <div class="pattern-desc">감정을 찍어 남기는 순간. 작게 눌렀다가 살짝 튀어오르고 원형으로 착지. 오렌지 배경으로 '찍힘'을 표시.</div>
+        <div class="pattern-stage">
+          <div style="display:flex; gap:16px">
+            <div class="demo-stamp" onclick="this.classList.toggle('popped')">♥</div>
+            <div class="demo-stamp" onclick="this.classList.toggle('popped')">◎</div>
+            <div class="demo-stamp" onclick="this.classList.toggle('popped')">✦</div>
+          </div>
+        </div>
+        <div class="pattern-spec">
+          scale <b>0.85 → 1.18 → 1.0</b> · bg <b>paper-200 → orange-100</b><br>
+          duration <b>--motion-moderate (240ms)</b> · easing <b>--ease-crisp</b><br>
+          haptic <b>.soft</b>
+        </div>
+        <span class="pattern-hint">↑ 탭하여 토글</span>
+      </div>
+
+      <!-- CAPTURE -->
+      <div class="pattern">
+        <div class="pattern-tag">Pattern 04</div>
+        <div class="pattern-title">Capture Button</div>
+        <div class="pattern-desc">앱에서 가장 중요한 순간. 눌렀을 때 미세한 축소, 놓을 때 오렌지 링이 바깥으로 퍼짐. 셔터 음과 medium 햅틱이 동시에.</div>
+        <div class="pattern-stage">
+          <div class="demo-capture" id="captureBtn"></div>
+        </div>
+        <div class="pattern-spec">
+          press <b>scale(0.94)</b> · release <b>ring expand 480ms</b><br>
+          duration <b>120ms + 480ms</b> · easing <b>--ease-crisp + --ease-decelerate</b><br>
+          haptic <b>.medium</b> · sound <b>shutter 80ms</b>
+        </div>
+        <span class="pattern-hint">↑ 탭하여 촬영</span>
+      </div>
+
+      <!-- BOTTOM SHEET -->
+      <div class="pattern">
+        <div class="pattern-tag">Pattern 05</div>
+        <div class="pattern-title">Bottom Sheet</div>
+        <div class="pattern-desc">아래에서 올라오는 판. 뒷 화면은 살짝 어두워지며 비활성화. decelerate 이징으로 '무거운 판이 올라와 멈추는' 감각.</div>
+        <div class="pattern-stage sheet-stage">
+          <button class="demo-btn-primary sheet-trigger" onclick="toggleSheet()">Open Sheet</button>
+          <div class="sheet-backdrop" id="backdrop" onclick="toggleSheet()"></div>
+          <div class="sheet" id="sheet">
+            <div class="sheet-grabber"></div>
+            <div class="sheet-title">Leave this room?</div>
+            <div class="sheet-actions">
+              <button class="tiny-btn" onclick="toggleSheet()">Cancel</button>
+              <button class="tiny-btn" style="background:var(--brick-500); color:var(--paper-50); border:none" onclick="toggleSheet()">Leave</button>
+            </div>
+          </div>
+        </div>
+        <div class="pattern-spec">
+          transform <b>translateY(100% → 0)</b> · backdrop opacity <b>0 → 0.45</b><br>
+          duration <b>--motion-slow (320ms)</b> · easing <b>--ease-decelerate</b><br>
+          haptic <b>.soft</b> (열릴 때만)
+        </div>
+        <span class="pattern-hint">↑ 시트 열기/닫기</span>
+      </div>
+
+      <!-- TOAST -->
+      <div class="pattern">
+        <div class="pattern-tag">Pattern 06</div>
+        <div class="pattern-title">Toast</div>
+        <div class="pattern-desc">화면을 막지 않는 알림. 위에서 슬라이드 다운, 2.4초 머문 뒤 자동으로 사라짐. 중요한 액션 성공/실패 알림에만 사용.</div>
+        <div class="pattern-stage toast-stage">
+          <button class="demo-btn-secondary" onclick="triggerToast()" style="margin:60px auto 0; display:block">Show Toast</button>
+          <div class="toast" id="toast">Photo saved to Creek House</div>
+        </div>
+        <div class="pattern-spec">
+          in: translate <b>-140% → 0</b>, opacity <b>0 → 1</b> · out: reverse<br>
+          duration <b>200ms in · 2400ms hold · 160ms out</b><br>
+          haptic <b>.success notification</b>
+        </div>
+        <span class="pattern-hint">↑ 토스트 보기</span>
+      </div>
+
+      <!-- TAB SWITCH -->
+      <div class="pattern">
+        <div class="pattern-tag">Pattern 07</div>
+        <div class="pattern-title">Tab Switch</div>
+        <div class="pattern-desc">검은 필이 선택된 탭으로 미끄러져 이동. 색상은 같은 시점에 바뀝니다. crisp 이징으로 '자석에 붙듯' 착지.</div>
+        <div class="pattern-stage">
+          <div class="tabs" id="tabs">
+            <div class="tab active" onclick="switchTab(event, 0)">Feed</div>
+            <div class="tab" onclick="switchTab(event, 1)">Members</div>
+            <div class="tab" onclick="switchTab(event, 2)">Settings</div>
+            <div class="tab-pill" id="tabPill"></div>
+          </div>
+        </div>
+        <div class="pattern-spec">
+          pill transform <b>translateX + width</b> · color <b>graphite-600 → paper-50</b><br>
+          duration <b>--motion-moderate (200ms)</b> · easing <b>--ease-crisp</b><br>
+          haptic <b>.selection</b>
+        </div>
+        <span class="pattern-hint">↑ 탭 전환</span>
+      </div>
+
+      <!-- LOADING -->
+      <div class="pattern">
+        <div class="pattern-tag">Pattern 08</div>
+        <div class="pattern-title">Loading</div>
+        <div class="pattern-desc">세 개의 점이 순차적으로 뛰어올랐다가 오렌지로 밝아짐. 스피너 대신 사용. 절제되고 리듬감 있음.</div>
+        <div class="pattern-stage">
+          <div class="loading">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="pattern-spec">
+          dot opacity <b>0.3 → 1</b> · translateY <b>0 → -4px</b> · color <b>graphite-600 → orange-500</b><br>
+          cycle <b>1.2s</b> · stagger <b>150ms</b><br>
+          easing <b>--ease-standard</b>
+        </div>
+        <span class="pattern-hint">자동 반복</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. HAPTIC -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">Haptic Pairing</h2>
+      <p class="sec-desc">iOS UIFeedbackGenerator 기준. 안드로이드는 추후 동등 맵 작성.</p>
+    </div>
+    <table class="haptic-table">
+      <thead>
+        <tr>
+          <th style="width: 24%">인터랙션</th>
+          <th style="width: 28%">iOS Haptic</th>
+          <th style="width: 18%">강도</th>
+          <th>언제 발생</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>버튼 누름</td>
+          <td class="mono">UIImpactFeedbackGenerator .light</td>
+          <td>약함</td>
+          <td>Primary/Secondary 버튼 press 순간</td>
+        </tr>
+        <tr>
+          <td>스탬프 찍기</td>
+          <td class="mono">UIImpactFeedbackGenerator .soft</td>
+          <td>약함</td>
+          <td>이모지 스탬프 선택, 토글 on</td>
+        </tr>
+        <tr>
+          <td>캡처 버튼 press</td>
+          <td class="mono">UIImpactFeedbackGenerator .medium</td>
+          <td>중간</td>
+          <td>셔터 누름 순간 (사진/영상 촬영)</td>
+        </tr>
+        <tr>
+          <td>캡처 성공</td>
+          <td class="mono">UINotificationFeedbackGenerator .success</td>
+          <td>중간·패턴</td>
+          <td>사진이 방에 성공적으로 업로드된 직후</td>
+        </tr>
+        <tr>
+          <td>탭 전환</td>
+          <td class="mono">UISelectionFeedbackGenerator</td>
+          <td>매우 약함</td>
+          <td>탭바, 세그먼트 컨트롤 전환</td>
+        </tr>
+        <tr>
+          <td>방 입장 성공</td>
+          <td class="mono">UINotificationFeedbackGenerator .success</td>
+          <td>중간·패턴</td>
+          <td>코드 입력 후 방 진입 성공</td>
+        </tr>
+        <tr>
+          <td>코드 오류</td>
+          <td class="mono">UINotificationFeedbackGenerator .error</td>
+          <td>강함·패턴</td>
+          <td>잘못된 초대 코드 입력, 네트워크 실패</td>
+        </tr>
+        <tr>
+          <td>되돌릴 수 없는 액션 확정</td>
+          <td class="mono">UIImpactFeedbackGenerator .heavy</td>
+          <td>강함</td>
+          <td>방 나가기, 사진 삭제 확인</td>
+        </tr>
+        <tr>
+          <td>바텀시트 열림</td>
+          <td class="mono">UIImpactFeedbackGenerator .soft</td>
+          <td>약함</td>
+          <td>시트가 완전히 올라왔을 때</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 6. SOUND -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <h2 class="sec-title">Sound Design (Preview)</h2>
+      <p class="sec-desc">사운드는 선택적. 기본 OFF로 출시하고 설정에서 ON 가능.</p>
+    </div>
+    <table class="haptic-table">
+      <thead>
+        <tr>
+          <th style="width: 28%">이벤트</th>
+          <th style="width: 28%">사운드 성격</th>
+          <th>비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>버튼 누름</td><td>없음 (햅틱만)</td><td>사운드 과잉 방지</td></tr>
+        <tr><td>캡처 (셔터)</td><td class="mono">aperture_click_80ms.wav</td><td>고전 카메라 셔터 톤. 80ms 이내 짧게. iOS 시스템 셔터와 구분되는 고유 톤</td></tr>
+        <tr><td>캡처 성공</td><td class="mono">chime_soft_2note.wav</td><td>부드러운 2음 벨. 200ms</td></tr>
+        <tr><td>오류</td><td class="mono">blip_low_120ms.wav</td><td>짧고 낮은 블립. 거슬리지 않게</td></tr>
+        <tr><td>방 입장</td><td class="mono">door_soft_240ms.wav</td><td>미세한 문 닫히는 톤. 공간감 강조</td></tr>
+        <tr><td>스탬프</td><td>없음 (햅틱만)</td><td>연속 사용 시 피로 유발 방지</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:16px; font-size:13px; color:var(--graphite-600); line-height:1.6">
+      사운드 파일 제작은 시스템 완성 후 별도 단계. 현재는 이벤트 목록·성격·길이만 정의.
+    </p>
+  </section>
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <div class="summary-eyebrow">The Motion Rule</div>
+    <h3 class="summary-title">Precise. Short. Paired.</h3>
+    <p class="summary-body">
+      모든 모션은 <b>120-320ms</b>에 완결되고, <b>오버슈트 없이</b> 착지하며, 주요 상호작용은 <b>햅틱과 짝</b>을 이룹니다.
+      이 세 가지가 지켜지는 한, 새 화면이 추가되어도 앱 전체의 '손맛'은 일관됩니다.
+      이 원칙을 흔들고 싶을 때는 '왜 흔들어야 하는가'를 먼저 답하기 전에는 흔들지 않습니다.
+    </p>
+  </div>
+
+</div>
+
+<script>
+  // Capture button flash
+  document.getElementById('captureBtn').addEventListener('click', function() {
+    this.classList.remove('flashed');
+    void this.offsetWidth;
+    this.classList.add('flashed');
+  });
+
+  // Bottom sheet toggle
+  function toggleSheet() {
+    document.getElementById('sheet').classList.toggle('open');
+    document.getElementById('backdrop').classList.toggle('open');
+  }
+
+  // Toast
+  let toastTimer;
+  function triggerToast() {
+    const t = document.getElementById('toast');
+    clearTimeout(toastTimer);
+    t.classList.remove('in');
+    void t.offsetWidth;
+    t.classList.add('in');
+    toastTimer = setTimeout(() => t.classList.remove('in'), 2400);
+  }
+
+  // Tab switch
+  function switchTab(evt, idx) {
+    const tabs = document.querySelectorAll('#tabs .tab');
+    tabs.forEach(t => t.classList.remove('active'));
+    evt.target.classList.add('active');
+    positionPill();
+  }
+  function positionPill() {
+    const active = document.querySelector('#tabs .tab.active');
+    const pill = document.getElementById('tabPill');
+    if (!active || !pill) return;
+    pill.style.transform = 'translateX(' + active.offsetLeft + 'px)';
+    pill.style.width = active.offsetWidth + 'px';
+  }
+  window.addEventListener('load', positionPill);
+</script>
+</body>
+</html>

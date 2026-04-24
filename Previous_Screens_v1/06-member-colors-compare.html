@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FREQUENCY · Member Color Palette Compare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --ink-1000: #0A0A0A;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --signal-green-400: #26FA85;
+    --te-orange-500: #F15A24;
+    --paper-bg: #EDE6D7;
+    --paper-raised: #F4EEE0;
+    --paper-edge: #CFC6B3;
+    --paper-text-mute: #6A6152;
+    --paper-ink: #141211;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --motion-fast: 150ms;
+    --ease-mech: cubic-bezier(0.2, 0, 0, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-1000);
+    color: var(--ink-100);
+    line-height: 1.5;
+    padding: 0 0 96px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+  /* Header */
+  .head {
+    padding: 48px 0 32px;
+    border-bottom: 1px solid var(--ink-700);
+    margin-bottom: 40px;
+  }
+  .head .tag {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 12px;
+  }
+  .head .tag .live {
+    width: 7px; height: 7px; border-radius: 999px;
+    background: var(--signal-green-400);
+    box-shadow: 0 0 8px rgba(38, 250, 133, 0.5);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .head .tag .accent { color: var(--signal-green-400); }
+  .head h1 {
+    font-size: 32px; font-weight: 700;
+    color: var(--ink-0); letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .head p {
+    font-size: 14px; color: var(--ink-300);
+    line-height: 1.6; max-width: 720px;
+  }
+
+  /* Option grid */
+  .options {
+    display: grid;
+    gap: 24px;
+  }
+  .option-card {
+    background: var(--ink-900);
+    border: 1px solid var(--ink-700);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color var(--motion-fast) var(--ease-mech);
+  }
+  .option-card.recommended {
+    border-color: rgba(38, 250, 133, 0.3);
+  }
+  .option-head {
+    padding: 24px 28px 20px;
+    display: flex; align-items: flex-start; gap: 16px;
+    border-bottom: 1px solid var(--ink-800);
+  }
+  .option-letter {
+    width: 44px; height: 44px;
+    border-radius: 4px;
+    background: var(--ink-700);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 18px; font-weight: 700;
+    color: var(--ink-100); flex-shrink: 0;
+  }
+  .option-card.recommended .option-letter {
+    background: var(--signal-green-400);
+    color: var(--ink-1000);
+  }
+  .option-info { flex: 1; }
+  .option-name {
+    font-family: var(--font-sans); font-size: 20px; font-weight: 700;
+    color: var(--ink-0); letter-spacing: -0.01em; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .recommended-tag {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-1000);
+    background: var(--signal-green-400);
+    padding: 3px 8px;
+    border-radius: 2px; font-weight: 700;
+  }
+  .option-mood {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 6px; font-weight: 700;
+  }
+  .option-desc {
+    font-size: 13px; color: var(--ink-300); line-height: 1.55;
+  }
+
+  /* Paper preview area */
+  .preview-area {
+    padding: 28px;
+    background: var(--paper-bg);
+    color: var(--paper-ink);
+  }
+  .preview-section {
+    margin-bottom: 22px;
+  }
+  .preview-section:last-child { margin-bottom: 0; }
+  .preview-label {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--paper-text-mute); margin-bottom: 10px; font-weight: 700;
+  }
+
+  /* Color chips row */
+  .chips-row {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 6px;
+  }
+  .chip {
+    aspect-ratio: 1;
+    background: var(--c);
+    position: relative;
+    cursor: default;
+  }
+  .chip-label {
+    margin-top: 6px;
+    font-family: var(--font-mono); font-size: 8px;
+    letter-spacing: 0.04em; text-align: center;
+    color: var(--paper-text-mute);
+    text-transform: uppercase;
+  }
+  .chip-hex {
+    font-family: var(--font-mono); font-size: 8px;
+    color: var(--paper-text-mute); margin-top: 1px;
+    text-align: center; opacity: 0.7;
+  }
+  .chip-cell {
+    display: flex; flex-direction: column;
+  }
+
+  /* Name tags preview */
+  .tags-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .name-tag {
+    padding: 3px 8px;
+    background: var(--c);
+    color: #EDE6D7;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em;
+    border-radius: 0;
+  }
+
+  /* Comments preview */
+  .comments-mock {
+    background: var(--paper-bg);
+    border: 1px solid var(--paper-edge);
+    border-radius: 4px;
+    padding: 14px 16px;
+  }
+  .mock-comment {
+    padding: 8px 0;
+    border-top: 1px solid var(--paper-edge);
+    display: flex; align-items: baseline; gap: 8px;
+    font-size: 13px; color: var(--paper-ink);
+  }
+  .mock-comment:first-child { border-top: 0; padding-top: 4px; }
+  .mock-comment .who {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    background: var(--c);
+    color: #EDE6D7;
+    padding: 2px 7px;
+    border-radius: 0;
+    flex-shrink: 0;
+  }
+  .mock-comment .body { flex: 1; line-height: 1.4; }
+  .mock-comment .when {
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--paper-text-mute); font-weight: 600;
+  }
+
+  /* Footer note */
+  .pick-row {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--paper-raised);
+    border: 1px solid var(--paper-edge);
+    border-radius: 4px;
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute);
+  }
+  .pick-row .arrow {
+    color: var(--te-orange-500);
+    font-weight: 700;
+  }
+
+  /* Reference image / inspiration row at bottom of head */
+  .head-quick {
+    margin-top: 24px;
+    padding: 14px 16px;
+    background: var(--ink-900);
+    border: 1px solid var(--ink-700);
+    border-radius: 4px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-300); letter-spacing: 0.04em;
+  }
+  .head-quick .lbl {
+    color: var(--signal-green-400); margin-right: 8px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="head">
+    <div class="tag">
+      <span class="live"></span>
+      <span><span class="accent">FREQUENCY</span> · MEMBER PALETTE COMPARE · 2026.04.23</span>
+    </div>
+    <h1>멤버 컬러 팔레트 3안 비교</h1>
+    <p>현재 컬러가 muted earth tone 일색이라 식별성도 약하고 레트로 정체성도 약함. FREQUENCY 컨셉(무전기 + 필름카메라 + Ivory Paper 페이퍼 + TE/Rams)에 어울리면서 9명을 명확히 구분할 수 있는 팔레트 3가지. 각 옵션은 paper-bg #EDE6D7 위에서 닉네임 칩과 댓글 줄로 즉시 비교.</p>
+    <div class="head-quick">
+      <span class="lbl">RULE</span>9 colors · paper bg 위 가독 (paper text = #EDE6D7) · 사각 라벨(라운드 0) · 모노 폰트 · 본인은 항상 Signal Green 고정
+    </div>
+  </header>
+
+  <div class="options" id="options"></div>
+
+</div>
+
+<script>
+'use strict';
+
+const PALETTES = [
+  {
+    letter: 'A',
+    name: 'TE-Inspired',
+    mood: 'OP-1 키컬러 톤다운 · 모던 레트로 · 기기 느낌',
+    desc: 'Teenage Engineering OP-1 신디사이저의 9가지 키 컬러를 paper bg 와 조화되도록 톤다운. 채도 중간, 명도 중간 deep tone. "기기" 정체성 가장 강함. 단점: 채도 살짝 높아 페이퍼 vintage 톤과 살짝 이질적.',
+    recommended: false,
+    colors: [
+      { name: 'GREEN',   hex: '#197A3E' },  /* self · 고정 */
+      { name: 'TOMATO',  hex: '#E45A3F' },
+      { name: 'AMBER',   hex: '#E5A82D' },
+      { name: 'LIME',    hex: '#9BAD3D' },
+      { name: 'TEAL',    hex: '#3F8A8A' },
+      { name: 'SKY',     hex: '#4A78B5' },
+      { name: 'INDIGO',  hex: '#5A5BAB' },
+      { name: 'ROSE',    hex: '#D26D9C' },
+      { name: 'RUSSET',  hex: '#8C5A37' },
+    ],
+  },
+  {
+    letter: 'B',
+    name: 'Polaroid Film',
+    mood: '70s 필름 팔레트 · 빛바랜 vintage · 필름카메라 메타포',
+    desc: 'Kodak Gold, Velvia Red, Ektachrome Blue, Polaroid Pink 등 70년대 필름 emulsion 색상. Ivory Paper 와 같은 vintage warmth 공유 → 가장 자연스러운 통일감. 추천.',
+    recommended: true,
+    colors: [
+      { name: 'GREEN',    hex: '#197A3E' },  /* self */
+      { name: 'KODAK',    hex: '#E2B848' },
+      { name: 'VELVIA',   hex: '#C04F3F' },
+      { name: 'POLAROID', hex: '#DB8A8A' },
+      { name: 'EKTA',     hex: '#5878A8' },
+      { name: 'MINT',     hex: '#7FB298' },
+      { name: 'SEPIA',    hex: '#8E6B47' },
+      { name: 'LAVENDER', hex: '#A484B8' },
+      { name: 'BURNT',    hex: '#C4673A' },
+    ],
+  },
+  {
+    letter: 'C',
+    name: 'Mid-century Catalog',
+    mood: '50~60s 광고 톤 · 가장 진한 레트로 · 따뜻함',
+    desc: '50-60년대 미국 우편 카탈로그 / 잡지 광고 컬러. Tomato, Mustard, Avocado, Aqua. 가장 명확한 retro 정체성, 명도 다양해서 9명 식별 매우 쉬움. 단점: 살짝 "kitsch" 위험, 유저 그룹에 따라 호불호.',
+    recommended: false,
+    colors: [
+      { name: 'GREEN',  hex: '#197A3E' },  /* self */
+      { name: 'TOMATO', hex: '#C8503F' },
+      { name: 'MUSTARD',hex: '#D8A636' },
+      { name: 'AVOCADO',hex: '#758D4A' },
+      { name: 'AQUA',   hex: '#4A9598' },
+      { name: 'SIENNA', hex: '#AE6440' },
+      { name: 'PLUM',   hex: '#8A5775' },
+      { name: 'PUMPKIN',hex: '#D17B3D' },
+      { name: 'SLATE',  hex: '#5C7CA8' },
+    ],
+  },
+];
+
+const NAMES = ['YOU', 'HANI', 'JIN', 'MIN', 'SOO', 'YUN', 'BIN', 'HAE', 'KAY'];
+const MOCK_COMMENTS = [
+  { i: 1, body: '여기 어디야? 분위기 좋다',     when: '5\'' },
+  { i: 2, body: '와 컬러 미쳤다',                when: '3\'' },
+  { i: 3, body: '나도 거기 가보고싶어',          when: '2\'' },
+  { i: 5, body: '오늘 비 와서 안 갈 듯',         when: '1\'' },
+  { i: 0, body: '고마워 ㅋㅋ 다음에 같이 가자',  when: '1\'' },
+];
+
+const optionsEl = document.getElementById('options');
+
+PALETTES.forEach(p => {
+  const card = document.createElement('article');
+  card.className = 'option-card' + (p.recommended ? ' recommended' : '');
+
+  // head
+  const head = document.createElement('div');
+  head.className = 'option-head';
+  head.innerHTML = `
+    <div class="option-letter">${p.letter}</div>
+    <div class="option-info">
+      <div class="option-name">
+        Option ${p.letter} · ${p.name}
+        ${p.recommended ? '<span class="recommended-tag">RECOMMENDED</span>' : ''}
+      </div>
+      <div class="option-mood">${p.mood}</div>
+      <div class="option-desc">${p.desc}</div>
+    </div>
+  `;
+  card.appendChild(head);
+
+  // preview area (paper bg)
+  const preview = document.createElement('div');
+  preview.className = 'preview-area';
+
+  // Section 1: 9 chips
+  const chipsSection = document.createElement('div');
+  chipsSection.className = 'preview-section';
+  chipsSection.innerHTML = '<div class="preview-label">9 COLORS · CHIPS</div>';
+  const chipsRow = document.createElement('div');
+  chipsRow.className = 'chips-row';
+  p.colors.forEach((c, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'chip-cell';
+    cell.innerHTML = `
+      <div class="chip" style="--c: ${c.hex}"></div>
+      <div class="chip-label">${c.name}</div>
+      <div class="chip-hex">${c.hex}</div>
+    `;
+    chipsRow.appendChild(cell);
+  });
+  chipsSection.appendChild(chipsRow);
+  preview.appendChild(chipsSection);
+
+  // Section 2: Name tags
+  const tagsSection = document.createElement('div');
+  tagsSection.className = 'preview-section';
+  tagsSection.innerHTML = '<div class="preview-label">NAME TAGS · 사각 칩 (라운드 0)</div>';
+  const tagsRow = document.createElement('div');
+  tagsRow.className = 'tags-row';
+  p.colors.forEach((c, i) => {
+    const tag = document.createElement('span');
+    tag.className = 'name-tag';
+    tag.style.setProperty('--c', c.hex);
+    tag.textContent = NAMES[i];
+    tagsRow.appendChild(tag);
+  });
+  tagsSection.appendChild(tagsRow);
+  preview.appendChild(tagsSection);
+
+  // Section 3: Comments mock
+  const commentsSection = document.createElement('div');
+  commentsSection.className = 'preview-section';
+  commentsSection.innerHTML = '<div class="preview-label">POST DETAIL · COMMENTS PREVIEW</div>';
+  const mock = document.createElement('div');
+  mock.className = 'comments-mock';
+  MOCK_COMMENTS.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'mock-comment';
+    row.innerHTML = `
+      <span class="who" style="--c: ${p.colors[c.i].hex}">${NAMES[c.i]}</span>
+      <span class="body">${c.body}</span>
+      <span class="when">${c.when}</span>
+    `;
+    mock.appendChild(row);
+  });
+  commentsSection.appendChild(mock);
+  preview.appendChild(commentsSection);
+
+  // pick row
+  const pick = document.createElement('div');
+  pick.className = 'pick-row';
+  pick.innerHTML = `<span class="arrow">▸</span> 이 옵션을 선택하려면 채팅에 "Option ${p.letter}" 라고 알려주세요`;
+  preview.appendChild(pick);
+
+  card.appendChild(preview);
+  optionsEl.appendChild(card);
+});
+</script>
+
+</body>
+</html>

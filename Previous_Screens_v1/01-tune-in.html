@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FREQUENCY · Screen 01 · Tune In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  /* ===== FREQUENCY DESIGN TOKENS ===== */
+  :root {
+    /* Brand */
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --signal-green-600: #00B853;
+    --signal-green-glow: rgba(38, 250, 133, 0.35);
+    --te-orange-400: #FF6F28;
+    --te-orange-500: #F15A24;
+    --te-orange-glow: rgba(241, 90, 36, 0.45);
+    --amber-500: #F5A623;
+    --critical-red-500: #E5484D;
+
+    /* Neutral (dark) */
+    --ink-1000: #0A0A0A;
+    --ink-950:  #111111;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --ink-0:    #FFFFFF;
+
+    /* Typography */
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --font-display: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+
+    /* Radius */
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+
+    /* Motion */
+    --motion-tick: 80ms;
+    --motion-fast: 150ms;
+    --motion-base: 200ms;
+    --motion-medium: 250ms;
+    --motion-slow: 300ms;
+    --ease-mechanical: cubic-bezier(0.2, 0, 0, 1);
+    --ease-detent: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-step-hard: step-end;
+    --motion-type-step: 55ms;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-800);
+    color: var(--ink-50);
+    line-height: 1.5;
+    padding: 48px 32px 96px;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 960px; margin: 0 auto; }
+
+  /* PAGE HEADER */
+  .page-head {
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--ink-600);
+  }
+  .page-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    margin-bottom: 10px;
+  }
+  .page-tag .accent { color: var(--signal-green-400); }
+  .page-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink-0);
+    margin-bottom: 6px;
+  }
+  .page-sub {
+    font-size: 14px;
+    color: var(--ink-400);
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  /* GRID: 2 phones side by side */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    max-width: 840px;
+    margin: 0 auto 48px;
+  }
+  @media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr; max-width: 400px; }
+  }
+  .unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .unit-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .unit-label .tag {
+    background: var(--ink-600);
+    color: var(--ink-100);
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    letter-spacing: 0.1em;
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  /* IPHONE 15 PRO FRAME */
+  .iphone {
+    width: 360px;
+    aspect-ratio: 393 / 852;
+    background: var(--ink-1000);
+    border-radius: 48px;
+    padding: 10px;
+    box-shadow:
+      0 0 0 1px var(--ink-600),
+      0 24px 56px -16px rgba(0,0,0,0.6);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%;
+    border-radius: 40px;
+    overflow: hidden;
+    background: var(--ink-900);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .dynamic-island {
+    position: absolute;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 100px; height: 28px;
+    background: var(--ink-1000);
+    border-radius: 999px;
+    z-index: 10;
+  }
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 26px 0 22px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-100);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 5;
+  }
+  .status-right {
+    display: flex; align-items: center; gap: 5px;
+  }
+  .sr-ico { width: 14px; height: 10px; background: currentColor; opacity: 0.85; }
+  .sr-ico.signal {
+    width: 16px; height: 10px;
+    clip-path: polygon(0 100%, 4px 100%, 4px 70%, 0 70%, 0 100%, 5px 100%, 9px 100%, 9px 50%, 5px 50%, 5px 100%, 10px 100%, 14px 100%, 14px 30%, 10px 30%, 10px 100%, 15px 100%, 19px 100%, 19px 10%, 15px 10%);
+  }
+  .sr-ico.battery {
+    width: 22px; height: 11px;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    position: relative;
+  }
+  .sr-ico.battery::after {
+    content:"";
+    position: absolute;
+    right: -3px; top: 3px;
+    width: 2px; height: 5px;
+    background: currentColor;
+  }
+  .sr-ico.battery::before {
+    content:"";
+    position: absolute;
+    top: 1px; left: 1px; bottom: 1px;
+    width: 80%;
+    background: currentColor;
+    border-radius: 1px;
+  }
+  .home-indicator {
+    position: absolute;
+    bottom: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 38%; height: 4px;
+    background: var(--ink-300);
+    border-radius: 999px;
+    z-index: 10;
+    opacity: 0.6;
+  }
+
+  /* SCREEN CONTENT */
+  .screen-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* === TUNE IN SCREEN === */
+  .s-tunein {
+    padding: 20px 22px 28px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink-900);
+    color: var(--ink-50);
+    font-family: var(--font-mono);
+  }
+
+  /* Top bar: wordmark + version */
+  .tunein-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .wordmark {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-100);
+  }
+  .wordmark .dot { color: var(--signal-green-400); }
+  .version-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+  }
+
+  .tunein-divider {
+    height: 1px;
+    background: var(--ink-700);
+    margin: 12px 0;
+  }
+
+  /* Boot log */
+  .boot-log {
+    font-size: 11px;
+    line-height: 1.8;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+  }
+  .boot-log .row {
+    display: block;
+    opacity: 0;
+    animation: bootFade 0.15s var(--ease-step-hard) forwards;
+  }
+  .boot-log .row:nth-child(1) { animation-delay: 0.3s; }
+  .boot-log .row:nth-child(2) { animation-delay: 0.55s; }
+  .boot-log .row:nth-child(3) { animation-delay: 0.8s; }
+  .boot-log .row:nth-child(4) { animation-delay: 1.05s; }
+  .boot-log .row:nth-child(5) { animation-delay: 1.35s; }
+  @keyframes bootFade {
+    to { opacity: 1; }
+  }
+  .boot-log .pfx { color: var(--signal-green-400); margin-right: 4px; }
+  .boot-log .ok { color: var(--signal-green-400); margin-left: 6px; font-weight: 700; }
+  .boot-log .cmt-en { color: var(--ink-500); }
+  .boot-log .cmt-kr {
+    color: var(--ink-500);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+
+  /* Frequency input area */
+  .freq-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+  }
+  .freq-label {
+    font-size: 10px;
+    color: var(--ink-400);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .freq-label .led {
+    width: 6px; height: 6px;
+    border-radius: 999px;
+    background: var(--signal-green-400);
+    box-shadow: 0 0 8px var(--signal-green-glow);
+    animation: ledPulse 2s ease-in-out infinite;
+  }
+  @keyframes ledPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* Frequency number display */
+  .freq-field-wrap {
+    position: relative;
+  }
+  .freq-field {
+    background: transparent;
+    border: none;
+    padding: 6px 0 10px;
+    border-bottom: 1.5px solid var(--ink-600);
+    font-family: var(--font-mono);
+    font-size: 36px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--ink-0);
+    display: flex;
+    align-items: center;
+    transition: border-color var(--motion-fast) var(--ease-mechanical);
+  }
+  .freq-field.focused {
+    border-color: var(--signal-green-400);
+  }
+  .freq-field .freq-text {
+    outline: none;
+    caret-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    min-width: 4px;
+  }
+  .freq-dot {
+    color: var(--te-orange-500);
+    font-weight: 700;
+  }
+  .block-cursor {
+    display: inline-block;
+    width: 20px;
+    height: 32px;
+    background: var(--signal-green-400);
+    vertical-align: -4px;
+    margin-left: 2px;
+    animation: blink 1000ms step-end infinite;
+  }
+  .freq-field:not(.focused) .block-cursor {
+    display: none;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Frequency format hint */
+  .freq-format {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--ink-500);
+    letter-spacing: 0.04em;
+  }
+  .freq-format .pfx { color: var(--te-orange-500); }
+
+  /* Static noise effect on mismatch */
+  .freq-static {
+    display: none;
+    font-size: 10px;
+    color: var(--te-orange-500);
+    letter-spacing: 0.06em;
+    animation: staticFlicker 0.1s steps(2) 3;
+  }
+  .freq-static.show { display: block; }
+  @keyframes staticFlicker {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Hint text */
+  .freq-hint {
+    font-size: 13px;
+    color: var(--ink-400);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  /* Actions */
+  .tunein-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* TUNE IN button */
+  .btn-tunein {
+    width: 100%;
+    padding: 15px 16px;
+    background: var(--signal-green-500);
+    color: var(--ink-1000);
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition:
+      background-color 0ms var(--ease-step-hard),
+      color 0ms var(--ease-step-hard),
+      transform var(--motion-fast) var(--ease-mechanical);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-tunein .pfx { opacity: 0.6; }
+  .btn-tunein:active {
+    background: var(--ink-0);
+    color: var(--ink-1000);
+    transform: scale(0.97);
+  }
+
+  /* OPEN CHANNEL button (transmit orange) */
+  .btn-open-channel {
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    color: var(--ink-200);
+    border: 1.5px solid var(--ink-600);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition:
+      background-color 0ms var(--ease-step-hard),
+      color 0ms var(--ease-step-hard),
+      border-color 0ms var(--ease-step-hard);
+  }
+  .btn-open-channel .pfx { color: var(--te-orange-500); opacity: 0.8; }
+  .btn-open-channel:active {
+    background: var(--ink-700);
+    border-color: var(--te-orange-500);
+    color: var(--ink-0);
+  }
+
+  .tunein-alt {
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-500);
+    font-family: var(--font-sans);
+    letter-spacing: -0.01em;
+    line-height: 1.5;
+  }
+
+  /* NOTES BELOW PHONE */
+  .frame-notes {
+    margin-top: 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-500);
+    letter-spacing: 0.02em;
+    line-height: 1.7;
+    max-width: 360px;
+    text-align: center;
+  }
+  .frame-notes b { color: var(--ink-300); }
+  .frame-notes .green { color: var(--signal-green-400); }
+  .frame-notes .orange { color: var(--te-orange-500); }
+
+  /* CHANGE LOG SECTION */
+  .changelog {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 32px 0;
+    border-top: 1px solid var(--ink-700);
+  }
+  .changelog-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    margin-bottom: 20px;
+  }
+  .cl-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .cl-table th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--ink-700);
+    font-weight: 600;
+  }
+  .cl-table td {
+    font-size: 12px;
+    color: var(--ink-300);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--ink-800);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .cl-table td:first-child {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-400);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .cl-old { color: var(--ink-500) !important; text-decoration: line-through; }
+  .cl-new { color: var(--signal-green-400) !important; font-weight: 500; }
+  .cl-new.orange { color: var(--te-orange-500) !important; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- PAGE HEADER -->
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · SCREEN MOCKUP · V2</div>
+    <h1 class="page-title">01 · Tune In</h1>
+    <p class="page-sub">채널 진입 화면. 주파수 번호를 입력해 채널에 연결하거나, 새 채널을 개설하는 유일한 문.<br>EN / KR 두 버전 나란히 표시.</p>
+  </div>
+
+  <!-- TWO PHONES -->
+  <div class="grid">
+
+    <!-- === EN VERSION === -->
+    <div class="unit">
+      <div class="unit-label">
+        <span class="tag">EN</span> Brand / CTA / Status
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="s-tunein">
+              <div class="tunein-top">
+                <div class="wordmark">FREQUE<span class="dot">N</span>CY</div>
+                <span class="version-tag">v1.0</span>
+              </div>
+              <div class="tunein-divider"></div>
+              <div class="boot-log" id="bootEN">
+                <div class="row"><span class="pfx">&gt;</span> SYSTEM BOOT<span class="ok"> [OK]</span></div>
+                <div class="row"><span class="pfx">&gt;</span> FREQUENCY MODULE<span class="ok"> [OK]</span></div>
+                <div class="row"><span class="pfx">&gt;</span> CAMERA MODULE<span class="ok"> [OK]</span></div>
+                <div class="row cmt-en">&nbsp;&nbsp;encrypted · invite only · max 8 crew</div>
+                <div class="row"><span class="pfx">&gt;</span> SIGNAL READY<span style="display:inline-block;width:8px;height:12px;background:var(--signal-green-400);vertical-align:-1px;margin-left:6px;animation:blink 1s step-end infinite;"></span></div>
+              </div>
+              <div class="freq-body">
+                <div class="freq-label">
+                  <span class="led"></span>
+                  ENTER FREQUENCY
+                </div>
+                <div class="freq-field-wrap">
+                  <div class="freq-field focused" id="freqFieldEN" tabindex="0">
+                    <span class="freq-text">107<span class="freq-dot">.</span>4</span><span class="block-cursor"></span>
+                  </div>
+                </div>
+                <div class="freq-format"><span class="pfx">&gt;</span> format: 000.0 · shared by channel host</div>
+              </div>
+              <div class="tunein-actions">
+                <button class="btn-tunein"><span class="pfx">&gt;</span> TUNE IN</button>
+                <button class="btn-open-channel"><span class="pfx">&gt;</span> OPEN NEW CHANNEL</button>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b class="green">Signal Green</b> = primary action (TUNE IN)<br>
+        <b class="orange">TE Orange</b> = sub-accent (dot, hint prefix)<br>
+        <b>Block cursor</b> typing UX maintained
+      </div>
+    </div>
+
+    <!-- === KR VERSION === -->
+    <div class="unit">
+      <div class="unit-label">
+        <span class="tag">KR</span> Body / Hint / Guide text
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-right">
+              <span class="sr-ico signal"></span>
+              <span class="sr-ico battery"></span>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="s-tunein">
+              <div class="tunein-top">
+                <div class="wordmark">FREQUE<span class="dot">N</span>CY</div>
+                <span class="version-tag">v1.0</span>
+              </div>
+              <div class="tunein-divider"></div>
+              <div class="boot-log" id="bootKR">
+                <div class="row"><span class="pfx">&gt;</span> SYSTEM BOOT<span class="ok"> [OK]</span></div>
+                <div class="row"><span class="pfx">&gt;</span> FREQUENCY MODULE<span class="ok"> [OK]</span></div>
+                <div class="row"><span class="pfx">&gt;</span> CAMERA MODULE<span class="ok"> [OK]</span></div>
+                <div class="row cmt-kr">&nbsp;&nbsp;암호화 · 초대 전용 · 최대 8명</div>
+                <div class="row"><span class="pfx">&gt;</span> SIGNAL READY<span style="display:inline-block;width:8px;height:12px;background:var(--signal-green-400);vertical-align:-1px;margin-left:6px;animation:blink 1s step-end infinite;"></span></div>
+              </div>
+              <div class="freq-body">
+                <div class="freq-label">
+                  <span class="led"></span>
+                  ENTER FREQUENCY
+                </div>
+                <div class="freq-field-wrap">
+                  <div class="freq-field focused" id="freqFieldKR" tabindex="0">
+                    <span class="freq-text">107<span class="freq-dot">.</span>4</span><span class="block-cursor"></span>
+                  </div>
+                </div>
+                <div class="freq-hint">호스트가 공유한 주파수 번호를 입력하세요</div>
+              </div>
+              <div class="tunein-actions">
+                <button class="btn-tunein"><span class="pfx">&gt;</span> TUNE IN</button>
+                <button class="btn-open-channel"><span class="pfx">&gt;</span> OPEN NEW CHANNEL</button>
+                <div class="tunein-alt">주파수가 없다면 새 채널을 개설할 수 있어요</div>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+      <div class="frame-notes">
+        <b>KR 본문</b>: 힌트/안내 텍스트 한국어<br>
+        <b>EN 유지</b>: TUNE IN, OPEN NEW CHANNEL, SIGNAL READY<br>
+        Boot log 상태 라벨 = 영문 모노스페이스
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHANGE LOG: QUIET.ROOM → FREQUENCY -->
+  <div class="changelog">
+    <div class="changelog-title">변환 내역 · QUIET.ROOM → FREQUENCY</div>
+    <table class="cl-table">
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>Before (QUIET.ROOM)</th>
+          <th>After (FREQUENCY)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Wordmark</td>
+          <td class="cl-old">QUIET.ROOM</td>
+          <td class="cl-new">FREQUENCY</td>
+        </tr>
+        <tr>
+          <td>Entry concept</td>
+          <td class="cl-old">초대 코드 텍스트 입력 (K7X-)</td>
+          <td class="cl-new">주파수 번호 입력 (107.4)</td>
+        </tr>
+        <tr>
+          <td>Boot log</td>
+          <td class="cl-old">비공개 룸 프로토콜 초기화</td>
+          <td class="cl-new">SYSTEM BOOT / FREQUENCY MODULE / CAMERA MODULE / SIGNAL READY</td>
+        </tr>
+        <tr>
+          <td>Primary CTA</td>
+          <td class="cl-old">JOIN ROOM (orange)</td>
+          <td class="cl-new">TUNE IN (Signal Green)</td>
+        </tr>
+        <tr>
+          <td>Secondary CTA</td>
+          <td class="cl-old">새 룸 만들기 (text link)</td>
+          <td class="cl-new">OPEN NEW CHANNEL (ghost button)</td>
+        </tr>
+        <tr>
+          <td>Accent color</td>
+          <td class="cl-old">Orange 단색 (#E85A2A)</td>
+          <td class="cl-new">Signal Green (primary) + <span class="cl-new orange">TE Orange (sub)</span></td>
+        </tr>
+        <tr>
+          <td>Mono font</td>
+          <td class="cl-old">Space Mono</td>
+          <td class="cl-new">JetBrains Mono</td>
+        </tr>
+        <tr>
+          <td>Sans font</td>
+          <td class="cl-old">Manrope</td>
+          <td class="cl-new">Pretendard + Inter</td>
+        </tr>
+        <tr>
+          <td>Background</td>
+          <td class="cl-old">#1C1B19</td>
+          <td class="cl-new">#1A1A1A (ink-900)</td>
+        </tr>
+        <tr>
+          <td>Cursor color</td>
+          <td class="cl-old">Orange (#E85A2A)</td>
+          <td class="cl-new">Signal Green (#26FA85)</td>
+        </tr>
+        <tr>
+          <td>LED indicator</td>
+          <td class="cl-old">없음</td>
+          <td class="cl-new">Signal Green LED dot + glow pulse</td>
+        </tr>
+        <tr>
+          <td>Button motion</td>
+          <td class="cl-old">step-end invert</td>
+          <td class="cl-new">step-end invert + scale(0.97) maintained</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  // Block cursor focus/blur logic (from Previous motion-system)
+  document.querySelectorAll('.freq-field').forEach(field => {
+    field.addEventListener('click', () => {
+      field.classList.add('focused');
+      const text = field.querySelector('.freq-text');
+      if (text) {
+        // Place caret at end
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.selectNodeContents(text);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.freq-field').forEach(field => {
+      if (!field.contains(e.target)) {
+        field.classList.remove('focused');
+      }
+    });
+  });
+
+  // Button press haptic simulation (visual flash)
+  document.querySelectorAll('.btn-tunein').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.style.boxShadow = '0 0 16px ' + 'var(--signal-green-glow)';
+      setTimeout(() => { this.style.boxShadow = ''; }, 200);
+    });
+  });
+</script>
+
+</body>
+</html>

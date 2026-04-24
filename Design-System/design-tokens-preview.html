@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FREQUENCY Design Tokens Preview</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-canvas: #1A1A1A;
+  --bg-s1: #242424;
+  --bg-s2: #2E2E2E;
+  --bg-s3: #3D3D3D;
+  --text-primary: #F4F4F4;
+  --text-secondary: #C8C8C8;
+  --text-tertiary: #7A7A7A;
+  --text-mono: #E8E8E8;
+  --border-subtle: #2E2E2E;
+  --border-default: #3D3D3D;
+  --border-strong: #5A5A5A;
+  --signal-green: #00E066;
+  --signal-green-400: #26FA85;
+  --signal-glow: rgba(38, 250, 133, 0.35);
+  --te-orange: #F15A24;
+  --te-orange-400: #FF6F28;
+  --te-orange-glow: rgba(241, 90, 36, 0.45);
+  --amber: #F5A623;
+  --critical-red: #E5484D;
+  --overlay: rgba(0,0,0,0.6);
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sans: 'Inter', 'Noto Sans KR', -apple-system, sans-serif;
+}
+
+.light {
+  --bg-canvas: #F4F4F4;
+  --bg-s1: #FFFFFF;
+  --bg-s2: #E8E8E8;
+  --bg-s3: #D8D8D8;
+  --text-primary: #111111;
+  --text-secondary: #2E2E2E;
+  --text-tertiary: #5A5A5A;
+  --text-mono: #1A1A1A;
+  --border-subtle: #E8E8E8;
+  --border-default: #D8D8D8;
+  --border-strong: #A0A0A0;
+  --signal-green: #00E066;
+  --signal-green-400: #26FA85;
+  --signal-glow: rgba(0, 224, 102, 0.28);
+  --te-orange: #F15A24;
+  --te-orange-400: #FF6F28;
+  --te-orange-glow: rgba(241, 90, 36, 0.35);
+  --overlay: rgba(26,26,26,0.45);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg-canvas); color: var(--text-primary); font-family: var(--sans); font-size: 14px; line-height: 1.4; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s; }
+
+/* Top Bar */
+.topbar { position: sticky; top: 0; z-index: 100; background: var(--bg-s1); border-bottom: 1px solid var(--border-default); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(12px); }
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.topbar-title { font-family: var(--mono); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-primary); }
+.topbar-version { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); background: var(--bg-s2); padding: 3px 8px; border-radius: 4px; }
+.topbar-led { width: 6px; height: 6px; border-radius: 50%; background: var(--signal-green); box-shadow: 0 0 8px var(--signal-glow); }
+
+/* Theme Toggle */
+.theme-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.theme-toggle-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); }
+.toggle-track { width: 40px; height: 20px; background: var(--bg-s3); border-radius: 10px; position: relative; border: 1px solid var(--border-default); transition: all 0.2s; }
+.toggle-thumb { width: 16px; height: 16px; background: var(--signal-green); border-radius: 50%; position: absolute; top: 1px; left: 1px; transition: transform 0.2s cubic-bezier(0.2,0,0,1); box-shadow: 0 0 6px var(--signal-glow); }
+.light .toggle-thumb { transform: translateX(20px); }
+
+/* Content */
+.content { max-width: 960px; margin: 0 auto; padding: 32px; }
+.section { margin-bottom: 48px; }
+.section-header { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle); }
+.section-desc { font-size: 12px; color: var(--text-tertiary); margin-top: -12px; margin-bottom: 20px; }
+
+/* Color Swatches */
+.color-group { margin-bottom: 24px; }
+.color-group-title { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.color-role { font-weight: 400; color: var(--text-tertiary); font-size: 10px; text-transform: none; letter-spacing: 0; }
+.swatch-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+.swatch { width: 56px; height: 40px; border-radius: 4px; border: 1px solid var(--border-subtle); position: relative; cursor: default; transition: transform 0.15s; }
+.swatch:hover { transform: scale(1.08); z-index: 2; }
+.swatch-label { position: absolute; bottom: -16px; left: 0; right: 0; text-align: center; font-family: var(--mono); font-size: 8px; color: var(--text-tertiary); letter-spacing: 0.04em; }
+.swatch-wide { width: 100%; height: 48px; display: flex; align-items: center; padding: 0 16px; border-radius: 6px; border: 1px solid var(--border-subtle); margin-bottom: 4px; justify-content: space-between; }
+.swatch-wide-name { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.04em; }
+.swatch-wide-value { font-family: var(--mono); font-size: 10px; opacity: 0.6; }
+
+/* LED Demo */
+.led-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+.led-item { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--bg-s1); border: 1px solid var(--border-subtle); border-radius: 6px; }
+.led-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.led-dot.on-air { background: var(--signal-green-400); box-shadow: 0 0 10px var(--signal-glow); }
+.led-dot.ready { background: var(--signal-green); box-shadow: 0 0 8px var(--signal-glow); }
+.led-dot.recharging { background: var(--te-orange); box-shadow: 0 0 8px var(--te-orange-glow); animation: pulse-orange 2s ease-in-out infinite; }
+.led-dot.warning { background: var(--amber); box-shadow: 0 0 8px rgba(245,166,35,0.4); }
+.led-dot.error { background: var(--critical-red); box-shadow: 0 0 8px rgba(229,72,77,0.4); }
+.led-dot.standby { background: #5A5A5A; }
+.led-dot.silent { background: #3D3D3D; }
+.light .led-dot.standby { background: #A0A0A0; }
+.light .led-dot.silent { background: #C8C8C8; }
+.led-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+
+@keyframes pulse-orange {
+  0%, 100% { box-shadow: 0 0 8px var(--te-orange-glow); }
+  50% { box-shadow: 0 0 16px var(--te-orange-glow); }
+}
+
+/* Neutral Scale */
+.neutral-bar { display: flex; height: 40px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-subtle); }
+.neutral-cell { flex: 1; position: relative; }
+.neutral-cell-label { position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 7px; letter-spacing: 0.04em; white-space: nowrap; }
+
+/* Typography */
+.type-sample { padding: 16px 20px; background: var(--bg-s1); border: 1px solid var(--border-subtle); border-radius: 6px; margin-bottom: 8px; display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.type-meta { font-family: var(--mono); font-size: 9px; color: var(--text-tertiary); letter-spacing: 0.04em; text-transform: uppercase; text-align: right; white-space: nowrap; flex-shrink: 0; }
+
+/* Spacing */
+.spacing-row { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.spacing-bar { height: 20px; background: var(--signal-green); opacity: 0.25; border-radius: 2px; transition: opacity 0.15s; }
+.spacing-bar:hover { opacity: 0.5; }
+.spacing-label { font-family: var(--mono); font-size: 10px; color: var(--text-tertiary); width: 32px; text-align: right; flex-shrink: 0; }
+.spacing-value { font-family: var(--mono); font-size: 10px; color: var(--text-tertiary); width: 40px; flex-shrink: 0; }
+
+/* Radius */
+.radius-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.radius-item { width: 64px; height: 64px; background: var(--bg-s2); border: 1.5px solid var(--border-default); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
+.radius-name { font-family: var(--mono); font-size: 8px; color: var(--text-tertiary); letter-spacing: 0.04em; text-transform: uppercase; }
+.radius-val { font-family: var(--mono); font-size: 10px; color: var(--text-secondary); }
+
+/* Motion */
+.motion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.motion-card { padding: 16px; background: var(--bg-s1); border: 1px solid var(--border-subtle); border-radius: 6px; cursor: pointer; transition: border-color 0.2s; }
+.motion-card:hover { border-color: var(--signal-green); }
+.motion-card:active .motion-dot { animation: var(--anim); }
+.motion-name { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); margin-bottom: 4px; }
+.motion-detail { font-family: var(--mono); font-size: 9px; color: var(--text-tertiary); letter-spacing: 0.04em; text-transform: uppercase; }
+.motion-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--signal-green); margin-top: 10px; }
+
+@keyframes anim-dial { 0% { transform: translateX(0); } 25% { transform: translateX(8px); } 50% { transform: translateX(16px); } 75% { transform: translateX(24px); } 100% { transform: translateX(32px); } }
+@keyframes anim-shutter { 0% { transform: scale(1); } 40% { transform: scale(0.7); } 100% { transform: scale(1); } }
+@keyframes anim-winding { 0% { transform: translateX(0); } 100% { transform: translateX(60px); } }
+@keyframes anim-transmit { 0% { transform: translateY(0); opacity:1; } 100% { transform: translateY(-30px); opacity:0; } }
+@keyframes anim-switch { 0% { opacity:1; } 30% { opacity:0.1; } 60% { opacity:0.3; } 100% { opacity:1; } }
+@keyframes anim-led { 0% { opacity:0.2; } 40% { opacity:0.2; } 60% { opacity:1; } 70% { opacity:0.6; } 100% { opacity:1; transform: scale(1.3); } }
+
+/* Haptic */
+.haptic-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.haptic-card { padding: 14px; background: var(--bg-s1); border: 1px solid var(--border-subtle); border-radius: 6px; text-align: center; }
+.haptic-icon { font-size: 18px; margin-bottom: 6px; }
+.haptic-name { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); margin-bottom: 2px; }
+.haptic-type { font-family: var(--mono); font-size: 9px; color: var(--text-tertiary); letter-spacing: 0.04em; }
+
+/* Size */
+.size-items { display: flex; flex-direction: column; gap: 8px; }
+.size-item { display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: var(--bg-s1); border: 1px solid var(--border-subtle); border-radius: 6px; }
+.size-visual { flex-shrink: 0; background: var(--bg-s2); border: 1.5px solid var(--border-default); border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+.size-info { display: flex; flex-direction: column; gap: 2px; }
+.size-name { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); }
+.size-val { font-family: var(--mono); font-size: 10px; color: var(--text-tertiary); }
+
+/* Buttons Preview */
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.btn { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.15s cubic-bezier(0.2,0,0,1); display: inline-flex; align-items: center; gap: 6px; }
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: var(--signal-green); color: #0A0A0A; }
+.btn-primary:hover { box-shadow: 0 0 16px var(--signal-glow); }
+.btn-transmit { background: var(--te-orange); color: #FFFFFF; }
+.btn-transmit:hover { box-shadow: 0 0 16px var(--te-orange-glow); }
+.btn-danger { background: var(--critical-red); color: #FFFFFF; }
+.btn-ghost { background: transparent; color: var(--text-primary); border: 1.5px solid var(--border-default); }
+.btn-ghost:hover { border-color: var(--text-tertiary); }
+
+/* PTT Button */
+.ptt-wrapper { display: flex; justify-content: center; padding: 24px 0; }
+.ptt-btn { width: 72px; height: 72px; border-radius: 50%; background: var(--signal-green); border: none; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; transition: all 0.15s cubic-bezier(0.2,0,0,1); box-shadow: 0 0 20px var(--signal-glow); }
+.ptt-btn:hover { box-shadow: 0 0 32px var(--signal-glow); transform: scale(1.04); }
+.ptt-btn:active { transform: scale(0.92); box-shadow: 0 0 12px var(--signal-glow); }
+.ptt-btn svg { width: 28px; height: 28px; fill: #0A0A0A; }
+.ptt-label { position: absolute; bottom: -22px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--signal-green); }
+
+.ptt-btn.recharging { background: var(--te-orange); box-shadow: 0 0 20px var(--te-orange-glow); opacity: 0.6; cursor: not-allowed; }
+.ptt-btn.recharging:hover { transform: none; }
+.ptt-btn.recharging svg { fill: #FFFFFF; }
+.ptt-btn.recharging .ptt-label { color: var(--te-orange); }
+
+/* Crew indicator */
+.crew-row { display: flex; gap: 20px; align-items: center; justify-content: center; padding: 20px; background: var(--bg-s1); border: 1px solid var(--border-subtle); border-radius: 6px; }
+.crew-member { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.crew-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-s2); border: 1.5px solid var(--border-default); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.crew-callsign { font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-tertiary); }
+.crew-status { width: 6px; height: 6px; border-radius: 50%; }
+
+/* Audit Issues */
+.audit { margin-top: 8px; }
+.audit-item { padding: 12px 16px; background: var(--bg-s1); border-left: 3px solid var(--te-orange); border-radius: 0 6px 6px 0; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+.audit-num { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--te-orange); letter-spacing: 0.04em; flex-shrink: 0; }
+.audit-text { font-size: 12px; color: var(--text-secondary); }
+
+/* Footer */
+.footer { padding: 32px 0; border-top: 1px solid var(--border-subtle); margin-top: 48px; text-align: center; }
+.footer-text { font-family: var(--mono); font-size: 10px; color: var(--text-tertiary); letter-spacing: 0.08em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-led"></div>
+    <span class="topbar-title">FREQUENCY</span>
+    <span class="topbar-version">Design Tokens v2.0</span>
+  </div>
+  <div class="theme-toggle" onclick="document.body.classList.toggle('light')">
+    <span class="theme-toggle-label">DARK</span>
+    <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    <span class="theme-toggle-label">LIGHT</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- BRAND COLORS -->
+  <div class="section">
+    <div class="section-header">01 / Brand Colors</div>
+    <div class="section-desc">포인트 2색 역할 분리. Signal Green = 수신/활성, TE Orange = 송신/충전.</div>
+
+    <div class="color-group">
+      <div class="color-group-title">Signal Green <span class="color-role">On Air / READY / 수신 / 성공</span></div>
+      <div class="swatch-row" style="margin-bottom:24px">
+        <div><div class="swatch" style="background:#E8FFF2"></div><div class="swatch-label">50</div></div>
+        <div><div class="swatch" style="background:#C9FFE0"></div><div class="swatch-label">100</div></div>
+        <div><div class="swatch" style="background:#8CFFC0"></div><div class="swatch-label">200</div></div>
+        <div><div class="swatch" style="background:#4DFF9E"></div><div class="swatch-label">300</div></div>
+        <div><div class="swatch" style="background:#26FA85"></div><div class="swatch-label">400</div></div>
+        <div><div class="swatch" style="background:#00E066"></div><div class="swatch-label">500</div></div>
+        <div><div class="swatch" style="background:#00B853"></div><div class="swatch-label">600</div></div>
+        <div><div class="swatch" style="background:#008C3E"></div><div class="swatch-label">700</div></div>
+        <div><div class="swatch" style="background:#006630"></div><div class="swatch-label">800</div></div>
+        <div><div class="swatch" style="background:#003E1C"></div><div class="swatch-label">900</div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-title">TE Orange <span class="color-role">Transmit / RECHARGING / 경고</span></div>
+      <div class="swatch-row" style="margin-bottom:24px">
+        <div><div class="swatch" style="background:#FFF2EB"></div><div class="swatch-label">50</div></div>
+        <div><div class="swatch" style="background:#FFDDC9"></div><div class="swatch-label">100</div></div>
+        <div><div class="swatch" style="background:#FFB68F"></div><div class="swatch-label">200</div></div>
+        <div><div class="swatch" style="background:#FF8F55"></div><div class="swatch-label">300</div></div>
+        <div><div class="swatch" style="background:#FF6F28"></div><div class="swatch-label">400</div></div>
+        <div><div class="swatch" style="background:#F15A24"></div><div class="swatch-label">500</div></div>
+        <div><div class="swatch" style="background:#C9430F"></div><div class="swatch-label">600</div></div>
+        <div><div class="swatch" style="background:#9E3308"></div><div class="swatch-label">700</div></div>
+        <div><div class="swatch" style="background:#752506"></div><div class="swatch-label">800</div></div>
+        <div><div class="swatch" style="background:#4A1603"></div><div class="swatch-label">900</div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-title">Utility</div>
+      <div class="swatch-row" style="margin-bottom:24px">
+        <div><div class="swatch" style="background:#F5A623;width:80px"></div><div class="swatch-label">Amber 500</div></div>
+        <div><div class="swatch" style="background:#E5484D;width:80px"></div><div class="swatch-label">Critical 500</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEUTRAL SCALE -->
+  <div class="section">
+    <div class="section-header">02 / Neutral Scale</div>
+    <div class="section-desc">무광 금속 패널 계열. ink-1000(가장 어두운) ~ ink-0(흰색).</div>
+    <div class="neutral-bar">
+      <div class="neutral-cell" style="background:#0A0A0A"><span class="neutral-cell-label" style="color:#7A7A7A">1000</span></div>
+      <div class="neutral-cell" style="background:#111111"><span class="neutral-cell-label" style="color:#7A7A7A">950</span></div>
+      <div class="neutral-cell" style="background:#1A1A1A"><span class="neutral-cell-label" style="color:#7A7A7A">900</span></div>
+      <div class="neutral-cell" style="background:#242424"><span class="neutral-cell-label" style="color:#7A7A7A">800</span></div>
+      <div class="neutral-cell" style="background:#2E2E2E"><span class="neutral-cell-label" style="color:#7A7A7A">700</span></div>
+      <div class="neutral-cell" style="background:#3D3D3D"><span class="neutral-cell-label" style="color:#A0A0A0">600</span></div>
+      <div class="neutral-cell" style="background:#5A5A5A"><span class="neutral-cell-label" style="color:#C8C8C8">500</span></div>
+      <div class="neutral-cell" style="background:#7A7A7A"><span class="neutral-cell-label" style="color:#E8E8E8">400</span></div>
+      <div class="neutral-cell" style="background:#A0A0A0"><span class="neutral-cell-label" style="color:#242424">300</span></div>
+      <div class="neutral-cell" style="background:#C8C8C8"><span class="neutral-cell-label" style="color:#242424">200</span></div>
+      <div class="neutral-cell" style="background:#D8D8D8"><span class="neutral-cell-label" style="color:#242424">150</span></div>
+      <div class="neutral-cell" style="background:#E8E8E8"><span class="neutral-cell-label" style="color:#242424">100</span></div>
+      <div class="neutral-cell" style="background:#F4F4F4"><span class="neutral-cell-label" style="color:#242424">50</span></div>
+      <div class="neutral-cell" style="background:#FFFFFF"><span class="neutral-cell-label" style="color:#242424">0</span></div>
+    </div>
+  </div>
+
+  <!-- LED STATUS -->
+  <div class="section">
+    <div class="section-header">03 / LED Status Indicators</div>
+    <div class="section-desc">계기판 상태등. 각 LED는 6px 원형 + glow.</div>
+    <div class="led-row">
+      <div class="led-item"><div class="led-dot on-air"></div><span class="led-label">On Air</span></div>
+      <div class="led-item"><div class="led-dot ready"></div><span class="led-label">Ready</span></div>
+      <div class="led-item"><div class="led-dot recharging"></div><span class="led-label">Recharging</span></div>
+      <div class="led-item"><div class="led-dot warning"></div><span class="led-label">Warning</span></div>
+      <div class="led-item"><div class="led-dot error"></div><span class="led-label">Error</span></div>
+      <div class="led-item"><div class="led-dot standby"></div><span class="led-label">Standby</span></div>
+      <div class="led-item"><div class="led-dot silent"></div><span class="led-label">Silent</span></div>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="section">
+    <div class="section-header">04 / Typography Roles</div>
+    <div class="section-desc">시스템/상태 = JetBrains Mono 대문자. 본문 = Inter + Noto Sans KR.</div>
+
+    <div class="type-sample">
+      <span style="font-family:var(--mono);font-size:40px;font-weight:500;letter-spacing:0.04em">107.4</span>
+      <span class="type-meta">frequency / mono 40px</span>
+    </div>
+    <div class="type-sample">
+      <span style="font-family:var(--sans);font-size:24px;font-weight:600;letter-spacing:-0.02em">채널에 오신 걸 환영합니다</span>
+      <span class="type-meta">heading-1 / sans 24px</span>
+    </div>
+    <div class="type-sample">
+      <span style="font-family:var(--sans);font-size:18px;font-weight:600;letter-spacing:-0.02em">수신 로그</span>
+      <span class="type-meta">heading-2 / sans 18px</span>
+    </div>
+    <div class="type-sample">
+      <span style="font-family:var(--mono);font-size:16px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase">ECHO</span>
+      <span class="type-meta">callsign / mono 16px</span>
+    </div>
+    <div class="type-sample">
+      <span style="font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--signal-green)">READY</span>
+      <span class="type-meta">status-label / mono 11px</span>
+    </div>
+    <div class="type-sample">
+      <span style="font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--te-orange)">RECHARGING 01:42:18</span>
+      <span class="type-meta">status-value / mono 13px</span>
+    </div>
+    <div class="type-sample">
+      <span style="font-family:var(--sans);font-size:14px;font-weight:400;line-height:1.4">지금 카페에서 작업 중이야. 창밖에 비 온다.</span>
+      <span class="type-meta">body / sans 14px</span>
+    </div>
+    <div class="type-sample">
+      <span style="font-family:var(--sans);font-size:12px;font-weight:400;color:var(--text-secondary)">2 minutes ago</span>
+      <span class="type-meta">body-small / sans 12px</span>
+    </div>
+    <div class="type-sample">
+      <span style="font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary)">APR 22 · 14:30 KST</span>
+      <span class="type-meta">caption / mono 10px</span>
+    </div>
+  </div>
+
+  <!-- BUTTONS & ACTIONS -->
+  <div class="section">
+    <div class="section-header">05 / Actions & Buttons</div>
+    <div class="section-desc">기기 버튼 느낌. 누르면 scale(0.96) 피드백. LED glow on hover.</div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary">TUNE IN</button>
+      <button class="btn btn-transmit">TRANSMIT</button>
+      <button class="btn btn-danger">SIGN OFF</button>
+      <button class="btn btn-ghost">CANCEL</button>
+    </div>
+
+    <div class="ptt-wrapper">
+      <div style="text-align:center">
+        <button class="ptt-btn" id="pttBtn" onclick="togglePTT()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/></svg>
+          <span class="ptt-label" id="pttLabel">READY</span>
+        </button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <span style="font-family:var(--mono);font-size:9px;color:var(--text-tertiary);letter-spacing:0.08em;text-transform:uppercase">PTT Button / 72px / 클릭하면 RECHARGING 전환</span>
+    </div>
+  </div>
+
+  <!-- CREW INDICATORS -->
+  <div class="section">
+    <div class="section-header">06 / Crew Status</div>
+    <div class="section-desc">채널 멤버 상태 표시. 콜사인 첫 글자 + LED 상태등.</div>
+    <div class="crew-row">
+      <div class="crew-member">
+        <div class="crew-avatar">G</div>
+        <div class="crew-status on-air" style="width:6px;height:6px;border-radius:50%;background:var(--signal-green-400);box-shadow:0 0 8px var(--signal-glow)"></div>
+        <span class="crew-callsign">GREEN</span>
+      </div>
+      <div class="crew-member">
+        <div class="crew-avatar">K</div>
+        <div class="crew-status" style="width:6px;height:6px;border-radius:50%;background:var(--signal-green);box-shadow:0 0 6px var(--signal-glow)"></div>
+        <span class="crew-callsign">K7</span>
+      </div>
+      <div class="crew-member">
+        <div class="crew-avatar">N</div>
+        <div class="crew-status" style="width:6px;height:6px;border-radius:50%;background:var(--te-orange);box-shadow:0 0 6px var(--te-orange-glow);animation:pulse-orange 2s ease-in-out infinite"></div>
+        <span class="crew-callsign">NOVA</span>
+      </div>
+      <div class="crew-member">
+        <div class="crew-avatar">E</div>
+        <div class="crew-status standby" style="width:6px;height:6px;border-radius:50%"></div>
+        <span class="crew-callsign">ECHO</span>
+      </div>
+      <div class="crew-member">
+        <div class="crew-avatar" style="opacity:0.4">R</div>
+        <div class="crew-status silent" style="width:6px;height:6px;border-radius:50%"></div>
+        <span class="crew-callsign" style="opacity:0.4">REX</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPACING -->
+  <div class="section">
+    <div class="section-header">07 / Spacing Scale</div>
+    <div class="section-desc">4px 베이스 그리드. 정밀 정렬.</div>
+    <div class="spacing-row"><span class="spacing-label">1</span><div class="spacing-bar" style="width:4px"></div><span class="spacing-value">4px</span></div>
+    <div class="spacing-row"><span class="spacing-label">2</span><div class="spacing-bar" style="width:8px"></div><span class="spacing-value">8px</span></div>
+    <div class="spacing-row"><span class="spacing-label">3</span><div class="spacing-bar" style="width:12px"></div><span class="spacing-value">12px</span></div>
+    <div class="spacing-row"><span class="spacing-label">4</span><div class="spacing-bar" style="width:16px"></div><span class="spacing-value">16px</span></div>
+    <div class="spacing-row"><span class="spacing-label">5</span><div class="spacing-bar" style="width:20px"></div><span class="spacing-value">20px</span></div>
+    <div class="spacing-row"><span class="spacing-label">6</span><div class="spacing-bar" style="width:24px"></div><span class="spacing-value">24px</span></div>
+    <div class="spacing-row"><span class="spacing-label">8</span><div class="spacing-bar" style="width:32px"></div><span class="spacing-value">32px</span></div>
+    <div class="spacing-row"><span class="spacing-label">10</span><div class="spacing-bar" style="width:40px"></div><span class="spacing-value">40px</span></div>
+    <div class="spacing-row"><span class="spacing-label">12</span><div class="spacing-bar" style="width:48px"></div><span class="spacing-value">48px</span></div>
+    <div class="spacing-row"><span class="spacing-label">16</span><div class="spacing-bar" style="width:64px"></div><span class="spacing-value">64px</span></div>
+    <div class="spacing-row"><span class="spacing-label">20</span><div class="spacing-bar" style="width:80px"></div><span class="spacing-value">80px</span></div>
+  </div>
+
+  <!-- RADIUS -->
+  <div class="section">
+    <div class="section-header">08 / Border Radius</div>
+    <div class="section-desc">기기 정밀함 유지. 둥근 귀여움 금지.</div>
+    <div class="radius-row">
+      <div class="radius-item" style="border-radius:0"><span class="radius-name">none</span><span class="radius-val">0</span></div>
+      <div class="radius-item" style="border-radius:2px"><span class="radius-name">xs</span><span class="radius-val">2px</span></div>
+      <div class="radius-item" style="border-radius:4px"><span class="radius-name">sm</span><span class="radius-val">4px</span></div>
+      <div class="radius-item" style="border-radius:6px"><span class="radius-name">md</span><span class="radius-val">6px</span></div>
+      <div class="radius-item" style="border-radius:10px"><span class="radius-name">lg</span><span class="radius-val">10px</span></div>
+      <div class="radius-item" style="border-radius:14px"><span class="radius-name">xl</span><span class="radius-val">14px</span></div>
+      <div class="radius-item" style="border-radius:999px"><span class="radius-name">pill</span><span class="radius-val">999</span></div>
+    </div>
+  </div>
+
+  <!-- MOTION -->
+  <div class="section">
+    <div class="section-header">09 / Motion</div>
+    <div class="section-desc">0.15-0.4s. 기계적 정확함. 카드 클릭하면 모션 프리뷰.</div>
+    <div class="motion-grid">
+      <div class="motion-card" onclick="playMotion(this,'anim-dial','80ms')">
+        <div class="motion-name">Dial Step</div>
+        <div class="motion-detail">80ms / detent easing</div>
+        <div class="motion-dot" style="transition:transform 80ms cubic-bezier(0.4,0,0.2,1)"></div>
+      </div>
+      <div class="motion-card" onclick="playMotion(this,'anim-shutter','150ms')">
+        <div class="motion-name">Shutter Press</div>
+        <div class="motion-detail">150ms / mechanical</div>
+        <div class="motion-dot"></div>
+      </div>
+      <div class="motion-card" onclick="playMotion(this,'anim-winding','300ms')">
+        <div class="motion-name">Film Winding</div>
+        <div class="motion-detail">300ms / mechanical</div>
+        <div class="motion-dot"></div>
+      </div>
+      <div class="motion-card" onclick="playMotion(this,'anim-transmit','250ms')">
+        <div class="motion-name">Transmit Launch</div>
+        <div class="motion-detail">250ms / mechanical</div>
+        <div class="motion-dot" style="background:var(--te-orange)"></div>
+      </div>
+      <div class="motion-card" onclick="playMotion(this,'anim-switch','300ms')">
+        <div class="motion-name">Channel Switch</div>
+        <div class="motion-detail">300ms / static flicker</div>
+        <div class="motion-dot"></div>
+      </div>
+      <div class="motion-card" onclick="playMotion(this,'anim-led','200ms')">
+        <div class="motion-name">LED Toggle</div>
+        <div class="motion-detail">200ms / bounce-soft</div>
+        <div class="motion-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAPTIC -->
+  <div class="section">
+    <div class="section-header">10 / Haptic Feedback</div>
+    <div class="section-desc">iOS UIImpactFeedbackGenerator 매핑.</div>
+    <div class="haptic-grid">
+      <div class="haptic-card"><div class="haptic-icon">~</div><div class="haptic-name">Dial Step</div><div class="haptic-type">Light Impact</div></div>
+      <div class="haptic-card"><div class="haptic-icon" style="color:var(--signal-green)">&#x25CF;</div><div class="haptic-name">Freq Match</div><div class="haptic-type">Medium Impact</div></div>
+      <div class="haptic-card"><div class="haptic-icon">&#x25A0;</div><div class="haptic-name">Shutter</div><div class="haptic-type">Rigid Impact</div></div>
+      <div class="haptic-card"><div class="haptic-icon" style="color:var(--te-orange)">&#x25B2;</div><div class="haptic-name">Transmit</div><div class="haptic-type">Success</div></div>
+      <div class="haptic-card"><div class="haptic-icon">&#x25CB;</div><div class="haptic-name">Signal Back</div><div class="haptic-type">Soft Impact</div></div>
+      <div class="haptic-card"><div class="haptic-icon" style="color:var(--critical-red)">&#x2716;</div><div class="haptic-name">Error</div><div class="haptic-type">Error Notification</div></div>
+    </div>
+  </div>
+
+  <!-- SIZES -->
+  <div class="section">
+    <div class="section-header">11 / Key Sizes</div>
+    <div class="size-items">
+      <div class="size-item">
+        <div class="size-visual" style="width:44px;height:44px"><span style="font-family:var(--mono);font-size:9px;color:var(--text-tertiary)">44</span></div>
+        <div class="size-info"><span class="size-name">Touch Target Min</span><span class="size-val">44px / iOS HIG minimum</span></div>
+      </div>
+      <div class="size-item">
+        <div class="size-visual" style="width:72px;height:72px;border-radius:50%"><span style="font-family:var(--mono);font-size:9px;color:var(--text-tertiary)">72</span></div>
+        <div class="size-info"><span class="size-name">PTT Button</span><span class="size-val">72px diameter</span></div>
+      </div>
+      <div class="size-item">
+        <div class="size-visual" style="width:6px;height:6px;border-radius:50%;background:var(--signal-green);box-shadow:0 0 6px var(--signal-glow);border:none"></div>
+        <div class="size-info"><span class="size-name">LED Dot</span><span class="size-val">6px / 8px (lg)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIT ISSUES -->
+  <div class="section">
+    <div class="section-header">12 / Audit Issues</div>
+    <div class="section-desc">컨셉 v1.0 대비 발견된 개선 필요 항목.</div>
+    <div class="audit">
+      <div class="audit-item"><span class="audit-num">#1</span><span class="audit-text">frequency 타이포를 display(40px) / compact(20px) 2단계로 분리 필요</span></div>
+      <div class="audit-item"><span class="audit-num">#2</span><span class="audit-text">bg.content / bg.immersive 컬러 토큰 추가 필요 (사진/영상 감상 화면용)</span></div>
+      <div class="audit-item"><span class="audit-num">#3</span><span class="audit-text">copy-response 타이포 role 추가 필요 (유저 텍스트 차별화)</span></div>
+      <div class="audit-item"><span class="audit-num">#4</span><span class="audit-text">frame radius(44px) 용도 명시 필요</span></div>
+      <div class="audit-item"><span class="audit-num">#5</span><span class="audit-text">채널 전환 정적(static) 효과 토큰 미정의</span></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-text">FREQUENCY Design System / v2.0 / 2026-04-22</div>
+  </div>
+
+</div>
+
+<script>
+function togglePTT() {
+  const btn = document.getElementById('pttBtn');
+  const label = document.getElementById('pttLabel');
+  if (btn.classList.contains('recharging')) {
+    btn.classList.remove('recharging');
+    label.textContent = 'READY';
+  } else {
+    btn.classList.add('recharging');
+    label.textContent = 'RECHARGING';
+  }
+}
+
+function playMotion(card, animName, duration) {
+  const dot = card.querySelector('.motion-dot');
+  dot.style.animation = 'none';
+  dot.offsetHeight;
+  dot.style.animation = animName + ' ' + duration + ' cubic-bezier(0.2,0,0,1) forwards';
+  setTimeout(() => { dot.style.animation = 'none'; }, 600);
+}
+</script>
+</body>
+</html>

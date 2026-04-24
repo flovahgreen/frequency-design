@@ -1,0 +1,243 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Private Photo Room · Design System v1.0 · Locked 2026-04-21",
+  "color": {
+    "$description": "Primitive palette (Marine) and semantic roles.",
+    "paper": {
+      "50":  { "$value": "#FAF8F4", "$type": "color" },
+      "100": { "$value": "#F4F1EC", "$type": "color" },
+      "200": { "$value": "#ECE7DE", "$type": "color" }
+    },
+    "bone": {
+      "300": { "$value": "#E0DACF", "$type": "color" },
+      "400": { "$value": "#C9C3B8", "$type": "color" }
+    },
+    "graphite": {
+      "500": { "$value": "#8C8880", "$type": "color" },
+      "600": { "$value": "#5E5C56", "$type": "color" },
+      "700": { "$value": "#3D3B37", "$type": "color" }
+    },
+    "ink":    { "900": { "$value": "#1C1B19", "$type": "color" } },
+    "orange": {
+      "100": { "$value": "#FBE4D8", "$type": "color" },
+      "500": { "$value": "#E85A2A", "$type": "color" }
+    },
+    "navy": {
+      "100": { "$value": "#D7DCE5", "$type": "color" },
+      "500": { "$value": "#2B3F5E", "$type": "color" }
+    },
+    "brick":  { "500": { "$value": "#A8412B", "$type": "color" } },
+    "semantic": {
+      "bg": {
+        "canvas":  { "$value": "{color.paper.100}", "$type": "color", "$description": "App canvas background" },
+        "surface": { "$value": "{color.paper.50}",  "$type": "color", "$description": "Card, modal, bottom sheet surface" },
+        "sunken":  { "$value": "{color.paper.200}", "$type": "color", "$description": "Input, inactive button bg" }
+      },
+      "text": {
+        "primary":   { "$value": "{color.ink.900}",      "$type": "color" },
+        "secondary": { "$value": "{color.graphite.700}", "$type": "color" },
+        "muted":     { "$value": "{color.graphite.500}", "$type": "color" }
+      },
+      "accent": {
+        "action": { "$value": "{color.orange.500}", "$type": "color", "$description": "Primary action, emotion, emphasis" },
+        "info":   { "$value": "{color.navy.500}",   "$type": "color", "$description": "Info badge, state indicator" }
+      },
+      "status": {
+        "destructive": { "$value": "{color.brick.500}", "$type": "color", "$description": "Irreversible actions only" }
+      },
+      "border": {
+        "soft":    { "$value": "{color.bone.300}",     "$type": "color" },
+        "default": { "$value": "{color.bone.400}",     "$type": "color" },
+        "strong":  { "$value": "{color.graphite.700}", "$type": "color", "$description": "Focus ring" }
+      }
+    }
+  },
+
+  "font": {
+    "family": {
+      "kr":   { "$value": ["Pretendard Variable", "Pretendard", "-apple-system", "sans-serif"], "$type": "fontFamily" },
+      "en":   { "$value": ["Manrope", "sans-serif"], "$type": "fontFamily" },
+      "mono": { "$value": ["Space Mono", "ui-monospace", "monospace"], "$type": "fontFamily" }
+    },
+    "weight": {
+      "regular":  { "$value": 400, "$type": "fontWeight" },
+      "medium":   { "$value": 500, "$type": "fontWeight" },
+      "semibold": { "$value": 600, "$type": "fontWeight" },
+      "bold":     { "$value": 700, "$type": "fontWeight" }
+    }
+  },
+
+  "typography": {
+    "$description": "Composed type styles (size / line-height / weight).",
+    "display-xl": { "$value": { "fontFamily": "{font.family.en}",   "fontSize": "64px", "lineHeight": 1.05, "fontWeight": "{font.weight.semibold}", "letterSpacing": "-0.02em" }, "$type": "typography" },
+    "display-l":  { "$value": { "fontFamily": "{font.family.en}",   "fontSize": "44px", "lineHeight": 1.10, "fontWeight": "{font.weight.semibold}", "letterSpacing": "-0.02em" }, "$type": "typography" },
+    "title-l":    { "$value": { "fontFamily": "{font.family.en}",   "fontSize": "28px", "lineHeight": 1.20, "fontWeight": "{font.weight.semibold}", "letterSpacing": "-0.01em" }, "$type": "typography" },
+    "title-m":    { "$value": { "fontFamily": "{font.family.en}",   "fontSize": "20px", "lineHeight": 1.30, "fontWeight": "{font.weight.semibold}" }, "$type": "typography" },
+    "body-l":     { "$value": { "fontFamily": "{font.family.en}",   "fontSize": "17px", "lineHeight": 1.50, "fontWeight": "{font.weight.regular}"  }, "$type": "typography" },
+    "body-m":     { "$value": { "fontFamily": "{font.family.en}",   "fontSize": "15px", "lineHeight": 1.45, "fontWeight": "{font.weight.regular}"  }, "$type": "typography" },
+    "caption":    { "$value": { "fontFamily": "{font.family.en}",   "fontSize": "13px", "lineHeight": 1.40, "fontWeight": "{font.weight.medium}"   }, "$type": "typography" },
+    "mono-l":     { "$value": { "fontFamily": "{font.family.mono}", "fontSize": "32px", "lineHeight": 1.10, "fontWeight": "{font.weight.medium}",   "letterSpacing": "0.02em" }, "$type": "typography" },
+    "mono-m":     { "$value": { "fontFamily": "{font.family.mono}", "fontSize": "15px", "lineHeight": 1.30, "fontWeight": "{font.weight.medium}",   "letterSpacing": "0.04em" }, "$type": "typography" },
+    "mono-s":     { "$value": { "fontFamily": "{font.family.mono}", "fontSize": "12px", "lineHeight": 1.30, "fontWeight": "{font.weight.medium}",   "letterSpacing": "0.10em" }, "$type": "typography" }
+  },
+
+  "space": {
+    "1": { "$value": "4px",  "$type": "dimension", "$description": "Icon to label, badge inner" },
+    "2": { "$value": "8px",  "$type": "dimension", "$description": "Button group inner, stamp gap" },
+    "3": { "$value": "12px", "$type": "dimension", "$description": "Component inner padding" },
+    "4": { "$value": "16px", "$type": "dimension", "$description": "Card inner, list item gap" },
+    "5": { "$value": "24px", "$type": "dimension", "$description": "Inter-component gap" },
+    "6": { "$value": "32px", "$type": "dimension", "$description": "Section gap default" },
+    "7": { "$value": "48px", "$type": "dimension", "$description": "Large section, modal inner" },
+    "8": { "$value": "64px", "$type": "dimension", "$description": "Empty state, welcome" },
+    "9": { "$value": "96px", "$type": "dimension", "$description": "Onboarding, full-screen welcome" },
+    "screen-gutter": { "$value": "20px", "$type": "dimension", "$description": "Fixed horizontal screen padding" }
+  },
+
+  "radius": {
+    "0":    { "$value": "0px",   "$type": "dimension", "$description": "Buttons, inputs, code labels" },
+    "1":    { "$value": "4px",   "$type": "dimension", "$description": "Photo card, general card" },
+    "2":    { "$value": "8px",   "$type": "dimension", "$description": "Bottom sheet top, modal" },
+    "full": { "$value": "999px", "$type": "dimension", "$description": "Avatars, stamps, FAB" }
+  },
+
+  "border": {
+    "width": {
+      "hairline": { "$value": "1px", "$type": "dimension" },
+      "emphasis": { "$value": "2px", "$type": "dimension", "$description": "Focus state only" }
+    }
+  },
+
+  "elevation": {
+    "0": { "$value": "none", "$type": "shadow", "$description": "Default flat" },
+    "1": {
+      "$value": {
+        "offsetX": "0px",
+        "offsetY": "12px",
+        "blur": "32px",
+        "spread": "-8px",
+        "color": "rgba(28, 27, 25, 0.18)"
+      },
+      "$type": "shadow",
+      "$description": "Floating layer only (bottom sheet, modal, toast)"
+    }
+  },
+
+  "icon": {
+    "size": {
+      "s":  { "$value": "16px", "$type": "dimension" },
+      "m":  { "$value": "20px", "$type": "dimension" },
+      "l":  { "$value": "24px", "$type": "dimension" },
+      "xl": { "$value": "32px", "$type": "dimension" }
+    },
+    "stroke":    { "$value": "1.5px", "$type": "dimension", "$description": "Phosphor Regular" },
+    "library":   { "$value": "Phosphor Icons (Regular default, Bold for active)", "$type": "string" },
+    "color": {
+      "default": { "$value": "{color.graphite.600}", "$type": "color" },
+      "active":  { "$value": "{color.ink.900}",      "$type": "color" },
+      "accent":  { "$value": "{color.orange.500}",   "$type": "color" },
+      "muted":   { "$value": "{color.graphite.500}", "$type": "color" }
+    }
+  },
+
+  "motion": {
+    "$description": "Sharp & precise. No bounce. Paired with haptic.",
+    "duration": {
+      "instant":  { "$value": "0ms",   "$type": "duration", "$description": "Immediate state change" },
+      "fast":     { "$value": "120ms", "$type": "duration", "$description": "Button press, focus, color" },
+      "moderate": { "$value": "200ms", "$type": "duration", "$description": "Tab switch, toast, stamp" },
+      "slow":     { "$value": "320ms", "$type": "duration", "$description": "Bottom sheet, modal, page" },
+      "xslow":    { "$value": "480ms", "$type": "duration", "$description": "Welcome, capture flash, success" }
+    },
+    "easing": {
+      "linear":     { "$value": "linear", "$type": "cubicBezier", "$description": "Progress, loading" },
+      "standard":   { "$value": [0.4, 0.0, 0.2, 1], "$type": "cubicBezier", "$description": "Default state change" },
+      "decelerate": { "$value": [0.0, 0.0, 0.2, 1], "$type": "cubicBezier", "$description": "Incoming elements" },
+      "accelerate": { "$value": [0.4, 0.0, 1.0, 1], "$type": "cubicBezier", "$description": "Outgoing elements" },
+      "crisp":      { "$value": [0.22, 1, 0.36, 1], "$type": "cubicBezier", "$description": "Button/tap signature. Key curve." }
+    },
+    "pattern": {
+      "button-press": {
+        "$description": "Press feedback for primary/secondary buttons.",
+        "transform":  "scale(0.97)",
+        "opacity":    0.9,
+        "duration":   "{motion.duration.fast}",
+        "easing":     "{motion.easing.crisp}",
+        "haptic":     "UIImpactFeedbackGenerator .light"
+      },
+      "input-focus": {
+        "$description": "Input field focus state.",
+        "borderColor": "transparent → {color.ink.900}",
+        "background":  "{color.paper.200} → {color.paper.50}",
+        "duration":    "{motion.duration.fast}",
+        "easing":      "{motion.easing.standard}",
+        "haptic":      "none"
+      },
+      "stamp-pop": {
+        "$description": "Emoji stamp reaction toggle.",
+        "keyframes":  [
+          { "scale": 0.85 },
+          { "scale": 1.18, "at": "40%" },
+          { "scale": 1.0 }
+        ],
+        "background": "{color.paper.200} → {color.orange.100}",
+        "duration":   "{motion.duration.moderate}",
+        "easing":     "{motion.easing.crisp}",
+        "haptic":     "UIImpactFeedbackGenerator .soft"
+      },
+      "capture-button": {
+        "$description": "Photo/video capture.",
+        "press":    { "transform": "scale(0.94)", "duration": "{motion.duration.fast}", "easing": "{motion.easing.crisp}" },
+        "release":  { "ring": "scale(0.9 → 1.35), opacity(1 → 0)", "duration": "{motion.duration.xslow}", "easing": "{motion.easing.decelerate}" },
+        "haptic":   "UIImpactFeedbackGenerator .medium",
+        "sound":    "aperture_click_80ms"
+      },
+      "bottom-sheet": {
+        "$description": "Bottom sheet enter/exit.",
+        "transform":  "translateY(100% → 0)",
+        "backdrop":   "opacity(0 → 0.45)",
+        "duration":   "{motion.duration.slow}",
+        "easing":     "{motion.easing.decelerate}",
+        "haptic":     "UIImpactFeedbackGenerator .soft (on open complete)"
+      },
+      "toast": {
+        "$description": "Top toast notification.",
+        "in":        { "transform": "translateY(-140% → 0)", "opacity": "0 → 1", "duration": "{motion.duration.moderate}", "easing": "{motion.easing.decelerate}" },
+        "hold":      "2400ms",
+        "out":       { "transform": "translateY(0 → -140%)", "opacity": "1 → 0", "duration": "160ms", "easing": "{motion.easing.accelerate}" },
+        "haptic":    "depends on message (success/error)"
+      },
+      "tab-switch": {
+        "$description": "Tab pill slide.",
+        "pill":     "translateX + width",
+        "color":    "{color.graphite.600} → {color.paper.50}",
+        "duration": "{motion.duration.moderate}",
+        "easing":   "{motion.easing.crisp}",
+        "haptic":   "UISelectionFeedbackGenerator"
+      },
+      "loading-dots": {
+        "$description": "3-dot staggered pulse.",
+        "keyframes": [
+          { "opacity": 0.3, "translateY": 0 },
+          { "opacity": 1.0, "translateY": -4, "color": "{color.orange.500}", "at": "50%" },
+          { "opacity": 0.3, "translateY": 0 }
+        ],
+        "cycle":    "1200ms",
+        "stagger":  "150ms",
+        "easing":   "{motion.easing.standard}"
+      }
+    },
+    "haptic": {
+      "$description": "iOS UIFeedbackGenerator mapping.",
+      "button-press":       { "$value": "UIImpactFeedbackGenerator .light", "$type": "string" },
+      "stamp":              { "$value": "UIImpactFeedbackGenerator .soft", "$type": "string" },
+      "capture-press":      { "$value": "UIImpactFeedbackGenerator .medium", "$type": "string" },
+      "capture-success":    { "$value": "UINotificationFeedbackGenerator .success", "$type": "string" },
+      "tab-switch":         { "$value": "UISelectionFeedbackGenerator", "$type": "string" },
+      "enter-room-success": { "$value": "UINotificationFeedbackGenerator .success", "$type": "string" },
+      "code-error":         { "$value": "UINotificationFeedbackGenerator .error", "$type": "string" },
+      "destructive-confirm":{ "$value": "UIImpactFeedbackGenerator .heavy", "$type": "string" },
+      "sheet-open":         { "$value": "UIImpactFeedbackGenerator .soft", "$type": "string" }
+    }
+  }
+}

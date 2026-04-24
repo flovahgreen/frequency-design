@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FREQUENCY · Tune In · B v2b</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    /* ---- design tokens (subset, from design-tokens.json) ---- */
+    --signal-green-300: #4DFF9E;
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --signal-green-600: #00B853;
+    --signal-green-glow: rgba(38, 250, 133, 0.35);
+    --signal-green-glow-strong: rgba(38, 250, 133, 0.55);
+    --te-orange-400: #FF6F28;
+    --te-orange-500: #F15A24;
+    --te-orange-glow: rgba(241, 90, 36, 0.45);
+    --amber-500: #F5A623;
+    --critical-red-500: #E5484D;
+
+    --ink-1000: #0A0A0A;
+    --ink-950:  #111111;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-150:  #D8D8D8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --ink-0:    #FFFFFF;
+
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+
+    --motion-tick: 80ms;
+    --motion-fast: 150ms;
+    --motion-base: 200ms;
+    --motion-medium: 250ms;
+    --motion-slow: 300ms;
+
+    --ease-mechanical: cubic-bezier(0.2, 0, 0, 1);
+    --ease-detent:     cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce:     cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ============================================================
+     C PALETTE (Ivory Paper) — scope override
+     `.iphone-screen` 내부만 페이퍼 팔레트로 리매핑.
+     외부(페이지 헤더, notes, demo-controls, 아이폰 섀시, 다이나믹 아일랜드)는
+     기본 다크 :root 토큰을 그대로 사용 → 손에 든 기기처럼 보이게 유지.
+     Ref: Screens/01-tune-in-palette-compare.html 의 C 카드
+     ============================================================ */
+  .iphone-screen {
+    /* 기본 텍스트 컬러를 페이퍼 잉크로 고정 (body ink-50 흰색 상속 차단) */
+    color: #141211;
+
+    /* Ink scale → paper */
+    --ink-1000: #141211;
+    --ink-950:  #141211;
+    --ink-900:  #EDE6D7;   /* paper bg */
+    --ink-800:  #F4EEE0;   /* raised surfaces */
+    --ink-700:  #CFC6B3;   /* edges / dividers */
+    --ink-600:  #B6AE9B;
+    --ink-500:  #8A8271;   /* muted tick / subtle */
+    --ink-400:  #6A6152;   /* muted text */
+    --ink-300:  #141211;   /* major tick (strong ink) */
+    --ink-200:  #141211;
+    --ink-150:  #141211;
+    --ink-100:  #141211;   /* body text */
+    --ink-50:   #141211;
+    --ink-0:    #141211;   /* reversed text fills */
+
+    /* Signal Green — paper-readable deep green */
+    --signal-green-300: #2B9A53;
+    --signal-green-400: #197A3E;
+    --signal-green-500: #197A3E;
+    --signal-green-600: #0F5A2D;
+    --signal-green-glow:        rgba(25, 122, 62, 0.22);
+    --signal-green-glow-strong: rgba(25, 122, 62, 0.40);
+  }
+
+  /* Slot active — paper bright face + paper-green inset (하드코드된 기존 rgba 교체) */
+  .iphone-screen .slot.active {
+    background: #FBF7EC;
+    box-shadow: inset 0 0 8px rgba(25, 122, 62, 0.14);
+  }
+
+  /* Dial center + indicator + status — 역할 스왑 (2026-04-22 업데이트):
+     tuning = Signal Green (진행 중/OK 신호), locked/완료 = TE Orange (임팩트 완료) */
+  .iphone-screen .dial-center {
+    /* opacity도 부드럽게 트랜지션 */
+    transition: background var(--motion-base) var(--ease-mechanical),
+                opacity var(--motion-base) var(--ease-mechanical);
+  }
+  .iphone-screen .dial.tuning .dial-center {
+    background: var(--signal-green-400); opacity: 0.65;
+  }
+  .iphone-screen .dial.locked .dial-center {
+    background: var(--te-orange-500); opacity: 1;
+  }
+  /* Indicator 바늘 — 기본 orange → green(tuning) → orange(locked) */
+  .iphone-screen .indicator           { background: var(--signal-green-400); }
+  .iphone-screen .dial.locked .indicator { background: var(--te-orange-500); }
+  /* Dial status 텍스트 */
+  .iphone-screen .dial-status.tuning { color: var(--signal-green-400); }
+  .iphone-screen .dial-status.locked { color: var(--te-orange-500); }
+  /* Slot separator "." — 기본 green, locked 에서 orange 로 */
+  .iphone-screen .slot-sep                          { color: var(--signal-green-400); }
+  .iphone-screen .tune-block.locked .slot-sep       { color: var(--te-orange-500); }
+  /* Lock 피드백 + hint 잠금 문구 — orange */
+  .iphone-screen .lock-feedback                     { color: var(--te-orange-500); }
+  .iphone-screen .hint.locked                       { color: var(--te-orange-500); }
+  /* Filled slot 테두리 — locked 에서 orange 로 강조 */
+  .iphone-screen .tune-block.locked .slot.filled    { border-color: var(--te-orange-500); }
+
+  /* Numpad 프레스 시 페이퍼 친화 텍스트 */
+  .iphone-screen .numpad-btn:active {
+    background: var(--signal-green-400);
+    border-color: var(--signal-green-400);
+    color: #EDE6D7;
+  }
+  .iphone-screen .numpad-btn.fn.del:active {
+    background: var(--te-orange-500);
+    border-color: var(--te-orange-500);
+    color: #EDE6D7;
+  }
+
+  /* TUNE IN — enabled 는 orange fill (완료 임팩트), press/flash 는 ink-fill */
+  .iphone-screen .btn-tunein.enabled {
+    background: var(--te-orange-500);
+    border-color: var(--te-orange-500);
+    color: #EDE6D7;
+    box-shadow: 0 0 14px rgba(241, 90, 36, 0.26);
+  }
+  .iphone-screen .btn-tunein.enabled.flash,
+  .iphone-screen .btn-tunein.enabled:active {
+    background: #141211; color: #EDE6D7; border-color: #141211;
+  }
+
+  /* NEXT 프레스 */
+  .iphone-screen .btn-next:active {
+    background: var(--signal-green-400); color: #EDE6D7;
+  }
+
+  /* Slot-lock flash — 하드코드된 rgba 대신 페이퍼 키프레임 사용 */
+  .iphone-screen .slot.locked-flash {
+    animation-name: slotLockFlashPaper;
+  }
+
+  /* Keypad head dot 글로우 */
+  .iphone-screen .keypad-head .dot {
+    box-shadow: 0 0 3px rgba(25, 122, 62, 0.4);
+  }
+
+  /* 페이퍼 배경에서 옅게 보일 수 있는 구분선/트랙을 edge 톤으로 보강 */
+  .iphone-screen .sub-label .line { background: #CFC6B3; }
+  .iphone-screen .boot-progress   { border-top-color: #141211; }
+  .iphone-screen .boot-bar-track  { background: #CFC6B3; }
+
+  /* ============================================================
+     BOOT TERMINAL (dark inset on paper)
+     페이퍼 스코프 안에서 `.boot-terminal` 구역만 다시 다크 팔레트로
+     재오버라이드 → 원래의 밝은 녹색/흰색 텍스트가 그대로 복원된다.
+     ============================================================ */
+  .iphone-screen .boot-terminal {
+    background: #141211;
+    color: #E8E8E8;
+    /* ink 스케일 일부를 다시 다크 값으로 되돌림 */
+    --ink-900: #1A1A1A;
+    --ink-800: #242424;
+    --ink-700: #2E2E2E;
+    --ink-600: #3D3D3D;
+    --ink-500: #7A7A7A;
+    --ink-400: #A0A0A0;
+    --ink-300: #C8C8C8;
+    --ink-100: #E8E8E8;
+    --ink-50:  #F4F4F4;
+    --ink-0:   #FFFFFF;
+    /* Signal Green 도 원래의 밝은 톤으로 */
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --signal-green-glow:        rgba(38, 250, 133, 0.35);
+    --signal-green-glow-strong: rgba(38, 250, 133, 0.55);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-800);
+    color: var(--ink-50);
+    line-height: 1.5;
+    padding: 40px 24px 96px;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 560px; margin: 0 auto; }
+
+  /* ---- Page head ---- */
+  .page-head {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--ink-700);
+  }
+  .page-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 8px;
+  }
+  .page-tag .accent { color: var(--signal-green-400); }
+  .page-title {
+    font-family: var(--font-sans); font-size: 24px;
+    font-weight: 700; letter-spacing: -0.02em;
+    color: var(--ink-0); margin-bottom: 4px;
+  }
+  .page-sub {
+    font-size: 13px; color: var(--ink-400);
+    line-height: 1.6;
+  }
+
+  /* ---- iPhone frame ---- */
+  .stage { display: flex; justify-content: center; padding: 16px 0 32px; }
+  .iphone {
+    width: 393px;
+    aspect-ratio: 393 / 852;
+    background: var(--ink-1000);
+    border-radius: 52px;
+    padding: 11px;
+    box-shadow:
+      0 0 0 1px var(--ink-600),
+      0 32px 64px -20px rgba(0, 0, 0, 0.65);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%;
+    background: var(--ink-900);
+    border-radius: 44px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%;
+    transform: translateX(-50%);
+    width: 118px; height: 34px;
+    background: var(--ink-1000);
+    border-radius: 999px; z-index: 10;
+  }
+  .status-bar {
+    height: 52px; flex-shrink: 0;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 28px 0 24px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+    color: var(--ink-100); position: relative; z-index: 5;
+  }
+  .status-right { display: flex; align-items: center; gap: 6px; }
+  .sr-ico.signal {
+    width: 17px; height: 11px; background: currentColor; opacity: 0.9;
+    clip-path: polygon(0 100%,4px 100%,4px 70%,0 70%,0 100%,5px 100%,9px 100%,9px 50%,5px 50%,5px 100%,10px 100%,14px 100%,14px 30%,10px 30%,10px 100%,15px 100%,19px 100%,19px 10%,15px 10%);
+  }
+  .sr-ico.battery {
+    width: 24px; height: 12px; background: transparent;
+    border: 1px solid currentColor; border-radius: 2px;
+    position: relative; opacity: 0.9;
+  }
+  .sr-ico.battery::after {
+    content:""; position: absolute; right:-3px; top:3px;
+    width:2px; height:6px; background:currentColor;
+  }
+  .sr-ico.battery::before {
+    content:""; position: absolute; top:1px; left:1px; bottom:1px;
+    width:80%; background: currentColor; border-radius:1px;
+  }
+  .home-indicator {
+    position: absolute; bottom: 7px; left: 50%;
+    transform: translateX(-50%);
+    width: 38%; height: 5px;
+    background: var(--ink-300); border-radius: 999px;
+    opacity: 0.6; z-index: 10;
+  }
+
+  .screen-content {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ---- Top bar (wordmark) ---- */
+  .top-bar {
+    flex-shrink: 0;
+    padding: 18px 24px 10px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .wordmark {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-100);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .status-led {
+    width: 7px; height: 7px; border-radius: 999px;
+    background: var(--ink-500);
+    transition: background var(--motion-base) var(--ease-mechanical),
+                box-shadow var(--motion-base) var(--ease-mechanical);
+  }
+  .status-led.on {
+    background: var(--signal-green-400);
+    box-shadow: 0 0 8px var(--signal-green-glow);
+    animation: ledPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+  .version-tag {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; color: var(--ink-500);
+    text-transform: uppercase;
+  }
+  .top-divider {
+    margin: 0 24px;
+    height: 1px; background: var(--ink-700);
+  }
+
+  /* =========================================================
+     PHASE 1: BOOT
+     ========================================================= */
+  .phase-boot {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column;
+    padding: 0 24px 28px;
+    font-family: var(--font-mono);
+    overflow: hidden;
+  }
+  .phase-boot.hidden { display: none; }
+
+  /* 어두운 터미널 윈도우 — 페이퍼 위에 얹힌 고정 검정 패널 */
+  .boot-terminal {
+    flex: 1; min-height: 0;
+    margin: 0 -24px;   /* phase-boot h-padding 취소 → edge to edge */
+    padding: 20px 24px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  .boot-header {
+    font-size: 10px; letter-spacing: 0.14em;
+    color: var(--ink-500); text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .boot-type-area {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; gap: 10px;
+    padding: 4px 0;
+  }
+  .boot-line {
+    font-size: 12px; line-height: 1.6;
+    letter-spacing: 0.03em;
+    min-height: 20px;
+    display: flex; align-items: center; gap: 10px;
+    position: relative;
+  }
+  .boot-line .txt-slot {
+    flex: 1; overflow: hidden; white-space: nowrap;
+  }
+  .boot-line .led-tick {
+    width: 6px; height: 6px; border-radius: 999px;
+    background: var(--ink-600);
+    flex-shrink: 0;
+    transition: background var(--motion-fast) var(--ease-mechanical),
+                box-shadow var(--motion-fast) var(--ease-mechanical);
+  }
+  .boot-line.done .led-tick {
+    background: var(--signal-green-400);
+    box-shadow: 0 0 6px var(--signal-green-glow);
+  }
+  .boot-line .pfx { color: var(--signal-green-400); margin-right: 4px; }
+  .boot-line .ok { color: var(--signal-green-400); font-weight: 700; margin-left: 6px; }
+  .boot-line .cmt {
+    color: var(--ink-500);
+    font-family: var(--font-sans);
+    font-size: 11px; letter-spacing: 0;
+  }
+  .boot-line.is-cmt .led-tick { visibility: hidden; }
+  .boot-line .txt { color: var(--ink-100); }
+  .tw-cursor {
+    display: inline-block; width: 7px; height: 13px;
+    background: var(--signal-green-400);
+    vertical-align: -2px; margin-left: 2px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50%{opacity:0} }
+
+  /* progress ribbon under boot — 터미널 바로 아래 붙여 "윗 라인"을 형성 */
+  .boot-progress {
+    margin-top: 0; padding-top: 14px;
+    border-top: 1px solid var(--ink-800);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .boot-progress-label {
+    font-size: 10px; letter-spacing: 0.14em;
+    color: var(--ink-400); text-transform: uppercase;
+  }
+  .boot-progress-value {
+    font-size: 11px; letter-spacing: 0.04em;
+    color: var(--ink-100); font-weight: 600;
+  }
+  .boot-progress-value.ready { color: var(--signal-green-400); }
+  .boot-bar-track {
+    width: 100%; height: 4px;
+    background: var(--ink-800); border-radius: 999px;
+    margin-top: 8px; overflow: hidden;
+  }
+  .boot-bar-fill {
+    height: 100%; width: 0%;
+    background: var(--signal-green-400);
+    box-shadow: 0 0 6px var(--signal-green-glow);
+    transition: width var(--motion-slow) var(--ease-mechanical);
+  }
+
+  /* Next button */
+  .btn-next {
+    margin-top: 18px;
+    width: 100%; padding: 16px 16px;
+    background: var(--ink-100); color: var(--ink-900); border: none;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 250ms ease, transform var(--motion-fast) var(--ease-mechanical),
+                background 0ms step-end, color 0ms step-end;
+    transform: translateY(4px);
+  }
+  .btn-next.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  .btn-next .pfx { color: var(--signal-green-500); opacity: 0.85; }
+  .btn-next:active {
+    background: var(--signal-green-400); color: var(--ink-1000);
+    transform: scale(0.985);
+  }
+
+  /* =========================================================
+     PHASE 2: DIAL + SLOTS + KEYPAD
+     ========================================================= */
+  .phase-input {
+    flex: 1; min-height: 0;
+    display: none; flex-direction: column;
+    padding: 8px 24px 24px;
+    overflow: hidden;
+  }
+  .phase-input.visible { display: flex; }
+
+  /* panel label */
+  .sub-label {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-500);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sub-label .line { flex: 1; height: 1px; background: var(--ink-800); }
+
+  /* ---- Dial + Slot group (core block) ---- */
+  .tune-block {
+    padding: 16px 0 14px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 14px;
+  }
+
+  /* Dial — Dieter Rams style: flat, honest, no decoration */
+  .dial-wrap {
+    width: 134px; height: 134px;
+    position: relative;
+  }
+  .dial {
+    width: 100%; height: 100%;
+    border-radius: 999px;
+    background: var(--ink-800);
+    border: 1px solid var(--ink-700);
+    position: relative;
+    transition: border-color var(--motion-base) var(--ease-mechanical);
+  }
+  .dial.tuning { border-color: var(--ink-500); }
+  .dial.locked { border-color: var(--ink-400); }
+
+  /* ticks — 12 uniform marks, 4 subtle majors only at cardinal positions */
+  .tick {
+    position: absolute; left: 50%; top: 8px;
+    width: 1px; height: 6px;
+    background: var(--ink-500);
+    transform-origin: 50% 59px;
+  }
+  .tick.major {
+    height: 8px;
+    background: var(--ink-300);
+    top: 7px;
+    transform-origin: 50% 60px;
+  }
+
+  /* Indicator needle — thin, long, square edge, single accent color */
+  .indicator {
+    position: absolute; left: 50%; top: 8px;
+    width: 2px; height: 50px;
+    background: var(--te-orange-500);
+    transform-origin: 50% 59px;
+    transform: translateX(-50%) rotate(0deg);
+    transition: transform var(--motion-slow) var(--ease-detent),
+                background var(--motion-base) var(--ease-mechanical);
+    z-index: 3;
+  }
+  .dial.locked .indicator { background: var(--signal-green-400); }
+
+  /* Center — minimal LED dot. No label, no nested circles */
+  .dial-center {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px; height: 10px;
+    border-radius: 999px;
+    background: var(--ink-600);
+    z-index: 4;
+    transition: background var(--motion-base) var(--ease-mechanical);
+  }
+  .dial.tuning .dial-center { background: var(--amber-500); }
+  .dial.locked .dial-center { background: var(--signal-green-400); }
+
+  /* dial status strip */
+  .dial-status {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400);
+    font-weight: 700;
+    transition: color var(--motion-base) var(--ease-mechanical);
+  }
+  .dial-status.tuning { color: var(--amber-500); }
+  .dial-status.locked { color: var(--signal-green-400); }
+  .dial-status .dot {
+    width: 5px; height: 5px; border-radius: 999px;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor;
+  }
+
+  /* Slots */
+  .slots-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 5px;
+  }
+  .slot {
+    width: 44px; height: 56px;
+    background: var(--ink-800);
+    border: 1.5px solid var(--ink-700);
+    border-radius: var(--radius-xs);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 30px; font-weight: 500;
+    color: var(--ink-0);
+    transition: border-color 0ms step-end, background 0ms step-end;
+    position: relative;
+    overflow: hidden;
+  }
+  .slot.active {
+    border-color: var(--signal-green-400);
+    background: var(--ink-700);
+    box-shadow: inset 0 0 8px rgba(38, 250, 133, 0.12);
+  }
+  .slot.filled { border-color: var(--ink-500); }
+  .slot .digit-cursor {
+    width: 2px; height: 26px;
+    background: var(--signal-green-400);
+    animation: blink 1s step-end infinite;
+  }
+  .slot.locked-flash {
+    animation: slotLockFlash 500ms var(--ease-mechanical) forwards;
+  }
+  @keyframes slotLockFlash {
+    0%   { border-color: var(--signal-green-400); background: var(--ink-700); }
+    40%  { border-color: var(--signal-green-400); background: rgba(38, 250, 133, 0.22); }
+    100% { border-color: var(--signal-green-400); background: var(--ink-800); }
+  }
+  @keyframes slotLockFlashPaper {
+    0%   { border-color: #F15A24; background: #FBF7EC; }
+    40%  { border-color: #F15A24; background: rgba(241, 90, 36, 0.24); }
+    100% { border-color: #F15A24; background: #F4EEE0; }
+  }
+  .slot-sep {
+    font-family: var(--font-mono); font-size: 30px; font-weight: 700;
+    color: var(--te-orange-500);
+    width: 14px; text-align: center;
+    transition: color var(--motion-base) var(--ease-mechanical);
+  }
+  .tune-block.locked .slot-sep { color: var(--signal-green-400); }
+
+  .lock-feedback {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--signal-green-400);
+    font-weight: 700;
+    height: 14px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    opacity: 0;
+    transition: opacity var(--motion-base) var(--ease-mechanical);
+  }
+  .lock-feedback.show { opacity: 1; }
+  .lock-feedback .chev { opacity: 0.6; }
+
+  .hint {
+    text-align: center;
+    font-size: 12px; color: var(--ink-500);
+    font-family: var(--font-sans); line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+  .hint.locked { color: var(--signal-green-400); }
+
+  /* ---- Keypad ---- */
+  .keypad-wrap { margin-top: 6px; }
+  .keypad-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.14em; color: var(--ink-500); text-transform: uppercase;
+  }
+  .keypad-head .dot {
+    width: 4px; height: 4px; border-radius: 999px;
+    background: var(--signal-green-400);
+    box-shadow: 0 0 4px var(--signal-green-glow);
+    display: inline-block; margin-right: 6px;
+  }
+  .numpad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .numpad-btn {
+    height: 44px;
+    background: var(--ink-800);
+    border: 1.5px solid var(--ink-700);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono); font-size: 18px; font-weight: 600;
+    color: var(--ink-100); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    transition: background 0ms step-end, border-color 0ms step-end, color 0ms step-end;
+  }
+  .numpad-btn::after {
+    content: ""; position: absolute; inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 transparent;
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+    pointer-events: none;
+  }
+  .numpad-btn.glow::after {
+    box-shadow: 0 0 14px var(--signal-green-glow);
+    opacity: 1;
+    transition: opacity 0ms;
+  }
+  .numpad-btn:active {
+    background: var(--signal-green-400); border-color: var(--signal-green-400); color: var(--ink-1000);
+  }
+  .numpad-btn.fn { font-size: 10px; letter-spacing: 0.1em; color: var(--ink-400); font-weight: 700; }
+  .numpad-btn.fn:active { background: var(--ink-600); border-color: var(--ink-500); color: var(--ink-100); }
+  .numpad-btn.fn.del { color: var(--te-orange-500); }
+  .numpad-btn.fn.del:active { background: var(--te-orange-500); border-color: var(--te-orange-500); color: var(--ink-0); }
+
+  /* ---- Actions (TUNE IN / OPEN) ---- */
+  .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .btn-tunein {
+    width: 100%; padding: 15px 16px;
+    background: var(--ink-700); color: var(--ink-400); border: 1.5px solid var(--ink-600);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: var(--radius-sm); cursor: not-allowed;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background 0ms step-end, color 0ms step-end, border-color 0ms step-end,
+                transform var(--motion-fast) var(--ease-mechanical),
+                box-shadow var(--motion-base) var(--ease-mechanical);
+  }
+  .btn-tunein.enabled {
+    background: var(--signal-green-500); color: var(--ink-1000);
+    border-color: var(--signal-green-500);
+    cursor: pointer;
+    box-shadow: 0 0 18px var(--signal-green-glow);
+  }
+  .btn-tunein.enabled .pfx { opacity: 0.65; }
+  .btn-tunein.enabled:active {
+    background: var(--ink-0); color: var(--ink-1000); border-color: var(--ink-0);
+    transform: scale(0.985);
+  }
+  .btn-open {
+    width: 100%; padding: 13px 16px;
+    background: transparent; color: var(--ink-200);
+    border: 1.5px solid var(--ink-600);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background 0ms step-end, border-color 0ms step-end, color 0ms step-end;
+  }
+  .btn-open .pfx { color: var(--te-orange-500); opacity: 0.85; }
+  .btn-open:active { background: var(--ink-700); border-color: var(--te-orange-500); color: var(--ink-0); }
+
+  .alt-text {
+    text-align: center; font-size: 12px; color: var(--ink-500);
+    font-family: var(--font-sans); letter-spacing: -0.01em; line-height: 1.5;
+    margin-top: -2px;
+  }
+
+  /* ---- Demo controls ---- */
+  .demo-controls {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 8px;
+    z-index: 100;
+  }
+  .demo-btn {
+    padding: 10px 16px;
+    background: var(--ink-700); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-200); cursor: pointer;
+    transition: background 0ms step-end;
+  }
+  .demo-btn:active { background: var(--ink-500); color: var(--ink-50); }
+  .demo-btn .dot-prefix { color: var(--signal-green-400); margin-right: 6px; }
+
+  /* ---- Notes panel (bottom) ---- */
+  .notes {
+    max-width: 560px; margin: 40px auto 0;
+    padding: 24px; background: var(--ink-900);
+    border: 1px solid var(--ink-700); border-radius: var(--radius-md);
+  }
+  .notes-title {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; color: var(--ink-400);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .notes-row {
+    display: flex; gap: 12px; padding: 7px 0;
+    font-size: 13px; line-height: 1.55; color: var(--ink-300);
+  }
+  .notes-row + .notes-row { border-top: 1px solid var(--ink-800); }
+  .notes-icon {
+    width: 16px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--signal-green-400); text-align: center;
+  }
+  .notes-icon.orange { color: var(--te-orange-500); }
+  .notes-icon.amber  { color: var(--amber-500); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Head -->
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · TUNE IN · C V2C</div>
+    <h1 class="page-title">Boot → Dial-Centered Tune In · Ivory Paper</h1>
+    <p class="page-sub">Phase 1 부트 시퀀스 (타이핑 + LED 체크 + 프로그레스) → NEXT → Phase 2 중형 다이얼 + 슬롯 + 키패드. V2C는 B v2의 Dieter Rams 정리 위에 팔레트 C(Ivory Paper #EDE6D7 + Signal Green #197A3E + TE Orange #F15A24)를 적용한 버전.</p>
+  </div>
+
+  <!-- Stage -->
+  <div class="stage">
+    <div class="iphone">
+      <div class="dynamic-island"></div>
+
+      <div class="iphone-screen">
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <span class="sr-ico signal"></span>
+            <span class="sr-ico battery"></span>
+          </div>
+        </div>
+
+        <div class="screen-content">
+
+          <div class="top-bar">
+            <div class="wordmark">
+              FREQUENCY
+              <span class="status-led" id="wmLed"></span>
+            </div>
+            <span class="version-tag">v1.0</span>
+          </div>
+          <div class="top-divider"></div>
+
+          <!-- ============ PHASE 1: BOOT ============ -->
+          <div class="phase-boot" id="phaseBoot">
+
+            <div class="boot-terminal">
+              <div class="boot-header">&gt; INITIALIZING</div>
+
+              <div class="boot-type-area" id="bootArea">
+                <div class="boot-line" id="line0"><span class="txt-slot"></span><span class="led-tick"></span></div>
+                <div class="boot-line" id="line1"><span class="txt-slot"></span><span class="led-tick"></span></div>
+                <div class="boot-line" id="line2"><span class="txt-slot"></span><span class="led-tick"></span></div>
+                <div class="boot-line is-cmt" id="line3"><span class="txt-slot"></span><span class="led-tick"></span></div>
+                <div class="boot-line" id="line4"><span class="txt-slot"></span><span class="led-tick"></span></div>
+              </div>
+            </div>
+
+            <div class="boot-progress">
+              <span class="boot-progress-label">Progress</span>
+              <span class="boot-progress-value" id="progressValue">0%</span>
+            </div>
+            <div class="boot-bar-track"><div class="boot-bar-fill" id="progressFill"></div></div>
+
+            <button class="btn-next" id="btnNext"><span class="pfx">&gt;</span> NEXT</button>
+          </div>
+
+          <!-- ============ PHASE 2: INPUT ============ -->
+          <div class="phase-input" id="phaseInput">
+
+            <div class="sub-label">
+              <span>CHANNEL ENTRY</span>
+              <span class="line"></span>
+              <span id="modeTag">READY</span>
+            </div>
+
+            <div class="tune-block" id="tuneBlock">
+
+              <div class="dial-wrap">
+                <div class="dial" id="dial">
+                  <div class="indicator" id="indicator"></div>
+                  <div class="dial-center" id="dialCenter"></div>
+                </div>
+              </div>
+
+              <div class="dial-status" id="dialStatus">
+                <span class="dot"></span>
+                <span id="dialStatusText">STANDBY</span>
+              </div>
+
+              <div class="slots-row" id="slotsRow">
+                <div class="slot active" id="slot0"><div class="digit-cursor"></div></div>
+                <div class="slot" id="slot1"></div>
+                <div class="slot" id="slot2"></div>
+                <div class="slot-sep" id="slotSep">.</div>
+                <div class="slot" id="slot3"></div>
+              </div>
+
+              <div class="lock-feedback" id="lockFeedback">
+                <span class="chev">&gt;</span> <span>FREQUENCY LOCKED</span>
+              </div>
+
+              <div class="hint" id="hint">호스트가 공유한 주파수 번호 4자리를 입력</div>
+            </div>
+
+            <div class="keypad-wrap">
+              <div class="keypad-head">
+                <span><span class="dot"></span>KEYPAD</span>
+                <span id="kpStateLabel">READY</span>
+              </div>
+              <div class="numpad" id="numpad">
+                <button class="numpad-btn" data-val="1">1</button>
+                <button class="numpad-btn" data-val="2">2</button>
+                <button class="numpad-btn" data-val="3">3</button>
+                <button class="numpad-btn" data-val="4">4</button>
+                <button class="numpad-btn" data-val="5">5</button>
+                <button class="numpad-btn" data-val="6">6</button>
+                <button class="numpad-btn" data-val="7">7</button>
+                <button class="numpad-btn" data-val="8">8</button>
+                <button class="numpad-btn" data-val="9">9</button>
+                <button class="numpad-btn fn" data-val="clear">CLR</button>
+                <button class="numpad-btn" data-val="0">0</button>
+                <button class="numpad-btn fn del" data-val="del">DEL</button>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn-tunein" id="btnTune"><span class="pfx">&gt;</span> TUNE IN</button>
+              <button class="btn-open"><span class="pfx">&gt;</span> OPEN NEW CHANNEL</button>
+              <div class="alt-text">주파수가 없다면 새 채널을 개설할 수 있어요</div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Designer notes -->
+  <div class="notes">
+    <div class="notes-title">V2C · Ivory Paper Pass</div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>팔레트 C 적용: Paper BG #EDE6D7 / Raised #F4EEE0 / Edge #CFC6B3 / Ink #141211. Signal Green #197A3E + TE Orange #F15A24 2색 역할분리 유지. (Ulm school · Rams catalog · Braun SK4·T3 감성)</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>스코프 오버라이드 방식: `.iphone-screen` 내부만 페이퍼 토큰으로 리매핑. 아이폰 섀시와 다이나믹 아일랜드는 다크 유지 → 손에 든 기기처럼 보이게.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>다이얼은 꾸밈 제거한 평면 원. 종이 위에 찍은 계기판처럼 단색 면 + 1px 얇은 ink 테두리 한 겹.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>눈금은 12개 균일 tick + 4개 cardinal major(0/90/180/270°) 만. minor tick = #8A8271, major tick = #141211 (paper ink).</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>인디케이터는 2px × 50px 직각 라인 하나. 색 하나로만 상태 전달 (Signal Green = 입력 중/진행, TE Orange = 잠금/완료 임팩트).</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>중앙은 10px LED 점 하나. 상태는 dot 색으로만 구분: Edge gray → Signal Green @0.65 (tuning) → TE Orange @1 (locked). 역할 스왑으로 "완료 순간 = 임팩트" 설계.</span></div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>Lock 피드백 3요소 유지: 바늘 색 전환 + 슬롯 플래시(paper keyframes) + "FREQUENCY LOCKED" 텍스트 + TUNE IN 활성. 글로우는 버튼 하나로 제한.</span></div>
+    <div class="notes-row"><span class="notes-icon amber">·</span><span>Mismatch 시나리오(지직)는 이번 V2C 에 포함 안 됨. 통합 프로토타입 단계에서 추가 예정.</span></div>
+  </div>
+
+</div>
+
+<!-- Demo controls -->
+<div class="demo-controls">
+  <button class="demo-btn" id="demoReplay"><span class="dot-prefix">&gt;</span>REPLAY BOOT</button>
+  <button class="demo-btn" id="demoAutofill"><span class="dot-prefix">&gt;</span>AUTOFILL 107.4</button>
+</div>
+
+<script>
+'use strict';
+
+// ================= DOM refs =================
+const wmLed         = document.getElementById('wmLed');
+const phaseBoot     = document.getElementById('phaseBoot');
+const phaseInput    = document.getElementById('phaseInput');
+const btnNext       = document.getElementById('btnNext');
+const progressValue = document.getElementById('progressValue');
+const progressFill  = document.getElementById('progressFill');
+
+const modeTag       = document.getElementById('modeTag');
+const tuneBlock     = document.getElementById('tuneBlock');
+const dial          = document.getElementById('dial');
+const indicator     = document.getElementById('indicator');
+const dialCenter    = document.getElementById('dialCenter');
+const dialStatus    = document.getElementById('dialStatus');
+const dialStatusText= document.getElementById('dialStatusText');
+const slotsRow      = document.getElementById('slotsRow');
+const slots         = [0,1,2,3].map(i => document.getElementById('slot'+i));
+const lockFeedback  = document.getElementById('lockFeedback');
+const hint          = document.getElementById('hint');
+const btnTune       = document.getElementById('btnTune');
+const kpStateLabel  = document.getElementById('kpStateLabel');
+const numpad        = document.getElementById('numpad');
+const btnReplay     = document.getElementById('demoReplay');
+const btnAutofill   = document.getElementById('demoAutofill');
+
+// Build dial ticks — Dieter Rams style: 12 uniform marks,
+// with 4 subtle majors at cardinal positions (0°, 90°, 180°, 270°) only.
+(function buildTicks(){
+  for (let i = 0; i < 12; i++) {
+    const t = document.createElement('div');
+    const isMajor = (i % 3 === 0); // 0, 3, 6, 9 → cardinals
+    t.className = 'tick' + (isMajor ? ' major' : '');
+    t.style.transform = 'translateX(-50%) rotate(' + (i * 30) + 'deg)';
+    dial.insertBefore(t, indicator);
+  }
+})();
+
+// ================= PHASE 1: BOOT =================
+const bootLines = [
+  { text: '> SYSTEM BOOT',                     suffix: ' [OK]', kind: 'cmd' },
+  { text: '> FREQUENCY MODULE',                suffix: ' [OK]', kind: 'cmd' },
+  { text: '> CAMERA MODULE',                   suffix: ' [OK]', kind: 'cmd' },
+  { text: '  encrypted · invite only · max 8', suffix: '',      kind: 'cmt' },
+  { text: '> SIGNAL READY',                    suffix: '',      kind: 'ready' },
+];
+
+const lineEls = [0,1,2,3,4].map(i => document.getElementById('line'+i));
+let typeTimers = [];
+function clearTimers(){ typeTimers.forEach(t => clearTimeout(t)); typeTimers = []; }
+
+function renderBootLine(lineIdx, typedText, isTyping) {
+  const el = lineEls[lineIdx];
+  const line = bootLines[lineIdx];
+  const slotSpan = el.querySelector('.txt-slot');
+
+  if (line.kind === 'cmt') {
+    slotSpan.innerHTML = '<span class="cmt">' + typedText + '</span>' +
+                        (isTyping ? '<span class="tw-cursor"></span>' : '');
+    return;
+  }
+
+  // Extract "> " prefix and color [OK] tail
+  let html = typedText
+    .replace(/^&gt;|^>/, '<span class="pfx">&gt;</span>')
+    .replace(/\[OK\]/g, '<span class="ok">[OK]</span>');
+  // Preserve existing arrow in middle positions (should not happen)
+  if (isTyping) html += '<span class="tw-cursor"></span>';
+  slotSpan.innerHTML = html;
+}
+
+function typeInto(lineIdx, fullText, charDelay, onDone) {
+  let i = 0;
+  function step() {
+    if (i > fullText.length) { onDone && onDone(); return; }
+    renderBootLine(lineIdx, fullText.substring(0, i), i < fullText.length);
+    i++;
+    const tid = setTimeout(step, charDelay);
+    typeTimers.push(tid);
+  }
+  step();
+}
+
+function setProgress(pct, isReady) {
+  progressFill.style.width = pct + '%';
+  progressValue.textContent = isReady ? 'SIGNAL READY' : (pct + '%');
+  progressValue.classList.toggle('ready', !!isReady);
+}
+
+function markLineDone(idx) {
+  const el = lineEls[idx];
+  if (bootLines[idx].kind !== 'cmt') el.classList.add('done');
+}
+
+function runBootSequence() {
+  clearTimers();
+  // reset
+  lineEls.forEach(el => { el.classList.remove('done'); el.querySelector('.txt-slot').innerHTML = ''; });
+  btnNext.classList.remove('visible');
+  setProgress(0, false);
+  wmLed.classList.remove('on');
+
+  let idx = 0;
+  const lineGap = 110;
+  const charDelay = 24;
+
+  // Progressively bump bar after each cmd line
+  // 5 lines total; 3 are OK cmds (0,1,2), 1 is cmt (3), 1 is ready (4)
+  // Progress steps: after line0 -> 30%, line1 -> 60%, line2 -> 85%, line3 -> 90%, line4 -> 100 (READY)
+  const progressSteps = [30, 60, 85, 90, 100];
+
+  function nextLine() {
+    if (idx >= bootLines.length) {
+      // Finalize
+      setProgress(100, true);
+      wmLed.classList.add('on');
+      const tid = setTimeout(() => btnNext.classList.add('visible'), 350);
+      typeTimers.push(tid);
+      return;
+    }
+    const line = bootLines[idx];
+    const full = line.text + line.suffix;
+    typeInto(idx, full, charDelay, () => {
+      markLineDone(idx);
+      setProgress(progressSteps[idx], idx === bootLines.length - 1);
+      idx++;
+      const tid = setTimeout(nextLine, lineGap);
+      typeTimers.push(tid);
+    });
+  }
+
+  const startTid = setTimeout(nextLine, 400);
+  typeTimers.push(startTid);
+}
+
+// NEXT → Phase 2
+btnNext.addEventListener('click', () => {
+  phaseBoot.classList.add('hidden');
+  phaseInput.classList.add('visible');
+});
+
+
+// ================= PHASE 2: INPUT =================
+const digits = ['', '', '', ''];
+let cursorPos = 0;
+
+function angleForFilled(n) {
+  // detent stops at each filled step
+  // 0 -> 0deg (standby top)
+  // 1..3 -> progressive rotation in arc
+  // 4 -> locked at 270deg (3/4 of circle)
+  return [0, 60, 140, 220, 270][Math.max(0, Math.min(4, n))];
+}
+
+function updateSlots() {
+  const filled = digits.filter(d => d !== '').length;
+
+  slots.forEach((slot, i) => {
+    slot.classList.remove('active', 'filled', 'locked-flash');
+    if (digits[i]) {
+      slot.innerHTML = digits[i];
+      slot.classList.add('filled');
+    } else if (i === cursorPos) {
+      slot.innerHTML = '<div class="digit-cursor"></div>';
+      slot.classList.add('active');
+    } else {
+      slot.innerHTML = '';
+    }
+  });
+
+  // Dial indicator rotation
+  indicator.style.transform = 'translateX(-50%) rotate(' + angleForFilled(filled) + 'deg)';
+
+  // Dial state classes
+  dial.classList.remove('tuning', 'locked');
+  if (filled === 4) {
+    dial.classList.add('locked');
+  } else if (filled > 0) {
+    dial.classList.add('tuning');
+  }
+
+  // Dial status text — center LED color change is handled purely via CSS state classes
+  dialStatus.classList.remove('tuning', 'locked');
+  if (filled === 4) {
+    dialStatus.classList.add('locked');
+    dialStatusText.textContent = 'LOCKED';
+  } else if (filled > 0) {
+    dialStatus.classList.add('tuning');
+    dialStatusText.textContent = 'TUNING';
+  } else {
+    dialStatusText.textContent = 'STANDBY';
+  }
+
+  // Keypad head state label
+  kpStateLabel.textContent = filled === 4 ? 'LOCKED'
+                            : filled > 0 ? 'TUNING' : 'READY';
+
+  // Hint + tune button
+  if (filled === 4) {
+    tuneBlock.classList.add('locked');
+    lockFeedback.classList.add('show');
+    hint.textContent = '주파수가 맞았어요. 연결할 준비 완료.';
+    hint.classList.add('locked');
+    btnTune.classList.add('enabled');
+    btnTune.style.cursor = 'pointer';
+    btnTune.disabled = false;
+
+    // Slot flash
+    slots.forEach(s => {
+      s.classList.add('locked-flash');
+      // auto-cleanup after animation
+      setTimeout(() => s.classList.remove('locked-flash'), 520);
+    });
+  } else {
+    tuneBlock.classList.remove('locked');
+    lockFeedback.classList.remove('show');
+    hint.textContent = '호스트가 공유한 주파수 번호 4자리를 입력';
+    hint.classList.remove('locked');
+    btnTune.classList.remove('enabled');
+    btnTune.style.cursor = '';
+    btnTune.disabled = true;
+  }
+}
+
+function flashKeyGlow(btn) {
+  btn.classList.add('glow');
+  setTimeout(() => btn.classList.remove('glow'), 60);
+}
+
+numpad.addEventListener('click', (e) => {
+  const btn = e.target.closest('.numpad-btn');
+  if (!btn) return;
+  const val = btn.dataset.val;
+  if (val === 'clear') {
+    digits.fill(''); cursorPos = 0;
+  } else if (val === 'del') {
+    if (cursorPos > 0) { cursorPos--; digits[cursorPos] = ''; }
+  } else if (cursorPos < 4) {
+    digits[cursorPos] = val; cursorPos++;
+  }
+  flashKeyGlow(btn);
+  updateSlots();
+});
+
+btnTune.addEventListener('click', () => {
+  if (btnTune.disabled) return;
+  // Flash effect (class-based — 팔레트 스코프에서 각각 스타일 오버라이드)
+  btnTune.classList.add('flash');
+  setTimeout(() => btnTune.classList.remove('flash'), 180);
+});
+
+// Demo: autofill 107.4
+btnAutofill.addEventListener('click', () => {
+  digits[0]='1'; digits[1]='0'; digits[2]='7'; digits[3]='4';
+  cursorPos = 4;
+  updateSlots();
+});
+
+// Demo: replay boot
+btnReplay.addEventListener('click', () => {
+  phaseBoot.classList.remove('hidden');
+  phaseInput.classList.remove('visible');
+  digits.fill(''); cursorPos = 0;
+  updateSlots();
+  runBootSequence();
+});
+
+// Init
+updateSlots();
+runBootSequence();
+</script>
+
+</body>
+</html>

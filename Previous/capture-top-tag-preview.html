@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta charset="UTF-8">
+<title>Capture Top-Right Tag Preview</title>
+<style>
+  :root {
+    --ink-900: #1C1B19;
+    --paper-50: #FAF8F4;
+    --paper-200: #EBE6DC;
+    --bone-300: #D9D2C2;
+    --graphite-400: #8A8578;
+    --graphite-500: #6B675C;
+    --orange-500: #E8612C;
+    --radius-tight: 4px;
+    --font-sans: 'Pretendard', -apple-system, 'Helvetica Neue', sans-serif;
+    --font-mono: 'Space Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 48px 32px 80px;
+    background: var(--paper-200);
+    font-family: var(--font-sans);
+    color: var(--ink-900);
+    min-height: 100vh;
+  }
+  .page-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .sub {
+    font-size: 13px;
+    color: var(--graphite-500);
+    margin-bottom: 36px;
+    line-height: 1.6;
+    max-width: 640px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    max-width: 960px;
+    margin: 0 auto 32px;
+  }
+
+  .card {
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .card-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--bone-300);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .card-head .name {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .card-head .key {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+  }
+
+  /* Capture mini frame (just top area for context) */
+  .cap-top {
+    background: var(--ink-900);
+    padding: 16px 18px 24px;
+  }
+  .cap-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .cap-close {
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--paper-50);
+    color: var(--paper-50);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-tight);
+  }
+  .cap-rec {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--orange-500);
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .cap-rec .dot {
+    width: 7px; height: 7px;
+    background: var(--orange-500);
+    border-radius: 999px;
+  }
+
+  /* Tag slot (where PHOTO used to be) */
+  .cap-tag {
+    color: var(--paper-50);
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    min-height: 24px;
+  }
+  .cap-tag.border {
+    padding: 4px 8px;
+    border: 1px solid var(--paper-50);
+    border-radius: var(--radius-tight);
+  }
+
+  /* mini viewfinder sample */
+  .view {
+    height: 110px;
+    background: linear-gradient(170deg, #2a2a26 0%, #1C1B19 60%, #0e0d0c 100%);
+    position: relative;
+    border: 1px dashed rgba(250,248,244,0.15);
+    margin-top: 4px;
+  }
+  .view::before,
+  .view::after {
+    content: "";
+    position: absolute;
+    width: 10px; height: 10px;
+    border: 2px solid var(--orange-500);
+  }
+  .view::before {
+    top: 6px; left: 6px;
+    border-right: none; border-bottom: none;
+  }
+  .view::after {
+    bottom: 6px; right: 6px;
+    border-left: none; border-top: none;
+  }
+
+  .rationale {
+    padding: 14px 18px;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--ink-900);
+    background: var(--paper-50);
+    border-top: 1px solid var(--bone-300);
+  }
+  .rationale .pro { color: var(--ink-900); }
+  .rationale .con { color: var(--graphite-500); }
+  .rationale .pro::before { content: "+  "; color: var(--orange-500); font-weight: 700; }
+  .rationale .con::before { content: "−  "; color: var(--graphite-500); font-weight: 700; }
+  .rationale .row { display: block; }
+  .rationale .row + .row { margin-top: 4px; }
+
+  .recommend {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 22px;
+    background: var(--ink-900);
+    color: var(--paper-50);
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .recommend b { color: var(--orange-500); }
+</style>
+</head>
+<body>
+
+<div style="max-width: 960px; margin: 0 auto;">
+  <div class="page-title">CAPTURE TOP-RIGHT · 4 OPTIONS</div>
+  <h1>"PHOTO" 자리에 무엇을 둘까</h1>
+  <p class="sub">
+    셔터가 이제 탭 = 사진, 홀드 = 최대 5초 영상으로 통합되어 모드 전환 버튼이 필요 없어졌습니다.
+    우상단 슬롯은 비워 두거나, 카메라 도구감을 유지하는 아이콘 또는 새 제스처 학습을 돕는 힌트로 채울 수 있습니다.
+  </p>
+</div>
+
+<div class="grid">
+
+  <!-- A. Aperture icon -->
+  <div class="card">
+    <div class="card-head">
+      <div class="name">A. 조리개 아이콘</div>
+      <div class="key">Aperture</div>
+    </div>
+    <div class="cap-top">
+      <div class="cap-head">
+        <div class="cap-close">×</div>
+        <div class="cap-rec"><span class="dot"></span>READY</div>
+        <div class="cap-tag">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 3 L17 9 H7 Z"/>
+            <path d="M21 12 L15 17 L15 7 Z"/>
+            <path d="M12 21 L7 15 H17 Z"/>
+            <path d="M3 12 L9 7 L9 17 Z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="view"></div>
+    </div>
+    <div class="rationale">
+      <span class="row pro">카메라의 상징 그 자체. 장식적이지만 도구감 유지</span>
+      <span class="row con">새 제스처(탭/홀드)는 따로 학습 필요, 아이콘 자체는 교육 기능 없음</span>
+    </div>
+  </div>
+
+  <!-- B. Dual gesture glyph -->
+  <div class="card">
+    <div class="card-head">
+      <div class="name">B. 듀얼 제스처 글리프</div>
+      <div class="key">Tap · Hold</div>
+    </div>
+    <div class="cap-top">
+      <div class="cap-head">
+        <div class="cap-close">×</div>
+        <div class="cap-rec"><span class="dot"></span>READY</div>
+        <div class="cap-tag">
+          <svg width="30" height="12" viewBox="0 0 30 12" fill="currentColor">
+            <circle cx="3" cy="6" r="2.5"/>
+            <rect x="10" y="4.5" width="18" height="3" rx="1.5"/>
+          </svg>
+          <span style="opacity: 0.7">5s</span>
+        </div>
+      </div>
+      <div class="view"></div>
+    </div>
+    <div class="rationale">
+      <span class="row pro">새 인터랙션을 시각적으로 설명. 점 = 탭(사진), 선 = 홀드(영상), "5s"는 최대 길이</span>
+      <span class="row con">추상적이라 첫인상에서 의미 추론이 필요함</span>
+    </div>
+  </div>
+
+  <!-- C. Text hint -->
+  <div class="card">
+    <div class="card-head">
+      <div class="name">C. 텍스트 힌트</div>
+      <div class="key">TAP · HOLD 5s</div>
+    </div>
+    <div class="cap-top">
+      <div class="cap-head">
+        <div class="cap-close">×</div>
+        <div class="cap-rec"><span class="dot"></span>READY</div>
+        <div class="cap-tag border" style="font-size: 9px">TAP · HOLD 5s</div>
+      </div>
+      <div class="view"></div>
+    </div>
+    <div class="rationale">
+      <span class="row pro">가장 명시적. 신규 유저도 즉시 이해</span>
+      <span class="row con">텍스트가 많아 시각적 무게가 "READY"와 맞먹음, 좌우 밸런스가 둔탁</span>
+    </div>
+  </div>
+
+  <!-- D. Empty -->
+  <div class="card">
+    <div class="card-head">
+      <div class="name">D. 완전 비우기</div>
+      <div class="key">Empty</div>
+    </div>
+    <div class="cap-top">
+      <div class="cap-head">
+        <div class="cap-close">×</div>
+        <div class="cap-rec"><span class="dot"></span>READY</div>
+        <div class="cap-tag" style="width: 28px"></div>
+      </div>
+      <div class="view"></div>
+    </div>
+    <div class="rationale">
+      <span class="row pro">가장 조용함. 좌하단도 비워 놓은 결정과 호응, Dieter Rams "less"</span>
+      <span class="row con">우측 시각 무게가 없어 헤더가 왼쪽으로 치우침, 새 제스처는 최초 실행 시 온보딩 툴팁에서 배워야 함</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="recommend">
+  <b>추천</b>: <b>B. 듀얼 제스처 글리프</b>. 이유 셋.<br>
+  1. 탭/홀드 통합 제스처는 학습이 필요한 새 규칙인데, 좌하단도 비워 뒀기 때문에 어디선가 힌트가 필요합니다. 우상단 슬롯이 자연스러운 자리.<br>
+  2. 점+선+5s 조합이 Teenage Engineering 식 추상 기호 언어에 부합하고, 본 앱의 mono 라벨 톤과 궁합이 좋음.<br>
+  3. 정보량이 적어 좌측 READY와 시각적으로 균형이 맞으며, 영상 최대 길이(5s)까지 한 번에 전달.<br><br>
+  대안으로 <b>A(조리개)</b>는 감각적이지만 교육 기능이 없고, <b>D(비움)</b>는 가장 조용하지만 온보딩 설계 부담이 커집니다.
+</div>
+
+</body>
+</html>

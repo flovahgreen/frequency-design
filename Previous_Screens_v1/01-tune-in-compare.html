@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FREQUENCY · Tune In · A/B Compare v6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --signal-green-glow: rgba(38, 250, 133, 0.35);
+    --te-orange-500: #F15A24;
+    --te-orange-glow: rgba(241, 90, 36, 0.45);
+    --ink-1000: #0A0A0A;
+    --ink-950: #111111;
+    --ink-900: #1A1A1A;
+    --ink-800: #242424;
+    --ink-700: #2E2E2E;
+    --ink-600: #3D3D3D;
+    --ink-500: #5A5A5A;
+    --ink-400: #7A7A7A;
+    --ink-300: #A0A0A0;
+    --ink-200: #C8C8C8;
+    --ink-100: #E8E8E8;
+    --ink-50: #F4F4F4;
+    --ink-0: #FFFFFF;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --font-display: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --motion-fast: 150ms;
+    --motion-base: 200ms;
+    --motion-slow: 300ms;
+    --ease-mechanical: cubic-bezier(0.2, 0, 0, 1);
+    --ease-detent: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--ink-800);
+    color: var(--ink-50); line-height: 1.5;
+    padding: 48px 24px 96px; min-height: 100vh;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  .page-head {
+    margin-bottom: 48px; padding-bottom: 24px;
+    border-bottom: 1px solid var(--ink-600);
+  }
+  .page-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 10px;
+  }
+  .page-tag .accent { color: var(--signal-green-400); }
+  .page-title {
+    font-family: var(--font-display); font-size: 32px;
+    font-weight: 700; letter-spacing: -0.02em;
+    color: var(--ink-0); margin-bottom: 6px;
+  }
+  .page-sub {
+    font-size: 14px; color: var(--ink-400);
+    max-width: 720px; line-height: 1.65;
+  }
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 48px; max-width: 960px; margin: 0 auto 56px;
+  }
+  @media (max-width: 860px) {
+    .compare-grid { grid-template-columns: 1fr; max-width: 420px; }
+  }
+  .compare-unit { display: flex; flex-direction: column; align-items: center; }
+  .concept-label { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .concept-badge {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: var(--radius-sm);
+  }
+  .badge-a { background: var(--signal-green-500); color: var(--ink-1000); }
+  .badge-b { background: var(--te-orange-500); color: var(--ink-0); }
+  .concept-name {
+    font-family: var(--font-mono); font-size: 13px;
+    font-weight: 600; color: var(--ink-100); letter-spacing: 0.04em;
+  }
+
+  /* IPHONE */
+  .iphone {
+    width: 360px; aspect-ratio: 393 / 852;
+    background: var(--ink-1000); border-radius: 48px; padding: 10px;
+    box-shadow: 0 0 0 1px var(--ink-600), 0 24px 56px -16px rgba(0,0,0,0.6);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%; border-radius: 40px;
+    overflow: hidden; background: var(--ink-900);
+    display: flex; flex-direction: column; position: relative;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 100px; height: 28px;
+    background: var(--ink-1000); border-radius: 999px; z-index: 10;
+  }
+  .status-bar {
+    height: 44px; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 26px 0 22px;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+    color: var(--ink-100); flex-shrink: 0; position: relative; z-index: 5;
+  }
+  .status-right { display: flex; align-items: center; gap: 5px; }
+  .sr-ico { width: 14px; height: 10px; background: currentColor; opacity: 0.85; }
+  .sr-ico.signal {
+    width: 16px; height: 10px;
+    clip-path: polygon(0 100%,4px 100%,4px 70%,0 70%,0 100%,5px 100%,9px 100%,9px 50%,5px 50%,5px 100%,10px 100%,14px 100%,14px 30%,10px 30%,10px 100%,15px 100%,19px 100%,19px 10%,15px 10%);
+  }
+  .sr-ico.battery {
+    width: 22px; height: 11px; background: transparent;
+    border: 1px solid currentColor; border-radius: 2px; position: relative;
+  }
+  .sr-ico.battery::after {
+    content:""; position: absolute; right:-3px; top:3px;
+    width:2px; height:5px; background:currentColor;
+  }
+  .sr-ico.battery::before {
+    content:""; position: absolute; top:1px; left:1px; bottom:1px;
+    width:80%; background:currentColor; border-radius:1px;
+  }
+  .home-indicator {
+    position: absolute; bottom: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 38%; height: 4px; background: var(--ink-300);
+    border-radius: 999px; z-index: 10; opacity: 0.6;
+  }
+  .screen-content {
+    flex: 1; overflow: hidden;
+    display: flex; flex-direction: column; min-height: 0;
+  }
+
+  /* SHARED */
+  .wordmark {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-100);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .led-dot {
+    width: 6px; height: 6px; border-radius: 999px;
+    background: var(--signal-green-400);
+    box-shadow: 0 0 8px var(--signal-green-glow);
+    flex-shrink: 0; animation: ledPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:0.45} }
+  .led-sm {
+    width: 5px; height: 5px; border-radius: 999px;
+    background: var(--signal-green-400);
+    box-shadow: 0 0 6px var(--signal-green-glow); flex-shrink: 0;
+  }
+  .version-tag {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.12em; color: var(--ink-500); text-transform: uppercase;
+  }
+  .divider { height: 1px; background: var(--ink-700); margin: 12px 0; }
+  @keyframes blink { 50%{opacity:0} }
+
+  .btn-tunein {
+    width: 100%; padding: 15px 16px;
+    background: var(--signal-green-500); color: var(--ink-1000); border: none;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background-color 0ms step-end, color 0ms step-end,
+                transform var(--motion-fast) var(--ease-mechanical);
+  }
+  .btn-tunein .pfx { opacity: 0.6; }
+  .btn-tunein:active { background: var(--ink-0); color: var(--ink-1000); transform: scale(0.97); }
+  .btn-tunein:disabled { background: var(--ink-700); color: var(--ink-500); cursor: default; }
+  .btn-open {
+    width: 100%; padding: 14px 16px;
+    background: transparent; color: var(--ink-200);
+    border: 1.5px solid var(--ink-600);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background-color 0ms step-end, border-color 0ms step-end;
+  }
+  .btn-open .pfx { color: var(--te-orange-500); opacity: 0.8; }
+  .btn-open:active { background: var(--ink-700); border-color: var(--te-orange-500); color: var(--ink-0); }
+  .alt-text {
+    text-align: center; font-size: 13px; color: var(--ink-500);
+    font-family: var(--font-sans); letter-spacing: -0.01em; line-height: 1.5;
+  }
+
+
+  /* =========================================
+     A: TERMINAL (unchanged)
+     ========================================= */
+  .s-terminal {
+    padding: 20px 22px 28px; flex: 1;
+    display: flex; flex-direction: column;
+    background: var(--ink-900); color: var(--ink-50);
+    font-family: var(--font-mono);
+  }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; }
+  .boot-log-a {
+    font-size: 11px; line-height: 1.8; letter-spacing: 0.03em; margin-bottom: 4px;
+  }
+  .boot-log-a .row {
+    display: block; opacity: 0; animation: bootFade 0.15s step-end forwards;
+  }
+  .boot-log-a .row:nth-child(1){animation-delay:.3s}
+  .boot-log-a .row:nth-child(2){animation-delay:.55s}
+  .boot-log-a .row:nth-child(3){animation-delay:.8s}
+  .boot-log-a .row:nth-child(4){animation-delay:1.05s}
+  .boot-log-a .row:nth-child(5){animation-delay:1.35s}
+  @keyframes bootFade { to{opacity:1} }
+  .boot-log-a .pfx { color: var(--signal-green-400); margin-right: 4px; }
+  .boot-log-a .ok { color: var(--signal-green-400); margin-left: 6px; font-weight: 700; }
+  .boot-log-a .cmt-kr {
+    color: var(--ink-500); font-family: var(--font-sans);
+    font-size: 12px; letter-spacing: 0;
+  }
+  .freq-body { flex:1; display:flex; flex-direction:column; justify-content:center; gap:12px; }
+  .freq-label {
+    font-size: 10px; color: var(--ink-400);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .freq-field {
+    background: transparent; border: none;
+    padding: 6px 0 10px; border-bottom: 1.5px solid var(--ink-600);
+    font-family: var(--font-mono); font-size: 36px; font-weight: 500;
+    letter-spacing: 0.12em; color: var(--ink-0);
+    display: flex; align-items: center;
+  }
+  .freq-field.focused { border-color: var(--signal-green-400); }
+  .freq-dot { color: var(--te-orange-500); font-weight: 700; }
+  .block-cursor {
+    display: inline-block; width: 20px; height: 32px;
+    background: var(--signal-green-400);
+    vertical-align: -4px; margin-left: 2px;
+    animation: blink 1s step-end infinite;
+  }
+  .freq-hint {
+    font-size: 13px; color: var(--ink-400);
+    font-family: var(--font-sans); line-height: 1.5; letter-spacing: -0.01em;
+  }
+
+
+  /* =========================================
+     B: TWO-PHASE (boot → dial+keypad)
+     ========================================= */
+  .s-phase {
+    padding: 20px 22px 24px; flex: 1;
+    display: flex; flex-direction: column;
+    background: var(--ink-900); color: var(--ink-50);
+    font-family: var(--font-mono);
+  }
+
+  /* --- PHASE 1: BOOT SEQUENCE --- */
+  .phase-boot {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; gap: 24px;
+  }
+  .phase-boot.hidden { display: none; }
+
+  .boot-type-area {
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 8px 0;
+  }
+  .boot-line {
+    font-size: 12px; line-height: 2;
+    letter-spacing: 0.04em;
+    min-height: 24px;
+  }
+  .boot-line .pfx { color: var(--signal-green-400); }
+  .boot-line .ok { color: var(--signal-green-400); font-weight: 700; }
+  .boot-line .cmt { color: var(--ink-500); }
+  .boot-line .txt { color: var(--ink-100); }
+  /* Block cursor for typewriter */
+  .tw-cursor {
+    display: inline-block; width: 8px; height: 14px;
+    background: var(--signal-green-400);
+    vertical-align: -2px; margin-left: 1px;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* NEXT button (retro) */
+  .btn-next {
+    width: 100%; padding: 15px 16px;
+    background: var(--ink-100); color: var(--ink-900); border: none;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    opacity: 0; transition: opacity 0.15s step-end;
+    pointer-events: none;
+  }
+  .btn-next.visible { opacity: 1; pointer-events: auto; }
+  .btn-next .pfx { color: var(--signal-green-400); opacity: 0.8; }
+  .btn-next:active {
+    background: var(--signal-green-500); color: var(--ink-1000);
+  }
+
+  /* --- PHASE 2: DIAL + KEYPAD --- */
+  .phase-input {
+    flex: 1; display: none; flex-direction: column;
+    justify-content: center;
+  }
+  .phase-input.visible { display: flex; }
+
+  /* Dial area */
+  .dial-area {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 0;
+    padding: 6px 0 4px;
+  }
+  .mini-dial-wrap {
+    width: 56px; height: 56px;
+    position: relative; opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+  .mini-dial-wrap.active { opacity: 1; }
+  .mini-dial {
+    width: 56px; height: 56px; border-radius: 999px;
+    border: 1.5px solid var(--ink-600); position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .mini-dial.locked {
+    border-color: var(--signal-green-400);
+    box-shadow: 0 0 16px var(--signal-green-glow);
+  }
+  .mini-tick {
+    position: absolute; width: 1px; height: 5px;
+    background: var(--ink-500); left: 50%; top: 3px;
+    transform-origin: 50% 25px;
+  }
+  .mini-tick.major {
+    height: 7px; width: 1.5px; background: var(--ink-300);
+    top: 2px; transform-origin: 50% 26px;
+  }
+  .mini-indicator {
+    position: absolute; width: 3px; height: 12px;
+    background: var(--te-orange-500); border-radius: 1.5px;
+    left: 50%; top: 4px; transform-origin: 50% 24px;
+    transform: translateX(-50%) rotate(0deg);
+    transition: transform 0.5s var(--ease-detent),
+                background 0.15s step-end, box-shadow 0.15s step-end;
+    z-index: 2;
+  }
+  .mini-indicator.locked {
+    background: var(--signal-green-400);
+    box-shadow: 0 0 6px var(--signal-green-glow);
+  }
+  .mini-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px; height: 18px; border-radius: 999px;
+    background: var(--ink-800); border: 1px solid var(--ink-600);
+    z-index: 3; transition: border-color 0.15s step-end;
+  }
+  .mini-center.locked { border-color: var(--signal-green-400); }
+  .dial-status-label {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-500); margin-top: 6px;
+    transition: color 0.15s step-end;
+  }
+  .dial-status-label.locked { color: var(--signal-green-400); }
+
+  /* Retro divider */
+  .retro-divider {
+    display: flex; align-items: center; gap: 8px;
+    margin: 6px 0;
+  }
+  .retro-divider .pfx {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--signal-green-400);
+  }
+  .retro-divider .line { flex: 1; height: 1px; background: var(--ink-700); }
+
+  .enter-freq-label {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400);
+    text-align: center; margin: 6px 0 8px;
+  }
+
+  /* Digit slots */
+  .freq-slots-center {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; margin-bottom: 4px;
+  }
+  .freq-digit-slot {
+    width: 44px; height: 54px;
+    background: var(--ink-800); border: 1.5px solid var(--ink-700);
+    border-radius: var(--radius-xs);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 30px; font-weight: 500;
+    color: var(--ink-0);
+    transition: border-color 0ms step-end, background 0ms step-end;
+  }
+  .freq-digit-slot.active { border-color: var(--signal-green-400); background: var(--ink-700); }
+  .freq-digit-slot.filled { border-color: var(--ink-500); }
+  .freq-digit-slot .digit-cursor {
+    width: 2px; height: 26px; background: var(--signal-green-400);
+    animation: blink 1s step-end infinite;
+  }
+  .freq-sep {
+    font-family: var(--font-mono); font-size: 30px; font-weight: 700;
+    color: var(--te-orange-500); width: 12px; text-align: center;
+  }
+
+  .lock-feedback {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    text-align: center; height: 16px;
+    color: var(--signal-green-400); font-weight: 700;
+    opacity: 0; transition: opacity 0.15s step-end;
+  }
+  .lock-feedback.show { opacity: 1; }
+
+  .kp-hint-center {
+    font-size: 12px; color: var(--ink-500);
+    font-family: var(--font-sans); line-height: 1.5;
+    letter-spacing: -0.01em; text-align: center; margin-bottom: 4px;
+  }
+
+  /* Numpad */
+  .numpad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 5px; width: 100%; max-width: 240px; margin: 0 auto;
+  }
+  .numpad-btn {
+    height: 42px; background: var(--ink-800);
+    border: 1.5px solid var(--ink-700); border-radius: var(--radius-xs);
+    font-family: var(--font-mono); font-size: 17px; font-weight: 600;
+    color: var(--ink-100); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0ms step-end, border-color 0ms step-end, color 0ms step-end;
+  }
+  .numpad-btn:active { background: var(--ink-100); border-color: var(--ink-100); color: var(--ink-900); }
+  .numpad-btn.fn { font-size: 11px; letter-spacing: 0.08em; color: var(--ink-400); font-weight: 700; }
+  .numpad-btn.fn:active { background: var(--ink-600); border-color: var(--ink-500); color: var(--ink-100); }
+  .numpad-btn.fn.del { color: var(--te-orange-500); }
+  .numpad-btn.fn.del:active { background: var(--te-orange-500); border-color: var(--te-orange-500); color: var(--ink-0); }
+
+  .actions { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+
+  /* Reset button for demo */
+  .demo-reset {
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 10px 18px; background: var(--ink-700);
+    border: 1px solid var(--ink-600); border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-300); cursor: pointer;
+    transition: background 0ms step-end;
+    z-index: 100;
+  }
+  .demo-reset:active { background: var(--ink-500); }
+
+  /* COMPARISON TABLE */
+  .pros-cons {
+    max-width: 960px; margin: 0 auto;
+    padding: 32px 0; border-top: 1px solid var(--ink-700);
+  }
+  .pros-cons-title {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 24px;
+  }
+  .pc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 860px) { .pc-grid { grid-template-columns: 1fr; } }
+  .pc-card {
+    padding: 24px; background: var(--ink-900);
+    border: 1px solid var(--ink-700); border-radius: var(--radius-md);
+  }
+  .pc-card-head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--ink-700);
+  }
+  .pc-card-badge {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; padding: 3px 8px; border-radius: var(--radius-xs);
+  }
+  .pc-card-name {
+    font-family: var(--font-mono); font-size: 13px;
+    font-weight: 600; color: var(--ink-100);
+  }
+  .pc-row {
+    display: flex; gap: 10px; padding: 8px 0;
+    font-size: 13px; line-height: 1.55; color: var(--ink-300);
+  }
+  .pc-row + .pc-row { border-top: 1px solid var(--ink-800); }
+  .pc-icon {
+    flex-shrink: 0; width: 18px;
+    font-family: var(--font-mono); font-size: 12px;
+    font-weight: 700; text-align: center;
+  }
+  .pc-icon.pro { color: var(--signal-green-400); }
+  .pc-icon.con { color: var(--te-orange-500); }
+  .pc-icon.note { color: var(--ink-500); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · CONCEPT COMPARE · V6</div>
+    <h1 class="page-title">Tune In: Terminal vs Boot + Dial</h1>
+    <p class="page-sub">A: 단일 화면 터미널 입력 &nbsp;/&nbsp; B: 부트 시퀀스 타이핑 → NEXT → 다이얼 + 키패드 입력. 두 단계 분리.</p>
+  </div>
+
+  <div class="compare-grid">
+
+    <!-- ===== A: TERMINAL ===== -->
+    <div class="compare-unit">
+      <div class="concept-label">
+        <span class="concept-badge badge-a">A</span>
+        <span class="concept-name">Terminal (Single Screen)</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-right"><span class="sr-ico signal"></span><span class="sr-ico battery"></span></div>
+          </div>
+          <div class="screen-content">
+            <div class="s-terminal">
+              <div class="top-bar">
+                <div class="wordmark">FREQUENCY<span class="led-dot"></span></div>
+                <span class="version-tag">v1.0</span>
+              </div>
+              <div class="divider"></div>
+              <div class="boot-log-a">
+                <div class="row"><span class="pfx">&gt;</span> SYSTEM BOOT<span class="ok"> [OK]</span></div>
+                <div class="row"><span class="pfx">&gt;</span> FREQUENCY MODULE<span class="ok"> [OK]</span></div>
+                <div class="row"><span class="pfx">&gt;</span> CAMERA MODULE<span class="ok"> [OK]</span></div>
+                <div class="row cmt-kr">&nbsp;&nbsp;암호화 · 초대 전용 · 최대 8명</div>
+                <div class="row"><span class="pfx">&gt;</span> SIGNAL READY<span style="display:inline-block;width:8px;height:12px;background:var(--signal-green-400);vertical-align:-1px;margin-left:6px;animation:blink 1s step-end infinite;"></span></div>
+              </div>
+              <div class="freq-body">
+                <div class="freq-label"><span class="led-sm"></span> ENTER FREQUENCY</div>
+                <div class="freq-field focused">
+                  <span>107<span class="freq-dot">.</span>4</span><span class="block-cursor"></span>
+                </div>
+                <div class="freq-hint">호스트가 공유한 주파수 번호를 입력하세요</div>
+              </div>
+              <div class="actions">
+                <button class="btn-tunein"><span class="pfx">&gt;</span> TUNE IN</button>
+                <button class="btn-open"><span class="pfx">&gt;</span> OPEN NEW CHANNEL</button>
+                <div class="alt-text">주파수가 없다면 새 채널을 개설할 수 있어요</div>
+              </div>
+            </div>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== B: TWO-PHASE ===== -->
+    <div class="compare-unit">
+      <div class="concept-label">
+        <span class="concept-badge badge-b">B</span>
+        <span class="concept-name">Boot → Dial + Keypad</span>
+      </div>
+      <div class="iphone">
+        <div class="dynamic-island"></div>
+        <div class="iphone-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-right"><span class="sr-ico signal"></span><span class="sr-ico battery"></span></div>
+          </div>
+          <div class="screen-content">
+            <div class="s-phase">
+              <div class="top-bar">
+                <div class="wordmark">FREQUENCY<span class="led-dot"></span></div>
+                <span class="version-tag">v1.0</span>
+              </div>
+              <div class="divider"></div>
+
+              <!-- PHASE 1: Boot typing -->
+              <div class="phase-boot" id="phaseBoot">
+                <div class="boot-type-area" id="bootTypeArea">
+                  <div class="boot-line" id="line0"></div>
+                  <div class="boot-line" id="line1"></div>
+                  <div class="boot-line" id="line2"></div>
+                  <div class="boot-line" id="line3"></div>
+                  <div class="boot-line" id="line4"></div>
+                  <div class="boot-line" id="line5"></div>
+                </div>
+                <button class="btn-next" id="btnNext"><span class="pfx">&gt;</span> NEXT</button>
+              </div>
+
+              <!-- PHASE 2: Dial + Keypad -->
+              <div class="phase-input" id="phaseInput">
+                <div class="dial-area">
+                  <div class="mini-dial-wrap" id="miniDialWrap">
+                    <div class="mini-dial" id="miniDial">
+                      <div class="mini-indicator" id="miniIndicator"></div>
+                      <div class="mini-center" id="miniCenter"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="enter-freq-label">ENTER FREQUENCY</div>
+
+                <div class="freq-slots-center" id="freqSlots">
+                  <div class="freq-digit-slot active" id="slot0"><div class="digit-cursor"></div></div>
+                  <div class="freq-digit-slot" id="slot1"></div>
+                  <div class="freq-digit-slot" id="slot2"></div>
+                  <div class="freq-sep">.</div>
+                  <div class="freq-digit-slot" id="slot3"></div>
+                </div>
+
+                <div class="lock-feedback" id="lockFeedback">&gt; FREQUENCY LOCKED</div>
+                <div class="kp-hint-center" id="kpHint">호스트가 공유한 주파수 번호 4자리</div>
+
+                <div class="numpad" id="numpad">
+                  <button class="numpad-btn" data-val="1">1</button>
+                  <button class="numpad-btn" data-val="2">2</button>
+                  <button class="numpad-btn" data-val="3">3</button>
+                  <button class="numpad-btn" data-val="4">4</button>
+                  <button class="numpad-btn" data-val="5">5</button>
+                  <button class="numpad-btn" data-val="6">6</button>
+                  <button class="numpad-btn" data-val="7">7</button>
+                  <button class="numpad-btn" data-val="8">8</button>
+                  <button class="numpad-btn" data-val="9">9</button>
+                  <button class="numpad-btn fn" data-val="clear">CLR</button>
+                  <button class="numpad-btn" data-val="0">0</button>
+                  <button class="numpad-btn fn del" data-val="del">DEL</button>
+                </div>
+
+                <div class="actions" style="padding-top:8px;">
+                  <button class="btn-tunein" id="btnTuneB" disabled><span class="pfx">&gt;</span> TUNE IN</button>
+                  <button class="btn-open"><span class="pfx">&gt;</span> OPEN NEW CHANNEL</button>
+                  <div class="alt-text">주파수가 없다면 새 채널을 개설할 수 있어요</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMPARISON -->
+  <div class="pros-cons">
+    <div class="pros-cons-title">비교 분석</div>
+    <div class="pc-grid">
+      <div class="pc-card">
+        <div class="pc-card-head">
+          <span class="pc-card-badge badge-a">A</span>
+          <span class="pc-card-name">Terminal (Single Screen)</span>
+        </div>
+        <div class="pc-row"><span class="pc-icon pro">+</span><span>한 화면에 모든 정보. 빠른 진입 가능</span></div>
+        <div class="pc-row"><span class="pc-icon pro">+</span><span>부트 로그가 배경처럼 깔려 있어 가볍게 분위기만 잡음</span></div>
+        <div class="pc-row"><span class="pc-icon pro">+</span><span>구현 난이도 최저</span></div>
+        <div class="pc-row"><span class="pc-icon con">-</span><span>부트 시퀀스를 "보는" 경험이 약함. 정적 텍스트에 가까움</span></div>
+        <div class="pc-row"><span class="pc-icon con">-</span><span>다른 앱의 코드 입력과 차별 약함</span></div>
+      </div>
+      <div class="pc-card">
+        <div class="pc-card-head">
+          <span class="pc-card-badge badge-b">B</span>
+          <span class="pc-card-name">Boot → Dial + Keypad</span>
+        </div>
+        <div class="pc-row"><span class="pc-icon pro">+</span><span>"기기가 켜지는" 경험을 타이핑 모션으로 확실히 전달</span></div>
+        <div class="pc-row"><span class="pc-icon pro">+</span><span>부트 → 입력 2단계 분리가 "의식"의 느낌. 앱이 아니라 기기를 여는 감각</span></div>
+        <div class="pc-row"><span class="pc-icon pro">+</span><span>NEXT 버튼이 "준비 완료, 이제 연결하겠습니다"의 전환점</span></div>
+        <div class="pc-row"><span class="pc-icon pro">+</span><span>다이얼 + 커스텀 키패드가 전용 기기 조작 느낌 극대화</span></div>
+        <div class="pc-row"><span class="pc-icon con">-</span><span>2단계라서 한 탭 더 필요. 빈번한 사용이 아니므로 허용 범위</span></div>
+        <div class="pc-row"><span class="pc-icon note">*</span><span>부트 타이핑은 최초 1회만 풀로 재생, 재방문 시 0.5초 축약 부트 가능</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Reset button for demo replay -->
+<button class="demo-reset" id="demoReset">&gt; REPLAY BOOT</button>
+
+<script>
+  // ===== B: BOOT TYPEWRITER =====
+  const bootLines = [
+    { text: '> SYSTEM BOOT',        suffix: ' [OK]', cls: '' },
+    { text: '> FREQUENCY MODULE',   suffix: ' [OK]', cls: '' },
+    { text: '> CAMERA MODULE',      suffix: ' [OK]', cls: '' },
+    { text: '  encrypted · invite only · max 8 crew', suffix: '', cls: 'cmt' },
+    { text: '> SIGNAL READY',       suffix: '',       cls: '' },
+  ];
+
+  const lineEls = [
+    document.getElementById('line0'),
+    document.getElementById('line1'),
+    document.getElementById('line2'),
+    document.getElementById('line3'),
+    document.getElementById('line4'),
+    document.getElementById('line5'),
+  ];
+  const btnNext = document.getElementById('btnNext');
+  const phaseBoot = document.getElementById('phaseBoot');
+  const phaseInput = document.getElementById('phaseInput');
+
+  let typeTimers = [];
+
+  function clearBootTimers() {
+    typeTimers.forEach(t => clearTimeout(t));
+    typeTimers = [];
+  }
+
+  function typeLine(lineEl, text, charDelay, callback) {
+    lineEl.innerHTML = '<span class="tw-cursor"></span>';
+    let i = 0;
+    function next() {
+      if (i >= text.length) {
+        // Remove cursor, done
+        lineEl.innerHTML = lineEl.innerHTML.replace('<span class="tw-cursor"></span>', '');
+        if (callback) callback();
+        return;
+      }
+      // Build up character by character
+      const sofar = text.substring(0, i + 1);
+      lineEl.innerHTML = sofar + '<span class="tw-cursor"></span>';
+      i++;
+      const tid = setTimeout(next, charDelay);
+      typeTimers.push(tid);
+    }
+    next();
+  }
+
+  function colorize(raw) {
+    // Apply coloring to typed text
+    return raw
+      .replace(/&gt;|>/g, '<span class="pfx">&gt;</span>')
+      .replace(/\[OK\]/g, '<span class="ok">[OK]</span>');
+  }
+
+  function runBootSequence() {
+    clearBootTimers();
+    lineEls.forEach(el => { el.innerHTML = ''; });
+    btnNext.classList.remove('visible');
+
+    let lineIdx = 0;
+    const lineDelay = 120; // pause between lines
+
+    function typeNextLine() {
+      if (lineIdx >= bootLines.length) {
+        // All done: show SIGNAL READY blinking cursor + NEXT
+        const lastLine = lineEls[4];
+        lastLine.innerHTML = colorize('> SIGNAL READY') + ' <span class="tw-cursor"></span>';
+
+        const tid = setTimeout(() => {
+          btnNext.classList.add('visible');
+        }, 400);
+        typeTimers.push(tid);
+        return;
+      }
+
+      const line = bootLines[lineIdx];
+      const el = lineEls[lineIdx];
+      const fullText = line.text + line.suffix;
+
+      typeLine(el, fullText, 25, () => {
+        // Colorize after typing completes
+        const colored = line.cls === 'cmt'
+          ? '<span class="cmt">' + el.textContent + '</span>'
+          : colorize(el.textContent);
+        el.innerHTML = colored;
+
+        lineIdx++;
+        const tid = setTimeout(typeNextLine, lineDelay);
+        typeTimers.push(tid);
+      });
+    }
+
+    // Start after short delay
+    const tid = setTimeout(typeNextLine, 350);
+    typeTimers.push(tid);
+  }
+
+  // NEXT button → switch to Phase 2
+  btnNext.addEventListener('click', () => {
+    phaseBoot.classList.add('hidden');
+    phaseInput.classList.add('visible');
+  });
+
+  // Start boot on load
+  runBootSequence();
+
+
+  // ===== PHASE 2: DIAL + KEYPAD =====
+  const slots = [
+    document.getElementById('slot0'),
+    document.getElementById('slot1'),
+    document.getElementById('slot2'),
+    document.getElementById('slot3')
+  ];
+  const digits = ['', '', '', ''];
+  let cursorPos = 0;
+
+  const miniDialWrap = document.getElementById('miniDialWrap');
+  const miniDial = document.getElementById('miniDial');
+  const miniIndicator = document.getElementById('miniIndicator');
+  const miniCenter = document.getElementById('miniCenter');
+  const lockFeedback = document.getElementById('lockFeedback');
+  const btnTuneB = document.getElementById('btnTuneB');
+  const kpHint = document.getElementById('kpHint');
+  const dialStatusLabel = document.getElementById('dialStatusLabel'); // removed from DOM, null-safe below
+
+  // Ticks
+  for (let i = 0; i < 24; i++) {
+    const tick = document.createElement('div');
+    tick.className = 'mini-tick' + (i % 3 === 0 ? ' major' : '');
+    tick.style.transform = `translateX(-50%) rotate(${i * 15}deg)`;
+    miniDial.insertBefore(tick, miniIndicator);
+  }
+
+  function getDialAngle() {
+    const filled = digits.filter(d => d !== '').length;
+    return [0, 60, 130, 200, 270][filled];
+  }
+
+  function updateSlots() {
+    slots.forEach((slot, i) => {
+      slot.classList.remove('active', 'filled');
+      if (digits[i]) {
+        slot.innerHTML = digits[i];
+        slot.classList.add('filled');
+      } else if (i === cursorPos) {
+        slot.innerHTML = '<div class="digit-cursor"></div>';
+        slot.classList.add('active');
+      } else {
+        slot.innerHTML = '';
+      }
+    });
+
+    miniIndicator.style.transform = `translateX(-50%) rotate(${getDialAngle()}deg)`;
+    const filled = digits.filter(d => d !== '').length;
+    miniDialWrap.classList.toggle('active', filled > 0);
+
+    if (filled === 4) {
+      setTimeout(() => {
+        miniDial.classList.add('locked');
+        miniIndicator.classList.add('locked');
+        miniCenter.classList.add('locked');
+        lockFeedback.classList.add('show');
+        if (dialStatusLabel) { dialStatusLabel.textContent = 'LOCKED'; dialStatusLabel.classList.add('locked'); }
+        kpHint.textContent = '주파수가 잠겼습니다';
+        kpHint.style.color = 'var(--signal-green-400)';
+        btnTuneB.disabled = false;
+      }, 300);
+    } else {
+      miniDial.classList.remove('locked');
+      miniIndicator.classList.remove('locked');
+      miniCenter.classList.remove('locked');
+      lockFeedback.classList.remove('show');
+      if (dialStatusLabel) { dialStatusLabel.textContent = filled > 0 ? 'TUNING...' : 'STANDBY'; dialStatusLabel.classList.remove('locked'); }
+      kpHint.textContent = '호스트가 공유한 주파수 번호 4자리';
+      kpHint.style.color = '';
+      btnTuneB.disabled = true;
+    }
+  }
+
+  document.getElementById('numpad').addEventListener('click', (e) => {
+    const btn = e.target.closest('.numpad-btn');
+    if (!btn) return;
+    const val = btn.dataset.val;
+    if (val === 'clear') { digits.fill(''); cursorPos = 0; updateSlots(); return; }
+    if (val === 'del') { if (cursorPos > 0) { cursorPos--; digits[cursorPos] = ''; } updateSlots(); return; }
+    if (cursorPos < 4) { digits[cursorPos] = val; cursorPos++; updateSlots(); }
+  });
+
+  updateSlots();
+
+  // Button flash
+  document.querySelectorAll('.btn-tunein').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (this.disabled) return;
+      this.style.boxShadow = '0 0 20px var(--signal-green-glow)';
+      setTimeout(() => { this.style.boxShadow = ''; }, 250);
+    });
+  });
+
+  // Demo reset: replay boot
+  document.getElementById('demoReset').addEventListener('click', () => {
+    // Reset everything
+    phaseBoot.classList.remove('hidden');
+    phaseInput.classList.remove('visible');
+    digits.fill(''); cursorPos = 0; updateSlots();
+    runBootSequence();
+  });
+</script>
+
+</body>
+</html>

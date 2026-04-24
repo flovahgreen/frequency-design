@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Room App · Typography Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper-50: #FAF8F4;
+    --paper-100: #F4F1EC;
+    --paper-200: #ECE7DE;
+    --bone-300: #E0DACF;
+    --bone-400: #C9C3B8;
+    --graphite-500: #8C8880;
+    --graphite-600: #5E5C56;
+    --graphite-700: #3D3B37;
+    --ink-900: #1C1B19;
+    --orange-500: #E85A2A;
+    --orange-100: #FBE4D8;
+    --navy-500: #2B3F5E;
+    --navy-100: #D7DCE5;
+    --brick-500: #A8412B;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: #E8E4DC;
+    color: var(--ink-900);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 48px 24px 96px;
+  }
+  .wrapper { max-width: 1240px; margin: 0 auto; }
+
+  /* Font family utilities per pairing */
+  .ff-kr { font-family: 'Pretendard Variable', Pretendard, sans-serif; }
+  .pair-a-body { font-family: 'Pretendard Variable', 'Inter', sans-serif; }
+  .pair-a-mono { font-family: 'JetBrains Mono', monospace; }
+  .pair-b-body { font-family: 'Pretendard Variable', 'Space Grotesk', sans-serif; }
+  .pair-b-mono { font-family: 'IBM Plex Mono', monospace; }
+  .pair-c-body { font-family: 'Pretendard Variable', 'Manrope', sans-serif; }
+  .pair-c-mono { font-family: 'Space Mono', monospace; }
+
+  /* ---------- HEADER ---------- */
+  header.intro {
+    padding: 40px 36px;
+    border: 1px solid var(--bone-400);
+    background: var(--paper-100);
+    margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    font-family: 'Pretendard Variable', 'Inter', sans-serif;
+  }
+  header.intro .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--graphite-600);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  header.intro h1 {
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  header.intro .subtitle {
+    font-size: 16px;
+    color: var(--graphite-700);
+    max-width: 46ch;
+    line-height: 1.6;
+  }
+  header.intro .right-col {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--graphite-700);
+    align-self: end;
+  }
+  header.intro .right-col .row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    border-top: 1px solid var(--bone-400);
+    padding: 8px 0;
+  }
+  header.intro .right-col .row:last-child { border-bottom: 1px solid var(--bone-400); }
+  header.intro .right-col .label {
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 10px;
+    padding-top: 4px;
+  }
+
+  .pill {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--orange-500);
+    color: var(--paper-50);
+    padding: 4px 8px;
+    letter-spacing: 0.08em;
+    margin-right: 6px;
+  }
+
+  /* ---------- PRINCIPLE ---------- */
+  .principle {
+    padding: 32px 36px;
+    background: var(--ink-900);
+    color: var(--paper-100);
+    margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    font-family: 'Pretendard Variable', 'Inter', sans-serif;
+  }
+  .principle h2 {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .principle h2 em {
+    color: var(--orange-500);
+    font-style: normal;
+  }
+  .principle .rule {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 12px;
+  }
+  .principle .txt {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--bone-400);
+  }
+  .principle .txt strong { color: var(--paper-100); font-weight: 600; }
+  .principle ul {
+    margin-top: 10px;
+    padding-left: 18px;
+    color: var(--bone-400);
+    line-height: 1.8;
+    font-size: 13px;
+  }
+
+  /* ---------- PAIRING CARD ---------- */
+  .pair-card {
+    background: var(--paper-100);
+    border: 1px solid var(--bone-400);
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .pair-head {
+    padding: 28px 36px 22px;
+    border-bottom: 1px solid var(--bone-400);
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    align-items: baseline;
+    gap: 24px;
+  }
+  .pair-head .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 40px;
+    font-weight: 500;
+    color: var(--orange-500);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .pair-head h2 {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .pair-head .stack-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--graphite-600);
+  }
+  .pair-head .stack-line .sep { color: var(--bone-400); margin: 0 4px; }
+  .pair-head .character {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--graphite-600);
+    text-align: right;
+    align-self: end;
+    padding-bottom: 4px;
+  }
+
+  /* Main body area of the card */
+  .pair-body {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 0;
+  }
+  .pair-scale {
+    padding: 32px 36px;
+    border-right: 1px solid var(--bone-400);
+  }
+  .pair-phone-col {
+    padding: 32px 36px;
+    background: var(--paper-200);
+  }
+
+  /* Scale items */
+  .scale-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    align-items: baseline;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--bone-300);
+  }
+  .scale-item:last-child { border-bottom: none; }
+  .scale-item .spec {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--graphite-500);
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+  .scale-item .spec .px { color: var(--graphite-700); }
+  .scale-sample { color: var(--ink-900); }
+
+  .sample-display { font-size: 40px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.05; }
+  .sample-title { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+  .sample-heading { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+  .sample-subheading { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.35; }
+  .sample-body { font-size: 15px; font-weight: 400; letter-spacing: 0; line-height: 1.55; color: var(--graphite-700); }
+  .sample-caption { font-size: 13px; font-weight: 400; letter-spacing: 0; line-height: 1.5; color: var(--graphite-600); }
+  .sample-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--graphite-600); }
+  .sample-micro { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--graphite-500); }
+
+  /* Bilingual row */
+  .bilingual-row {
+    margin-top: 24px;
+    padding: 20px;
+    background: var(--paper-50);
+    border: 1px solid var(--bone-300);
+  }
+  .bilingual-row .row-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 12px;
+  }
+  .bilingual-row .kr {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .bilingual-row .en {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+    color: var(--graphite-700);
+  }
+
+  /* Phone mockup */
+  .phone {
+    aspect-ratio: 9 / 17.5;
+    border: 1px solid var(--bone-400);
+    background: var(--paper-50);
+    padding: 22px 16px 28px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 48px; height: 4px;
+    background: var(--bone-400);
+    border-radius: 2px;
+  }
+  .phone .status-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--graphite-600);
+    text-transform: uppercase;
+    padding-top: 8px;
+  }
+  .phone h3 {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+  .phone .sub {
+    font-size: 10px;
+    color: var(--graphite-600);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: -4px;
+  }
+  .phone .body-para {
+    font-size: 13px;
+    color: var(--graphite-700);
+    line-height: 1.55;
+  }
+  .slot-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    margin-top: 4px;
+  }
+  .slot {
+    aspect-ratio: 1;
+    border: 1px solid var(--bone-400);
+    background: var(--paper-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--graphite-600);
+    position: relative;
+  }
+  .slot.filled { background: var(--paper-200); color: var(--ink-900); }
+  .slot.filled.me::after {
+    content: '';
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--orange-500);
+  }
+  .slot.empty { color: var(--graphite-500); border-style: dashed; background: transparent; }
+
+  .post-card {
+    border: 1px solid var(--bone-400);
+    background: var(--paper-50);
+    margin-top: auto;
+  }
+  .post-card .image {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, var(--orange-100) 0%, var(--paper-200) 100%);
+    position: relative;
+  }
+  .post-card .image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.3), transparent 50%);
+  }
+  .post-card .meta {
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--graphite-600);
+    letter-spacing: 0.05em;
+    border-top: 1px solid var(--bone-300);
+  }
+  .post-card .stamps {
+    padding: 7px 10px 9px;
+    display: flex;
+    gap: 6px;
+    border-top: 1px solid var(--bone-300);
+    align-items: center;
+  }
+  .stamp {
+    width: 18px; height: 18px;
+    border: 1px solid var(--bone-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: var(--graphite-500);
+    background: var(--paper-100);
+  }
+  .stamp.on { background: var(--orange-100); border-color: var(--orange-500); color: var(--orange-500); }
+  .stamp-count {
+    font-size: 8px;
+    color: var(--graphite-500);
+    margin-left: auto;
+    letter-spacing: 0.05em;
+  }
+  .btn-primary {
+    background: var(--orange-500);
+    color: var(--paper-50);
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btn-primary .key {
+    font-size: 9px;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+  }
+
+  /* Notes at the bottom of each card */
+  .pair-notes {
+    padding: 20px 36px 28px;
+    border-top: 1px solid var(--bone-400);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    background: var(--paper-100);
+    font-family: 'Pretendard Variable', 'Inter', sans-serif;
+  }
+  .pair-notes .block .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 8px;
+  }
+  .pair-notes .block p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--graphite-700);
+  }
+  .pair-notes .block p strong { color: var(--ink-900); font-weight: 600; }
+
+  /* ---------- COMPARE ---------- */
+  .compare-section {
+    margin-top: 48px;
+    padding: 36px;
+    background: var(--paper-100);
+    border: 1px solid var(--bone-400);
+    font-family: 'Pretendard Variable', 'Inter', sans-serif;
+  }
+  .compare-section h2 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .compare-section .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-500);
+    margin-bottom: 24px;
+  }
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.compare th, table.compare td {
+    border-bottom: 1px solid var(--bone-400);
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.compare th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--graphite-600);
+    font-weight: 500;
+    background: var(--paper-200);
+  }
+  table.compare td strong { font-weight: 600; color: var(--ink-900); }
+
+  /* GUIDE */
+  .guide {
+    margin-top: 36px;
+    padding: 28px 36px;
+    background: var(--ink-900);
+    color: var(--paper-100);
+    font-family: 'Pretendard Variable', 'Inter', sans-serif;
+  }
+  .guide h3 {
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    color: var(--orange-500);
+  }
+  .guide p { font-size: 14px; line-height: 1.75; color: var(--bone-400); }
+  .guide p strong { color: var(--paper-100); font-weight: 600; }
+
+  @media (max-width: 980px) {
+    header.intro { grid-template-columns: 1fr; }
+    .principle { grid-template-columns: 1fr; }
+    .pair-head { grid-template-columns: 80px 1fr; }
+    .pair-head .character { grid-column: 1 / -1; text-align: left; margin-top: 8px; }
+    .pair-body { grid-template-columns: 1fr; }
+    .pair-scale { border-right: none; border-bottom: 1px solid var(--bone-400); }
+    .pair-notes { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="intro">
+    <div>
+      <div class="meta">STEP 1-C · TYPOGRAPHY REVIEW</div>
+      <h1>3가지 폰트 조합,<br>Marine 팔레트 위에서.</h1>
+      <p class="subtitle"><span class="pill">CONTEXT</span>본문용 한글+영문 산세리프 한 쌍, 라벨/메타용 모노스페이스 한 벌로 구성했습니다. 같은 타입 스케일로 세 조합을 보시고 폰트의 개성 차이에 집중해주세요.</p>
+    </div>
+    <div class="right-col">
+      <div class="row"><span class="label">Palette</span><span>05-B Marine (fixed)</span></div>
+      <div class="row"><span class="label">Korean</span><span>Pretendard Variable (공통)</span></div>
+      <div class="row"><span class="label">English</span><span>3 options (Inter / Space Grotesk / Manrope)</span></div>
+      <div class="row"><span class="label">Mono</span><span>3 options (JetBrains / IBM Plex / Space)</span></div>
+      <div class="row"><span class="label">Date</span><span>2026.04.21</span></div>
+    </div>
+  </header>
+
+  <!-- PRINCIPLE -->
+  <section class="principle">
+    <div>
+      <div class="rule">WHY TYPE MATTERS HERE</div>
+      <h2>이 앱에서 폰트는<br><em>제품의 몸체</em>를 이룹니다.</h2>
+    </div>
+    <div>
+      <div class="rule">THREE ROLES</div>
+      <div class="txt">
+        TE/Rams 감성을 모바일로 옮길 때 타이포의 역할은 크게 세 가지입니다.
+        <ul>
+          <li><strong>한글 본문 (Pretendard)</strong>: 감정을 담는 몸. 세 시안 모두 공통입니다. 한국어 앱에서 가장 검증된 선택이고 영문 폰트와 궁합이 좋습니다.</li>
+          <li><strong>영문 산세리프</strong>: 로고, 영문 제목, 숫자의 인상을 결정합니다. 한글보다 조금 더 강한 성격을 넣어도 됩니다.</li>
+          <li><strong>모노스페이스</strong>: "기기 라벨" 역할. ROOM·04, 16:22 같은 메타 정보가 여기에 들어갑니다. 이 선택이 TE스러움의 핵심입니다.</li>
+        </ul>
+        세 조합 모두 <strong>같은 타입 스케일</strong>을 써서 크기/웨이트 차이 없이 순수 폰트 성격만 비교할 수 있게 했습니다.
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PAIRING A ========== -->
+  <section class="pair-card">
+    <div class="pair-head">
+      <div class="num">A</div>
+      <div>
+        <h2 class="pair-a-body">Classic Grotesk</h2>
+        <div class="stack-line">Pretendard <span class="sep">/</span> Inter <span class="sep">/</span> JetBrains Mono</div>
+      </div>
+      <div class="character">Safest · Apple-adjacent</div>
+    </div>
+
+    <div class="pair-body">
+      <div class="pair-scale pair-a-body">
+        <div class="scale-item">
+          <div class="spec">DISPLAY<br><span class="px">40 / 600</span></div>
+          <div class="scale-sample sample-display">오후의 기록</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">TITLE<br><span class="px">28 / 600</span></div>
+          <div class="scale-sample sample-title">이 방에 9개의 새 포스트</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">HEADING<br><span class="px">20 / 600</span></div>
+          <div class="scale-sample sample-heading">이번 주 사진들</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">SUBHEAD<br><span class="px">17 / 500</span></div>
+          <div class="scale-sample sample-subheading">그린의 오후 산책</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">BODY<br><span class="px">15 / 400</span></div>
+          <div class="scale-sample sample-body">우리가 함께 본 장면들은 여기에만 남습니다. 다른 곳으로 새지 않고, 방을 나가면 잔잔히 잠겨요.</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">CAPTION<br><span class="px">13 / 400</span></div>
+          <div class="scale-sample sample-caption">4월 21일 화요일 · 그린이 추가함</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">LABEL<br><span class="px">11 / 500 · MONO</span></div>
+          <div class="scale-sample sample-label pair-a-mono">ROOM·04 / 12 POSTS / MAX 8</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">MICRO<br><span class="px">10 / 500 · MONO</span></div>
+          <div class="scale-sample sample-micro pair-a-mono">#0024 · 04.21 · 16:22</div>
+        </div>
+
+        <div class="bilingual-row">
+          <div class="row-label pair-a-mono">BILINGUAL BALANCE · H2</div>
+          <div class="kr pair-a-body">오늘의 조용한 순간</div>
+          <div class="en pair-a-body">Today's Quiet Moments</div>
+        </div>
+      </div>
+
+      <div class="pair-phone-col">
+        <div class="phone pair-a-body">
+          <div class="status-row pair-a-mono"><span>9:41</span><span>ROOM·04</span></div>
+          <h3>오후의 기록</h3>
+          <div class="sub pair-a-mono">5/8 ACTIVE · 12 POSTS</div>
+          <p class="body-para">이번 주에 <strong>9개의 새 포스트</strong>가 조용히 쌓였어요.</p>
+          <div class="slot-grid">
+            <div class="slot filled me pair-a-mono">G</div>
+            <div class="slot filled pair-a-mono">J</div>
+            <div class="slot filled pair-a-mono">M</div>
+            <div class="slot filled pair-a-mono">S</div>
+            <div class="slot filled pair-a-mono">Y</div>
+            <div class="slot empty pair-a-mono">+</div>
+            <div class="slot empty pair-a-mono">+</div>
+            <div class="slot empty pair-a-mono">+</div>
+          </div>
+          <div class="post-card">
+            <div class="image"></div>
+            <div class="meta pair-a-mono"><span>#0024 · 04.21</span><span>BY 그린</span></div>
+            <div class="stamps">
+              <div class="stamp on">●</div>
+              <div class="stamp">▲</div>
+              <div class="stamp on">★</div>
+              <div class="stamp">◆</div>
+              <span class="stamp-count pair-a-mono">2/4</span>
+            </div>
+          </div>
+          <button class="btn-primary pair-a-body">새 포스트 <span class="key pair-a-mono">POST ↵</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pair-notes">
+      <div class="block">
+        <div class="label">성격</div>
+        <p>Inter는 <strong>가장 검증된 모던 산세리프</strong>. 눈에 띄지 않고 조용히 일을 잘합니다. Pretendard와 x-높이(소문자 높이)가 거의 같아 한/영 섞여도 눈이 안 튑니다. JetBrains Mono는 모노 중에서도 가장 범용적이고 가독성이 높습니다.</p>
+      </div>
+      <div class="block">
+        <div class="label">장단점</div>
+        <p>장점: 가장 안전, 가장 장수, iOS 네이티브처럼 느껴집니다. 단점: <strong>개성이 약함</strong>. 이 앱만의 시그니처 타이포는 아니고, 어디서든 본 적 있는 조합으로 읽힐 수 있습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PAIRING B ========== -->
+  <section class="pair-card">
+    <div class="pair-head">
+      <div class="num">B</div>
+      <div>
+        <h2 class="pair-b-body">Editorial Swiss</h2>
+        <div class="stack-line">Pretendard <span class="sep">/</span> Space Grotesk <span class="sep">/</span> IBM Plex Mono</div>
+      </div>
+      <div class="character">Refined · Studio feel</div>
+    </div>
+
+    <div class="pair-body">
+      <div class="pair-scale pair-b-body">
+        <div class="scale-item">
+          <div class="spec">DISPLAY<br><span class="px">40 / 600</span></div>
+          <div class="scale-sample sample-display">오후의 기록</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">TITLE<br><span class="px">28 / 600</span></div>
+          <div class="scale-sample sample-title">이 방에 9개의 새 포스트</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">HEADING<br><span class="px">20 / 600</span></div>
+          <div class="scale-sample sample-heading">이번 주 사진들</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">SUBHEAD<br><span class="px">17 / 500</span></div>
+          <div class="scale-sample sample-subheading">그린의 오후 산책</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">BODY<br><span class="px">15 / 400</span></div>
+          <div class="scale-sample sample-body">우리가 함께 본 장면들은 여기에만 남습니다. 다른 곳으로 새지 않고, 방을 나가면 잔잔히 잠겨요.</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">CAPTION<br><span class="px">13 / 400</span></div>
+          <div class="scale-sample sample-caption">4월 21일 화요일 · 그린이 추가함</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">LABEL<br><span class="px">11 / 500 · MONO</span></div>
+          <div class="scale-sample sample-label pair-b-mono">ROOM·04 / 12 POSTS / MAX 8</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">MICRO<br><span class="px">10 / 500 · MONO</span></div>
+          <div class="scale-sample sample-micro pair-b-mono">#0024 · 04.21 · 16:22</div>
+        </div>
+
+        <div class="bilingual-row">
+          <div class="row-label pair-b-mono">BILINGUAL BALANCE · H2</div>
+          <div class="kr pair-b-body">오늘의 조용한 순간</div>
+          <div class="en pair-b-body">Today's Quiet Moments</div>
+        </div>
+      </div>
+
+      <div class="pair-phone-col">
+        <div class="phone pair-b-body">
+          <div class="status-row pair-b-mono"><span>9:41</span><span>ROOM·04</span></div>
+          <h3>오후의 기록</h3>
+          <div class="sub pair-b-mono">5/8 ACTIVE · 12 POSTS</div>
+          <p class="body-para">이번 주에 <strong>9개의 새 포스트</strong>가 조용히 쌓였어요.</p>
+          <div class="slot-grid">
+            <div class="slot filled me pair-b-mono">G</div>
+            <div class="slot filled pair-b-mono">J</div>
+            <div class="slot filled pair-b-mono">M</div>
+            <div class="slot filled pair-b-mono">S</div>
+            <div class="slot filled pair-b-mono">Y</div>
+            <div class="slot empty pair-b-mono">+</div>
+            <div class="slot empty pair-b-mono">+</div>
+            <div class="slot empty pair-b-mono">+</div>
+          </div>
+          <div class="post-card">
+            <div class="image"></div>
+            <div class="meta pair-b-mono"><span>#0024 · 04.21</span><span>BY 그린</span></div>
+            <div class="stamps">
+              <div class="stamp on">●</div>
+              <div class="stamp">▲</div>
+              <div class="stamp on">★</div>
+              <div class="stamp">◆</div>
+              <span class="stamp-count pair-b-mono">2/4</span>
+            </div>
+          </div>
+          <button class="btn-primary pair-b-body">새 포스트 <span class="key pair-b-mono">POST ↵</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pair-notes">
+      <div class="block">
+        <div class="label">성격</div>
+        <p>Space Grotesk는 <strong>현대판 Swiss 스타일</strong>. Inter보다 글자 속 공간(구멍)이 더 크고 둥글어서 살짝의 개성과 여유가 있습니다. IBM Plex Mono는 진짜 사무실 기계 느낌의 엔지니어링 모노. 숫자와 알파벳이 또렷하게 각져서 <strong>기기 라벨</strong>처럼 읽힙니다.</p>
+      </div>
+      <div class="block">
+        <div class="label">장단점</div>
+        <p>장점: <strong>에디토리얼 스튜디오 감성</strong>. 디자인 스튜디오나 아카이브 앱 같은 인상을 만듭니다. Marine의 네이비와 특히 잘 맞아요. 단점: Inter보다 익숙도가 낮아 일부 사용자에게 살짝 낯설 수 있습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PAIRING C ========== -->
+  <section class="pair-card">
+    <div class="pair-head">
+      <div class="num">C</div>
+      <div>
+        <h2 class="pair-c-body">Technical Retro</h2>
+        <div class="stack-line">Pretendard <span class="sep">/</span> Manrope <span class="sep">/</span> Space Mono</div>
+      </div>
+      <div class="character">Most TE · Signature</div>
+    </div>
+
+    <div class="pair-body">
+      <div class="pair-scale pair-c-body">
+        <div class="scale-item">
+          <div class="spec">DISPLAY<br><span class="px">40 / 600</span></div>
+          <div class="scale-sample sample-display">오후의 기록</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">TITLE<br><span class="px">28 / 600</span></div>
+          <div class="scale-sample sample-title">이 방에 9개의 새 포스트</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">HEADING<br><span class="px">20 / 600</span></div>
+          <div class="scale-sample sample-heading">이번 주 사진들</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">SUBHEAD<br><span class="px">17 / 500</span></div>
+          <div class="scale-sample sample-subheading">그린의 오후 산책</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">BODY<br><span class="px">15 / 400</span></div>
+          <div class="scale-sample sample-body">우리가 함께 본 장면들은 여기에만 남습니다. 다른 곳으로 새지 않고, 방을 나가면 잔잔히 잠겨요.</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">CAPTION<br><span class="px">13 / 400</span></div>
+          <div class="scale-sample sample-caption">4월 21일 화요일 · 그린이 추가함</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">LABEL<br><span class="px">11 / 500 · MONO</span></div>
+          <div class="scale-sample sample-label pair-c-mono">ROOM·04 / 12 POSTS / MAX 8</div>
+        </div>
+        <div class="scale-item">
+          <div class="spec">MICRO<br><span class="px">10 / 500 · MONO</span></div>
+          <div class="scale-sample sample-micro pair-c-mono">#0024 · 04.21 · 16:22</div>
+        </div>
+
+        <div class="bilingual-row">
+          <div class="row-label pair-c-mono">BILINGUAL BALANCE · H2</div>
+          <div class="kr pair-c-body">오늘의 조용한 순간</div>
+          <div class="en pair-c-body">Today's Quiet Moments</div>
+        </div>
+      </div>
+
+      <div class="pair-phone-col">
+        <div class="phone pair-c-body">
+          <div class="status-row pair-c-mono"><span>9:41</span><span>ROOM·04</span></div>
+          <h3>오후의 기록</h3>
+          <div class="sub pair-c-mono">5/8 ACTIVE · 12 POSTS</div>
+          <p class="body-para">이번 주에 <strong>9개의 새 포스트</strong>가 조용히 쌓였어요.</p>
+          <div class="slot-grid">
+            <div class="slot filled me pair-c-mono">G</div>
+            <div class="slot filled pair-c-mono">J</div>
+            <div class="slot filled pair-c-mono">M</div>
+            <div class="slot filled pair-c-mono">S</div>
+            <div class="slot filled pair-c-mono">Y</div>
+            <div class="slot empty pair-c-mono">+</div>
+            <div class="slot empty pair-c-mono">+</div>
+            <div class="slot empty pair-c-mono">+</div>
+          </div>
+          <div class="post-card">
+            <div class="image"></div>
+            <div class="meta pair-c-mono"><span>#0024 · 04.21</span><span>BY 그린</span></div>
+            <div class="stamps">
+              <div class="stamp on">●</div>
+              <div class="stamp">▲</div>
+              <div class="stamp on">★</div>
+              <div class="stamp">◆</div>
+              <span class="stamp-count pair-c-mono">2/4</span>
+            </div>
+          </div>
+          <button class="btn-primary pair-c-body">새 포스트 <span class="key pair-c-mono">POST ↵</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pair-notes">
+      <div class="block">
+        <div class="label">성격</div>
+        <p>Manrope는 <strong>더 유기적이고 따뜻한 산세리프</strong>. 글자 끝이 미세하게 둥글어서 친근감이 있습니다. Space Mono는 결정적인 포인트입니다. 약간 슬래브 같은 디테일에 타자기 감성이 살짝 들어가서 <strong>가장 레트로하고 가장 TE스러운</strong> 인상을 냅니다. 숫자가 특히 예뻐요.</p>
+      </div>
+      <div class="block">
+        <div class="label">장단점</div>
+        <p>장점: 이 앱만의 <strong>시그니처 타이포</strong>가 됩니다. 앱을 켜자마자 "아 이 앱이다"라고 인지될 정도의 개성. 단점: 모노 폰트가 가장 튀어서 규율 없이 쓰면 <strong>가독성이 떨어지거나 키치해</strong> 보일 수 있습니다. 긴 숫자 나열은 피해야 합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section class="compare-section">
+    <div class="meta">QUICK COMPARE</div>
+    <h2>세 조합을 한 표로</h2>
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>A Classic Grotesk</th>
+          <th>B Editorial Swiss</th>
+          <th>C Technical Retro</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>영문 산세리프</strong></td>
+          <td>Inter</td>
+          <td>Space Grotesk</td>
+          <td>Manrope</td>
+        </tr>
+        <tr>
+          <td><strong>모노스페이스</strong></td>
+          <td>JetBrains Mono</td>
+          <td>IBM Plex Mono</td>
+          <td>Space Mono</td>
+        </tr>
+        <tr>
+          <td><strong>개성</strong></td>
+          <td>낮음 (중립적)</td>
+          <td>중간 (스튜디오 톤)</td>
+          <td>강함 (레트로)</td>
+        </tr>
+        <tr>
+          <td><strong>레트로감</strong></td>
+          <td>낮음</td>
+          <td>중간</td>
+          <td>높음</td>
+        </tr>
+        <tr>
+          <td><strong>가독성</strong></td>
+          <td>가장 높음</td>
+          <td>높음</td>
+          <td>중상 (모노는 주의)</td>
+        </tr>
+        <tr>
+          <td><strong>한/영 궁합</strong></td>
+          <td>가장 매끄러움</td>
+          <td>매끄러움</td>
+          <td>좋음 (Manrope의 여유)</td>
+        </tr>
+        <tr>
+          <td><strong>TE/Rams 적합도</strong></td>
+          <td>보통</td>
+          <td>높음</td>
+          <td>가장 높음</td>
+        </tr>
+        <tr>
+          <td><strong>위험 요소</strong></td>
+          <td>개성 부족</td>
+          <td>살짝 낯섦</td>
+          <td>규율 없으면 키치</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- GUIDE -->
+  <div class="guide">
+    <h3>체감 포인트 · 제 추천</h3>
+    <p>세 시안 모두 똑같은 크기/웨이트/레이아웃입니다. 다른 건 오로지 폰트 성격입니다. 특히 <strong>모노스페이스가 박힌 라벨(ROOM·04, #0024)</strong>과 <strong>상단 제목(오후의 기록)</strong>을 집중해서 비교해보세요. 앱의 첫인상을 결정하는 두 지점입니다.</p>
+    <p style="margin-top: 14px;">제 추천은 <strong>B Editorial Swiss</strong>입니다. A는 너무 평범하고 C는 Space Mono의 개성이 강해서 앱이 "폰트 장난감"으로 보일 위험이 있습니다. B는 Space Grotesk의 살짝의 개성 + IBM Plex Mono의 엔지니어링 감각이 Marine의 네이비와 가장 잘 어울리고, 앞으로 3~5년 써도 유행 타지 않을 조합입니다. 다만 C의 Space Mono만 라벨 일부에 섞어쓰는 하이브리드도 가능합니다(메인은 B, 특별 라벨만 C).</p>
+  </div>
+
+</div>
+</body>
+</html>

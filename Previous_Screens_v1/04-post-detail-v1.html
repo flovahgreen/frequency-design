@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>FREQUENCY · Post Detail · v1</title>
+<link rel="stylesheet" href="../shared/mobile.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --signal-green-400: #26FA85;
+    --signal-green-500: #00E066;
+    --te-orange-500: #F15A24;
+    --critical-red: #E5484D;
+    --amber-500: #F5A623;
+    --ink-1000: #0A0A0A;
+    --ink-900:  #1A1A1A;
+    --ink-800:  #242424;
+    --ink-700:  #2E2E2E;
+    --ink-600:  #3D3D3D;
+    --ink-500:  #5A5A5A;
+    --ink-400:  #7A7A7A;
+    --ink-300:  #A0A0A0;
+    --ink-200:  #C8C8C8;
+    --ink-100:  #E8E8E8;
+    --ink-50:   #F4F4F4;
+    --paper-bg:     #EDE6D7;
+    --paper-raised: #F4EEE0;
+    --paper-edge:   #CFC6B3;
+    --paper-muted:  #B6AE9B;
+    --paper-tick:   #8A8271;
+    --paper-text-mute: #6A6152;
+    --paper-ink:    #141211;
+    --signal-green-paper: #197A3E;
+    --signal-green-paper-glow: rgba(25, 122, 62, 0.40);
+
+    /* Member color tokens — Polaroid Film 팔레트 (Option B 확정 2026-04-23) */
+    --member-self: #197A3E;   /* YOU = Signal Green (고정) */
+    --member-1:    #E2B848;   /* KODAK · kodak gold */
+    --member-2:    #C04F3F;   /* VELVIA · velvia red */
+    --member-3:    #DB8A8A;   /* POLAROID · polaroid pink */
+    --member-4:    #5878A8;   /* EKTA · ektachrome blue */
+    --member-5:    #7FB298;   /* MINT · vintage mint */
+    --member-6:    #8E6B47;   /* SEPIA · sepia brown */
+    --member-7:    #A484B8;   /* LAVENDER · dusty lavender */
+    --member-8:    #C4673A;   /* BURNT · burnt orange */
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --radius-xs: 2px; --radius-sm: 4px; --radius-md: 6px;
+    --motion-fast: 150ms; --motion-base: 200ms;
+    --ease-mech: cubic-bezier(0.2, 0, 0, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--ink-800); color: var(--ink-50);
+    line-height: 1.5; padding: 40px 24px 96px; min-height: 100vh;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+
+  .page-head { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--ink-700); }
+  .page-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-400); margin-bottom: 8px;
+  }
+  .page-tag .accent { color: var(--signal-green-400); }
+  .page-title {
+    font-family: var(--font-sans); font-size: 24px; font-weight: 700;
+    letter-spacing: -0.02em; color: var(--ink-50); margin-bottom: 4px;
+  }
+  .page-sub { font-size: 13px; color: var(--ink-400); line-height: 1.6; }
+
+  .stage { display: flex; justify-content: center; padding: 16px 0 32px; }
+  .iphone {
+    width: 393px; aspect-ratio: 393 / 852;
+    background: var(--ink-1000); border-radius: 52px; padding: 11px;
+    box-shadow: 0 0 0 1px var(--ink-600), 0 32px 64px -20px rgba(0, 0, 0, 0.65);
+    position: relative;
+  }
+  .iphone-screen {
+    width: 100%; height: 100%;
+    background: var(--paper-bg); color: var(--paper-ink);
+    border-radius: 44px; overflow: hidden;
+    display: flex; flex-direction: column; position: relative;
+  }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 118px; height: 34px;
+    background: var(--ink-1000); border-radius: 999px; z-index: 10;
+  }
+  .status-bar {
+    height: 52px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px 0 24px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+    color: var(--paper-ink); position: relative; z-index: 5;
+  }
+  .status-right { display: flex; align-items: center; gap: 6px; }
+  .sr-ico.signal {
+    width: 17px; height: 11px; background: currentColor; opacity: 0.9;
+    clip-path: polygon(0 100%,4px 100%,4px 70%,0 70%,0 100%,5px 100%,9px 100%,9px 50%,5px 50%,5px 100%,10px 100%,14px 100%,14px 30%,10px 30%,10px 100%,15px 100%,19px 100%,19px 10%,15px 10%);
+  }
+  .sr-ico.battery {
+    width: 24px; height: 12px; background: transparent;
+    border: 1px solid currentColor; border-radius: 2px; position: relative; opacity: 0.9;
+  }
+  .sr-ico.battery::after { content:""; position: absolute; right:-3px; top:3px; width:2px; height:6px; background:currentColor; }
+  .sr-ico.battery::before { content:""; position: absolute; top:1px; left:1px; bottom:1px; width:80%; background: currentColor; border-radius:1px; }
+  .home-indicator {
+    position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+    width: 38%; height: 5px;
+    background: var(--paper-ink); border-radius: 999px; opacity: 0.4; z-index: 10;
+  }
+
+  .screen-content { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ---- Top bar ---- */
+  .top-bar {
+    flex-shrink: 0; padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--paper-edge);
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    background: transparent; border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    cursor: pointer; color: var(--paper-ink);
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--motion-fast) var(--ease-mech);
+    flex-shrink: 0;
+  }
+  .icon-btn:active { background: var(--paper-raised); }
+
+  .post-author {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 2px; min-width: 0; padding: 0 12px;
+  }
+  .post-author .name {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 0;
+    background: var(--paper-edge);
+    color: var(--paper-ink);
+  }
+  .post-author .meta {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.12em; color: var(--paper-text-mute); text-transform: uppercase;
+  }
+  .post-author .meta .sep { opacity: 0.4; margin: 0 5px; }
+
+  /* ---- Scroll body ---- */
+  .post-scroll {
+    flex: 1; min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .post-scroll::-webkit-scrollbar { display: none; }
+
+  /* ---- Photo (3:4 풀너비) ---- */
+  .photo-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: var(--paper-raised);
+    overflow: hidden;
+  }
+  .photo-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 25%, rgba(255,220,170,0.35), transparent 60%),
+      linear-gradient(135deg, #C9A878, #6E5535);
+  }
+  .photo-bg.video {
+    background:
+      radial-gradient(ellipse at 70% 30%, rgba(180,210,200,0.35), transparent 60%),
+      linear-gradient(135deg, #5A6B5C, #2E3A30);
+  }
+  /* Photo overlays */
+  .photo-frame-no {
+    position: absolute; top: 14px; left: 14px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em;
+    color: rgba(237, 230, 215, 0.9);
+    background: rgba(20, 18, 17, 0.5);
+    padding: 4px 8px; border-radius: 2px;
+    backdrop-filter: blur(4px);
+  }
+  .video-overlay {
+    position: absolute; inset: 0;
+    display: none;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .video-overlay.on { display: flex; }
+  .video-overlay .play-btn {
+    width: 56px; height: 56px;
+    border-radius: 999px;
+    background: rgba(237, 230, 215, 0.92);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform var(--motion-fast) var(--ease-mech);
+  }
+  .video-overlay:active .play-btn { transform: scale(0.94); }
+  .video-overlay .play-btn::after {
+    content: "";
+    width: 0; height: 0;
+    border-left: 14px solid var(--paper-ink);
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    margin-left: 4px;
+  }
+  .video-length {
+    position: absolute; bottom: 14px; right: 14px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em;
+    color: rgba(237, 230, 215, 0.95);
+    background: rgba(20, 18, 17, 0.55);
+    padding: 4px 8px; border-radius: 2px;
+    display: none; align-items: center; gap: 6px;
+  }
+  .video-length.on { display: flex; }
+  .video-length::before {
+    content: "";
+    width: 0; height: 0;
+    border-left: 6px solid currentColor;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+
+  /* ---- Stamps ---- */
+  .stamps-section {
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid var(--paper-edge);
+  }
+  .stamps-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stamp-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px;
+    background: var(--paper-raised);
+    border: 1.5px solid var(--paper-edge);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-mech),
+                border-color var(--motion-fast) var(--ease-mech),
+                transform var(--motion-base) var(--ease-bounce);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .stamp-btn .emo {
+    font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+    font-size: 15px; line-height: 1;
+  }
+  .stamp-btn .cnt {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--paper-text-mute); letter-spacing: 0.04em;
+    min-width: 6px;
+  }
+  .stamp-btn:hover { border-color: var(--paper-muted); }
+  .stamp-btn.active {
+    background: var(--paper-ink);
+    border-color: var(--paper-ink);
+    transform: translateY(-1px);
+  }
+  .stamp-btn.active .cnt { color: var(--paper-bg); }
+  .stamp-btn.active::after {
+    content: "";
+    position: absolute;
+  }
+  /* 본인 찍은 스탬프: 외곽 그린 ring */
+  .stamp-btn.self {
+    border-color: var(--signal-green-paper);
+    box-shadow: 0 0 0 1px rgba(25, 122, 62, 0.18);
+  }
+  .stamp-btn.self.active {
+    background: var(--paper-ink);
+    border-color: var(--signal-green-paper);
+    box-shadow: 0 0 0 2px rgba(25, 122, 62, 0.25);
+  }
+
+  /* ---- Comments ---- */
+  .comments-section {
+    padding: 12px 18px 14px;
+  }
+  .comments-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .comments-head .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+  .comments-head .lbl .cnt {
+    color: var(--paper-ink); margin-left: 4px;
+  }
+  .comments-list {
+    display: flex; flex-direction: column;
+    gap: 0;
+  }
+  .comment {
+    padding: 8px 0;
+    border-top: 1px solid var(--paper-edge);
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .comment:first-child { border-top: 0; padding-top: 4px; }
+  .comment .who {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--paper-ink);
+    background: var(--paper-edge);
+    padding: 2px 7px;
+    border-radius: 0;
+    flex-shrink: 0;
+  }
+
+  /* ---- Member color chips (이름 배경) ---- */
+  .who[data-member="YOU"], .name[data-member="YOU"] {
+    background: var(--member-self); color: var(--paper-bg);
+  }
+  .who[data-member="HANI"], .name[data-member="HANI"] {
+    background: var(--member-1); color: var(--paper-bg);
+  }
+  .who[data-member="JIN"], .name[data-member="JIN"] {
+    background: var(--member-2); color: var(--paper-bg);
+  }
+  .who[data-member="MIN"], .name[data-member="MIN"] {
+    background: var(--member-3); color: var(--paper-bg);
+  }
+  .who[data-member="SOO"], .name[data-member="SOO"] {
+    background: var(--member-4); color: var(--paper-bg);
+  }
+  .who[data-member="YUN"], .name[data-member="YUN"] {
+    background: var(--member-5); color: var(--paper-bg);
+  }
+  .who[data-member="BIN"], .name[data-member="BIN"] {
+    background: var(--member-6); color: var(--paper-bg);
+  }
+  .who[data-member="HAE"], .name[data-member="HAE"] {
+    background: var(--member-7); color: var(--paper-bg);
+  }
+  .who[data-member="KAY"], .name[data-member="KAY"] {
+    background: var(--member-8); color: var(--paper-bg);
+  }
+  .comment .body {
+    flex: 1; min-width: 0;
+    font-size: 13px; color: var(--paper-ink);
+    line-height: 1.4;
+    word-wrap: break-word;
+  }
+  .comment .when {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.06em; color: var(--paper-text-mute);
+    flex-shrink: 0; font-weight: 600;
+  }
+  .comments-empty {
+    padding: 14px 0;
+    text-align: center;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-muted);
+  }
+
+  /* ---- Comment input (fixed bottom) ---- */
+  .comment-input-wrap {
+    flex-shrink: 0;
+    padding: 10px 18px 12px;
+    border-top: 1px solid var(--paper-edge);
+    background: var(--paper-bg);
+    display: flex; align-items: center; gap: 8px;
+  }
+  /* contenteditable comment input — 레트로 굵은 오렌지 ▌ 커서 */
+  .comment-input {
+    flex: 1;
+    background: var(--paper-raised);
+    border: 1.5px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--paper-ink);
+    outline: none;
+    transition: border-color var(--motion-fast) var(--ease-mech);
+    line-height: 1.3;
+    min-height: 38px;
+    word-break: break-all;
+    caret-color: transparent;  /* native caret 숨김 → 가짜 굵은 caret 사용 */
+    -webkit-user-modify: read-write-plaintext-only;
+  }
+  .comment-input:focus { border-color: var(--paper-ink); }
+  /* placeholder (empty + not focus) */
+  .comment-input:empty:not(:focus)::before {
+    content: attr(data-placeholder);
+    color: var(--paper-muted);
+    font-family: var(--font-sans);
+    pointer-events: none;
+  }
+  /* 가짜 레트로 ▌ 커서 — focus 시 텍스트 끝에 inline 표시 + 깜빡임 */
+  .comment-input:focus::after {
+    content: "▌";
+    display: inline-block;
+    color: var(--te-orange-500);
+    font-family: var(--font-mono);
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 1;
+    margin-left: 1px;
+    vertical-align: -2px;
+    animation: caretBlink 0.6s step-end infinite;
+    text-shadow: 0 0 4px rgba(241, 90, 36, 0.35);
+  }
+  @keyframes caretBlink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  .input-counter {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--paper-text-mute);
+    flex-shrink: 0;
+    min-width: 36px; text-align: right;
+    transition: color var(--motion-fast) var(--ease-mech);
+  }
+  .input-counter.warn { color: var(--amber-500); }
+  .input-counter.over { color: var(--critical-red); }
+  .input-send {
+    width: 36px; height: 36px;
+    background: var(--paper-edge);
+    border: 0;
+    border-radius: var(--radius-sm);
+    cursor: not-allowed;
+    color: var(--paper-text-mute);
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--motion-fast) var(--ease-mech),
+                color var(--motion-fast) var(--ease-mech);
+    flex-shrink: 0;
+  }
+  .input-send.ready {
+    background: var(--te-orange-500);
+    color: var(--paper-bg);
+    cursor: pointer;
+  }
+
+  /* ---- Self post · author info bar (본인 글일 때 입력 대신) ---- */
+  .self-meta {
+    flex-shrink: 0;
+    padding: 12px 18px;
+    border-top: 1px solid var(--paper-edge);
+    background: var(--paper-bg);
+    display: none; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper-text-mute); font-weight: 700;
+  }
+  .self-meta.on { display: flex; }
+  .self-meta .lbl .accent {
+    color: var(--signal-green-paper);
+    margin-right: 4px;
+  }
+  .self-meta .delete-btn {
+    color: var(--critical-red);
+    background: transparent; border: none;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: pointer;
+    padding: 4px 6px;
+  }
+
+  /* ---- Demo controls ---- */
+  .demo-controls {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 6px; z-index: 100;
+  }
+  .demo-row {
+    display: flex; gap: 4px;
+    padding: 8px;
+    background: var(--ink-700); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-sm);
+  }
+  .demo-row .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--ink-300); text-transform: uppercase;
+    align-self: center; padding: 0 8px;
+  }
+  .demo-btn {
+    padding: 8px 12px;
+    background: var(--ink-800); border: 1px solid var(--ink-600);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--ink-200); cursor: pointer; min-width: 28px;
+    transition: background var(--motion-fast) var(--ease-mech);
+  }
+  .demo-btn:hover { background: var(--ink-600); }
+  .demo-btn.active {
+    background: var(--signal-green-400);
+    color: var(--ink-1000);
+    border-color: var(--signal-green-400);
+  }
+
+  /* ---- Notes ---- */
+  .notes {
+    max-width: 560px; margin: 40px auto 0;
+    padding: 24px; background: var(--ink-900);
+    border: 1px solid var(--ink-700); border-radius: var(--radius-md);
+  }
+  .notes-title {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; color: var(--ink-400);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .notes-row {
+    display: flex; gap: 12px; padding: 7px 0;
+    font-size: 13px; line-height: 1.55; color: var(--ink-300);
+  }
+  .notes-row + .notes-row { border-top: 1px solid var(--ink-800); }
+  .notes-icon {
+    width: 16px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--signal-green-400); text-align: center;
+  }
+  .notes-icon.orange { color: var(--te-orange-500); }
+  .notes-icon.amber  { color: var(--amber-500); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · POST DETAIL · V1</div>
+    <h1 class="page-title">단일 포스트 + 6 스탬프 + 댓글 40자</h1>
+    <p class="page-sub">3:4 풀너비 사진/영상. 6개 이모지 스탬프 (♥ 🔥 😂 ★ 👀 ?), 본인이 찍은 건 그린 ring + 잉크 채워짐. 댓글 40자 제한, 카운터가 30자 넘으면 amber, 40자 도달하면 red. 본인 글에는 입력창 대신 self-meta(작성자 + 삭제) 표시. 우하단 데모로 PHOTO/VIDEO + OTHER/SELF 토글 가능.</p>
+  </div>
+
+  <div class="stage">
+    <div class="iphone">
+      <div class="dynamic-island"></div>
+      <div class="iphone-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <span class="sr-ico signal"></span>
+            <span class="sr-ico battery"></span>
+          </div>
+        </div>
+
+        <div class="screen-content">
+
+          <!-- Top bar -->
+          <div class="top-bar">
+            <button class="icon-btn" aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="post-author">
+              <span class="name" id="authorName" data-member="HANI">HANI</span>
+              <span class="meta">
+                #018 <span class="sep">·</span> 12분 전 <span class="sep">·</span> CH 107.4
+              </span>
+            </div>
+            <button class="icon-btn" aria-label="Menu">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+            </button>
+          </div>
+
+          <!-- Scrollable body -->
+          <div class="post-scroll">
+
+            <!-- Photo / Video -->
+            <div class="photo-wrap">
+              <div class="photo-bg" id="photoBg"></div>
+              <div class="photo-frame-no">#018</div>
+              <div class="video-overlay" id="videoOverlay">
+                <div class="play-btn"></div>
+              </div>
+              <div class="video-length" id="videoLength">0:04</div>
+            </div>
+
+            <!-- Stamps -->
+            <div class="stamps-section">
+              <div class="stamps-row" id="stampsRow"></div>
+            </div>
+
+            <!-- Comments -->
+            <div class="comments-section">
+              <div class="comments-head">
+                <span class="lbl">COMMENTS<span class="cnt" id="commentCount">4</span></span>
+              </div>
+              <div class="comments-list" id="commentsList">
+                <div class="comment">
+                  <span class="who" data-member="JIN">JIN</span>
+                  <span class="body">여기 어디야? 분위기 진짜 좋다</span>
+                  <span class="when">5'</span>
+                </div>
+                <div class="comment">
+                  <span class="who" data-member="MIN">MIN</span>
+                  <span class="body">와 컬러 미쳤다</span>
+                  <span class="when">3'</span>
+                </div>
+                <div class="comment">
+                  <span class="who" data-member="SOO">SOO</span>
+                  <span class="body">나도 거기 가보고싶어</span>
+                  <span class="when">2'</span>
+                </div>
+                <div class="comment">
+                  <span class="who" data-member="YOU">YOU</span>
+                  <span class="body">고마워 ㅋㅋ 다음에 같이 가자</span>
+                  <span class="when">1'</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Comment input (다른 사람 글일 때) -->
+          <div class="comment-input-wrap" id="inputWrap">
+            <div class="comment-input" id="commentInput" contenteditable="true" data-placeholder="40자 이내로 한마디" spellcheck="false"></div>
+            <span class="input-counter" id="inputCounter">0/40</span>
+            <button class="input-send" id="inputSend" aria-label="Send">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+
+          <!-- Self-meta bar (본인 글일 때) -->
+          <div class="self-meta" id="selfMeta">
+            <span class="lbl"><span class="accent">YOU</span>의 송출 · 댓글 작성 불가</span>
+            <button class="delete-btn">DELETE</button>
+          </div>
+
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="notes-title">POST DETAIL V1 · STAMPS + 40-CHAR COMMENTS</div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>3:4 풀너비 사진/영상 (393x524). 좌상단 frame number(#018) 잉크 박스, 영상이면 가운데 재생 버튼 + 우하단 길이 표시(▶ 0:04). 사진은 페이퍼 위 큰 인쇄물 느낌으로 edge-to-edge.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>스탬프 5개: ♥(좋아요) 🔥(강추) 😂(웃김) 💪(잘했다/멋짐) 👀(주목). pill 형태에 이모지 + 카운트. 누르면 본인 찍힘 = 잉크 채워짐 + 살짝 위로 bounce settle. 본인 찍은 스탬프는 외곽 Signal Green ring 으로 식별. (충격 😱 은 표현 과해서 제외)</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>멤버 컬러 시스템: 9개 고정 컬러 토큰 (--member-self ~ --member-8). 닉네임 칩은 코너 라운드 0px (레트로 잉크 도장 톤) + 멤버 컬러 배경 + paper-bg 텍스트. "누가 누구인지" 시각적 즉시 식별. 본인 YOU = signal green / HANI = 황톤 / JIN = 모스 / MIN = 토프 / SOO = 슬레이트 등.</span></div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>레트로 굵은 ▌ 커서: input 을 contenteditable 로 교체, native caret-color: transparent 로 숨김. ::after 로 ▌ (block character) 표시 + TE Orange + 텍스트 그림자 + 0.6s step-end blink. 80년대 터미널 / iPod Nano 톤. 입력은 모노 폰트로 "기기 입력" 느낌 강화.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>댓글: 모노 이름(좌) + sans 본문(가운데 flex) + 모노 시간(우). 본인(YOU) 댓글은 그린 라벨. 댓글 사이 1px paper-edge 구분선, 시간순 (오래된 것 위).</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>입력 40자 제한: input maxlength=40. 카운터 색 변화 — 0~29: muted / 30~39: amber / 40+: red. send 버튼은 글자 1자 이상이면 paper-edge → TE Orange 활성. 채팅 아닌 익명 한 줄 반응.</span></div>
+    <div class="notes-row"><span class="notes-icon orange">·</span><span>작성자 분기: OTHER (다른 사람 포스트) → 입력창 표시 / SELF (본인 포스트) → 입력창 대신 self-meta 바 ("YOU의 송출 · 댓글 작성 불가" + DELETE 버튼). 자기 글에 자기 댓글 막아 노이즈 줄임.</span></div>
+    <div class="notes-row"><span class="notes-icon">+</span><span>스크롤 구조: 사진 + 스탬프 + 댓글 영역만 세로 스크롤. 상단 X+이름+메뉴 바와 하단 입력바는 fixed. 댓글이 많아져도 입력창 항상 접근 가능.</span></div>
+    <div class="notes-row"><span class="notes-icon amber">·</span><span>다음 검토: (a) 스탬프 누를 때 햅틱 + 작은 +1 떠오름 모션, (b) 본인 댓글 길게 누르면 삭제 옵션, (c) 라운드 만료 시 댓글 입력 비활성, (d) 영상 자동 재생 vs 탭 후 재생 결정.</span></div>
+  </div>
+</div>
+
+<div class="demo-controls">
+  <div class="demo-row">
+    <span class="lbl">TYPE</span>
+    <button class="demo-btn active" data-type="photo">PHOTO</button>
+    <button class="demo-btn" data-type="video">VIDEO</button>
+  </div>
+  <div class="demo-row">
+    <span class="lbl">AUTHOR</span>
+    <button class="demo-btn active" data-author="other">OTHER</button>
+    <button class="demo-btn" data-author="self">SELF</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const STAMPS = [
+  { key: 'heart',  emo: '♥',  initialCount: 3, selfActive: true  },
+  { key: 'fire',   emo: '🔥', initialCount: 2, selfActive: false },
+  { key: 'lol',    emo: '😂', initialCount: 1, selfActive: false },
+  { key: 'muscle', emo: '💪', initialCount: 0, selfActive: false },
+  { key: 'eye',    emo: '👀', initialCount: 0, selfActive: false },
+];
+
+const stampsRow   = document.getElementById('stampsRow');
+const photoBg     = document.getElementById('photoBg');
+const videoOverlay= document.getElementById('videoOverlay');
+const videoLength = document.getElementById('videoLength');
+const inputWrap   = document.getElementById('inputWrap');
+const selfMeta    = document.getElementById('selfMeta');
+const commentInput= document.getElementById('commentInput');
+const inputCounter= document.getElementById('inputCounter');
+const inputSend   = document.getElementById('inputSend');
+const authorName  = document.getElementById('authorName');
+
+let postType = 'photo';
+let author   = 'other';
+
+function buildStamps() {
+  stampsRow.innerHTML = '';
+  STAMPS.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'stamp-btn';
+    btn.dataset.key = s.key;
+    btn.dataset.count = s.initialCount;
+    btn.dataset.self = s.selfActive ? '1' : '0';
+    if (s.selfActive) btn.classList.add('self', 'active');
+    btn.innerHTML = `<span class="emo">${s.emo}</span><span class="cnt">${s.initialCount > 0 ? s.initialCount : ''}</span>`;
+    btn.addEventListener('click', () => toggleStamp(btn));
+    stampsRow.appendChild(btn);
+  });
+}
+
+function toggleStamp(btn) {
+  const isSelfActive = btn.dataset.self === '1';
+  let cnt = parseInt(btn.dataset.count, 10);
+  if (isSelfActive) {
+    btn.dataset.self = '0';
+    cnt = Math.max(0, cnt - 1);
+    btn.classList.remove('self', 'active');
+  } else {
+    btn.dataset.self = '1';
+    cnt = cnt + 1;
+    btn.classList.add('self', 'active');
+  }
+  btn.dataset.count = cnt;
+  const cntEl = btn.querySelector('.cnt');
+  cntEl.textContent = cnt > 0 ? cnt : '';
+}
+
+function setType(t) {
+  postType = t;
+  if (t === 'video') {
+    photoBg.classList.add('video');
+    videoOverlay.classList.add('on');
+    videoLength.classList.add('on');
+  } else {
+    photoBg.classList.remove('video');
+    videoOverlay.classList.remove('on');
+    videoLength.classList.remove('on');
+  }
+}
+function setAuthor(a) {
+  author = a;
+  if (a === 'self') {
+    inputWrap.style.display = 'none';
+    selfMeta.classList.add('on');
+    authorName.textContent = 'YOU';
+    authorName.dataset.member = 'YOU';
+  } else {
+    inputWrap.style.display = 'flex';
+    selfMeta.classList.remove('on');
+    authorName.textContent = 'HANI';
+    authorName.dataset.member = 'HANI';
+  }
+}
+
+// 입력 카운터 (contenteditable + 40자 제한)
+function placeCaretAtEnd(el) {
+  el.focus();
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+function updateCounter() {
+  const text = commentInput.textContent || '';
+  const len = text.length;
+  inputCounter.textContent = len + '/40';
+  inputCounter.classList.remove('warn', 'over');
+  if (len >= 40) inputCounter.classList.add('over');
+  else if (len >= 30) inputCounter.classList.add('warn');
+  inputSend.classList.toggle('ready', len > 0);
+}
+commentInput.addEventListener('input', () => {
+  let text = commentInput.textContent || '';
+  // 줄바꿈 제거 (한 줄 입력)
+  if (text.includes('\n')) {
+    text = text.replace(/\n/g, '');
+    commentInput.textContent = text;
+    placeCaretAtEnd(commentInput);
+  }
+  // 40자 제한
+  if (text.length > 40) {
+    commentInput.textContent = text.substring(0, 40);
+    placeCaretAtEnd(commentInput);
+  }
+  updateCounter();
+});
+// Enter 키 = send (시안에서는 그냥 줄바꿈 차단)
+commentInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') e.preventDefault();
+});
+// paste 시 plain text만
+commentInput.addEventListener('paste', (e) => {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text');
+  document.execCommand('insertText', false, text);
+});
+
+// 데모 토글
+document.querySelectorAll('.demo-btn[data-type]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.demo-btn[data-type]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    setType(b.dataset.type);
+  });
+});
+document.querySelectorAll('.demo-btn[data-author]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.demo-btn[data-author]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    setAuthor(b.dataset.author);
+  });
+});
+
+// init
+buildStamps();
+setType('photo');
+setAuthor('other');
+updateCounter();
+</script>
+
+</body>
+</html>

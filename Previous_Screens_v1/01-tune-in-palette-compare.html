@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FREQUENCY · Tune In · Palette Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-sans: 'Pretendard Variable', 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --motion-base: 200ms;
+    --motion-slow: 300ms;
+    --ease-mechanical: cubic-bezier(0.2, 0, 0, 1);
+    --ease-detent:     cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: #141414;
+    color: #E8E8E8;
+    line-height: 1.5;
+    padding: 40px 24px 96px;
+    min-height: 100vh;
+  }
+
+  .page { max-width: 1200px; margin: 0 auto; }
+
+  /* ---- Page head ---- */
+  .page-head {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #2E2E2E;
+  }
+  .page-tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #7A7A7A; margin-bottom: 8px;
+  }
+  .page-tag .accent { color: #26FA85; }
+  .page-title {
+    font-size: 24px; font-weight: 700;
+    letter-spacing: -0.02em; color: #FFFFFF; margin-bottom: 4px;
+  }
+  .page-sub {
+    font-size: 13px; color: #A0A0A0; line-height: 1.6;
+    max-width: 720px;
+  }
+
+  /* ---- 3-column grid ---- */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .card {
+    background: #1A1A1A;
+    border: 1px solid #2E2E2E;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .card-head {
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid #242424;
+    background: #141414;
+  }
+  .card-eyebrow {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #7A7A7A; margin-bottom: 6px;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 700;
+    letter-spacing: -0.01em; color: #F4F4F4;
+  }
+  .card-ref {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.06em; color: #5A5A5A;
+    margin-top: 6px;
+  }
+
+  /* swatch row */
+  .swatches {
+    display: flex;
+    padding: 10px 14px;
+    gap: 6px;
+    background: #141414;
+    border-bottom: 1px solid #242424;
+  }
+  .sw {
+    flex: 1;
+    display: flex; flex-direction: column;
+    gap: 4px;
+    font-family: var(--font-mono); font-size: 8px;
+    letter-spacing: 0.04em; color: #7A7A7A;
+    text-align: center;
+  }
+  .sw i {
+    display: block; height: 20px;
+    border-radius: 2px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* ================= palette-scoped component ================= */
+  .surface {
+    padding: 26px 22px 24px;
+    background: var(--p-bg);
+    flex: 1;
+    display: flex; flex-direction: column;
+    gap: 14px;
+    color: var(--p-text-mute);
+  }
+
+  .sub-label {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--p-text-mute);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sub-label .line { flex: 1; height: 1px; background: var(--p-border-sub); }
+
+  .tune-block {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 12px;
+    padding: 4px 0 2px;
+  }
+
+  .dial-wrap {
+    width: 118px; height: 118px;
+    position: relative;
+  }
+  .dial {
+    width: 100%; height: 100%;
+    border-radius: 999px;
+    background: var(--p-dial-face);
+    border: 1px solid var(--p-dial-edge);
+    position: relative;
+  }
+  .tick {
+    position: absolute; left: 50%; top: 8px;
+    width: 1px; height: 6px;
+    background: var(--p-tick);
+    transform-origin: 50% 51px;
+  }
+  .tick.major {
+    height: 8px;
+    background: var(--p-tick-major);
+    top: 7px;
+    transform-origin: 50% 52px;
+  }
+  .indicator {
+    position: absolute; left: 50%; top: 8px;
+    width: 2px; height: 44px;
+    background: var(--p-indicator);
+    transform-origin: 50% 51px;
+    transform: translateX(-50%) rotate(140deg);
+    z-index: 3;
+  }
+  .dial-center {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 9px; height: 9px;
+    border-radius: 999px;
+    background: var(--p-center);
+    z-index: 4;
+  }
+
+  .dial-status {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--p-status);
+    font-weight: 700;
+  }
+  .dial-status .dot {
+    width: 5px; height: 5px; border-radius: 999px;
+    background: currentColor;
+  }
+
+  .slots-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px;
+  }
+  .slot {
+    width: 36px; height: 46px;
+    background: var(--p-slot-face);
+    border: 1.5px solid var(--p-slot-edge);
+    border-radius: var(--radius-xs);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 22px; font-weight: 500;
+    color: var(--p-slot-text);
+  }
+  .slot.active {
+    border-color: var(--p-accent-signal);
+    background: var(--p-slot-face-active);
+  }
+  .slot.active .cursor {
+    width: 2px; height: 20px;
+    background: var(--p-accent-signal);
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50%{opacity:0} }
+  .slot.filled { border-color: var(--p-slot-edge-filled); }
+  .slot-sep {
+    font-family: var(--font-mono); font-size: 22px; font-weight: 700;
+    color: var(--p-accent-transmit);
+    width: 10px; text-align: center;
+  }
+
+  .btn-tunein {
+    width: 100%; padding: 13px 14px;
+    background: var(--p-btn-bg);
+    color: var(--p-btn-text);
+    border: 1.5px solid var(--p-btn-edge);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .btn-tunein .pfx { opacity: 0.65; }
+
+  /* notes */
+  .card-notes {
+    padding: 14px 18px 16px;
+    background: #141414;
+    border-top: 1px solid #242424;
+  }
+  .card-notes .row {
+    display: flex; gap: 10px;
+    font-size: 12px; line-height: 1.55; color: #A0A0A0;
+    padding: 4px 0;
+  }
+  .card-notes .ic {
+    width: 14px; flex-shrink: 0;
+    font-family: var(--font-mono); font-weight: 700;
+    text-align: center;
+  }
+  .card-notes .ic.plus { color: #26FA85; }
+  .card-notes .ic.minus { color: #F15A24; }
+
+  /* ================= PALETTE A — DEEP DARK (현재) ================= */
+  .card[data-p="A"] {
+    --p-bg: #1A1A1A;
+    --p-dial-face: #242424;
+    --p-dial-edge: #2E2E2E;
+    --p-tick: #5A5A5A;
+    --p-tick-major: #A0A0A0;
+    --p-indicator: #F15A24;
+    --p-center: #F5A623;
+    --p-text-mute: #5A5A5A;
+    --p-border-sub: #242424;
+    --p-status: #F5A623;
+    --p-slot-face: #242424;
+    --p-slot-face-active: #2E2E2E;
+    --p-slot-edge: #2E2E2E;
+    --p-slot-edge-filled: #5A5A5A;
+    --p-slot-text: #FFFFFF;
+    --p-accent-signal: #26FA85;
+    --p-accent-transmit: #F15A24;
+    --p-btn-bg: #2E2E2E;
+    --p-btn-edge: #3D3D3D;
+    --p-btn-text: #7A7A7A;
+  }
+
+  /* ================= PALETTE B — WARM STONE GRAY ================= */
+  /* Braun T3 / L1 / AB1 inspired — gray body with muted product accents */
+  .card[data-p="B"] {
+    --p-bg: #B8B1A3;
+    --p-dial-face: #9E978A;
+    --p-dial-edge: #7A7363;
+    --p-tick: #3A342B;
+    --p-tick-major: #141211;
+    --p-indicator: #C75A24;
+    --p-center: #E8A427;
+    --p-text-mute: #4F4A40;
+    --p-border-sub: #7A7363;
+    --p-status: #3A342B;
+    --p-slot-face: #C9C2B5;
+    --p-slot-face-active: #D3CDC0;
+    --p-slot-edge: #7A7363;
+    --p-slot-edge-filled: #3A342B;
+    --p-slot-text: #141211;
+    --p-accent-signal: #4A6B3A;
+    --p-accent-transmit: #C75A24;
+    --p-btn-bg: #6A6254;
+    --p-btn-edge: #4F4A40;
+    --p-btn-text: #F4EEE0;
+  }
+
+  /* ================= PALETTE C — IVORY PAPER + ORANGE ================= */
+  /* Ulm school · Rams poster · 종이 + 잉크 · TE Orange 한 방울 추가 */
+  .card[data-p="C"] {
+    --p-bg: #EDE6D7;
+    --p-dial-face: #F4EEE0;
+    --p-dial-edge: #CFC6B3;
+    --p-tick: #8A8271;
+    --p-tick-major: #141211;
+    --p-indicator: #F15A24;
+    --p-center: #197A3E;
+    --p-text-mute: #6A6152;
+    --p-border-sub: #CFC6B3;
+    --p-status: #141211;
+    --p-slot-face: #F7F2E5;
+    --p-slot-face-active: #FBF7EC;
+    --p-slot-edge: #CFC6B3;
+    --p-slot-edge-filled: #141211;
+    --p-slot-text: #141211;
+    --p-accent-signal: #197A3E;
+    --p-accent-transmit: #F15A24;
+    --p-btn-bg: #141211;
+    --p-btn-edge: #141211;
+    --p-btn-text: #EDE6D7;
+  }
+
+  /* --- decision table --- */
+  .decision {
+    margin-top: 32px;
+    background: #1A1A1A;
+    border: 1px solid #2E2E2E;
+    border-radius: var(--radius-md);
+    padding: 22px 24px 24px;
+  }
+  .decision h3 {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #A0A0A0; margin-bottom: 14px;
+  }
+  .decision table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px;
+  }
+  .decision th, .decision td {
+    text-align: left; padding: 10px 12px;
+    border-bottom: 1px solid #242424;
+    vertical-align: top;
+    color: #D8D8D8;
+  }
+  .decision th {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #7A7A7A; font-weight: 700;
+    white-space: nowrap;
+  }
+  .col-A { color: #26FA85; font-weight: 700; }
+  .col-B { color: #C75A24; font-weight: 700; }
+  .col-C { color: #E8E3D5; font-weight: 700; }
+  .decision td:first-child {
+    color: #7A7A7A;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="page-head">
+    <div class="page-tag"><span class="accent">FREQUENCY</span> · TUNE IN · PALETTE STUDY</div>
+    <h1 class="page-title">색 컨셉 3안 비교</h1>
+    <p class="page-sub">"디터 람스의 브라운 제품을 만지는 느낌"을 기준으로 배경/표면/액센트를 재조합. 동일한 다이얼·슬롯 컴포넌트를 세 팔레트에 넣고, 같은 상태(2자리 입력 중, TUNING)를 렌더해 비교.</p>
+  </div>
+
+  <div class="grid-3">
+
+    <!-- ============= A · DEEP DARK ============= -->
+    <div class="card" data-p="A">
+      <div class="card-head">
+        <div class="card-eyebrow">A · 현재 유지</div>
+        <div class="card-title">Deep Dark</div>
+        <div class="card-ref">ref · Braun T1000 · HiFi 앰프 · 밤의 무전기</div>
+      </div>
+      <div class="swatches">
+        <div class="sw"><i style="background:#1A1A1A"></i>BG</div>
+        <div class="sw"><i style="background:#242424"></i>DIAL</div>
+        <div class="sw"><i style="background:#A0A0A0"></i>TICK</div>
+        <div class="sw"><i style="background:#FFFFFF"></i>INK</div>
+        <div class="sw"><i style="background:#26FA85"></i>SIG</div>
+        <div class="sw"><i style="background:#F15A24"></i>TX</div>
+      </div>
+      <div class="surface">
+        <div class="sub-label">
+          <span>CHANNEL ENTRY</span>
+          <span class="line"></span>
+          <span>TUNING</span>
+        </div>
+        <div class="tune-block">
+          <div class="dial-wrap">
+            <div class="dial">
+              <div class="indicator"></div>
+              <div class="dial-center"></div>
+            </div>
+          </div>
+          <div class="dial-status"><span class="dot"></span>TUNING</div>
+          <div class="slots-row">
+            <div class="slot filled">1</div>
+            <div class="slot filled">0</div>
+            <div class="slot active"><span class="cursor"></span></div>
+            <div class="slot-sep">.</div>
+            <div class="slot">&nbsp;</div>
+          </div>
+        </div>
+        <button class="btn-tunein"><span class="pfx">&gt;</span> TUNE IN</button>
+      </div>
+      <div class="card-notes">
+        <div class="row"><span class="ic plus">+</span><span>계기판·앰프 메타포가 가장 선명. 액센트 2색이 그대로 살아있어 상태 폭 넓음.</span></div>
+        <div class="row"><span class="ic minus">−</span><span>완전한 Light 모드는 따로 재매핑 필요. 밝은 환경에서는 반사 문제.</span></div>
+      </div>
+    </div>
+
+    <!-- ============= B · WARM STONE GRAY ============= -->
+    <div class="card" data-p="B">
+      <div class="card-head">
+        <div class="card-eyebrow">B · 그레이 + 브라운 제품톤</div>
+        <div class="card-title">Warm Stone Gray</div>
+        <div class="card-ref">ref · Braun T3 · L1 · AB1 · SK4 · 낮의 제품</div>
+      </div>
+      <div class="swatches">
+        <div class="sw"><i style="background:#B8B1A3"></i>BG</div>
+        <div class="sw"><i style="background:#9E978A"></i>DIAL</div>
+        <div class="sw"><i style="background:#141211"></i>INK</div>
+        <div class="sw"><i style="background:#E8A427"></i>AMBER</div>
+        <div class="sw"><i style="background:#4A6B3A"></i>OLIVE</div>
+        <div class="sw"><i style="background:#C75A24"></i>VERM</div>
+      </div>
+      <div class="surface">
+        <div class="sub-label">
+          <span>CHANNEL ENTRY</span>
+          <span class="line"></span>
+          <span>TUNING</span>
+        </div>
+        <div class="tune-block">
+          <div class="dial-wrap">
+            <div class="dial">
+              <div class="indicator"></div>
+              <div class="dial-center"></div>
+            </div>
+          </div>
+          <div class="dial-status"><span class="dot"></span>TUNING</div>
+          <div class="slots-row">
+            <div class="slot filled">1</div>
+            <div class="slot filled">0</div>
+            <div class="slot active"><span class="cursor"></span></div>
+            <div class="slot-sep">.</div>
+            <div class="slot">&nbsp;</div>
+          </div>
+        </div>
+        <button class="btn-tunein"><span class="pfx">&gt;</span> TUNE IN</button>
+      </div>
+      <div class="card-notes">
+        <div class="row"><span class="ic plus">+</span><span>Braun 휴대 라디오/시계 손맛. 밝은 낮에도 읽히고 Light 모드 네이티브.</span></div>
+        <div class="row"><span class="ic minus">−</span><span>Signal Green 이 올리브로 내려가며 "방금 신호 잡힘" 감각이 약해짐. 사진 피드에서 사진 색을 깎을 수 있음.</span></div>
+      </div>
+    </div>
+
+    <!-- ============= C · IVORY PAPER ============= -->
+    <div class="card" data-p="C">
+      <div class="card-head">
+        <div class="card-eyebrow">C · 다른 방향</div>
+        <div class="card-title">Ivory Paper</div>
+        <div class="card-ref">ref · Ulm school · Rams 포스터 · 1960s 카탈로그</div>
+      </div>
+      <div class="swatches">
+        <div class="sw"><i style="background:#EDE6D7"></i>BG</div>
+        <div class="sw"><i style="background:#F4EEE0"></i>DIAL</div>
+        <div class="sw"><i style="background:#CFC6B3"></i>EDGE</div>
+        <div class="sw"><i style="background:#141211"></i>INK</div>
+        <div class="sw"><i style="background:#197A3E"></i>SIG</div>
+        <div class="sw"><i style="background:#F15A24"></i>TX</div>
+      </div>
+      <div class="surface">
+        <div class="sub-label">
+          <span>CHANNEL ENTRY</span>
+          <span class="line"></span>
+          <span>TUNING</span>
+        </div>
+        <div class="tune-block">
+          <div class="dial-wrap">
+            <div class="dial">
+              <div class="indicator"></div>
+              <div class="dial-center"></div>
+            </div>
+          </div>
+          <div class="dial-status"><span class="dot"></span>TUNING</div>
+          <div class="slots-row">
+            <div class="slot filled">1</div>
+            <div class="slot filled">0</div>
+            <div class="slot active"><span class="cursor"></span></div>
+            <div class="slot-sep">.</div>
+            <div class="slot">&nbsp;</div>
+          </div>
+        </div>
+        <button class="btn-tunein"><span class="pfx">&gt;</span> TUNE IN</button>
+      </div>
+      <div class="card-notes">
+        <div class="row"><span class="ic plus">+</span><span>가장 정적·인쇄물 같음. 사진 피드에서 사진 발색이 살아남. 오렌지 한 점이 종이 위에서 신호처럼 들어와 앱 인상을 잡아줌.</span></div>
+        <div class="row"><span class="ic minus">−</span><span>밤/어두운 방에서 눈부심. 오렌지 바늘/마침표가 이미지 중심 피드에서 강하게 튈 수 있음.</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Decision table -->
+  <div class="decision">
+    <h3>비교 요약</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:18%">항목</th>
+          <th><span class="col-A">A · Deep Dark</span></th>
+          <th><span class="col-B">B · Warm Stone Gray</span></th>
+          <th><span class="col-C">C · Ivory + Orange</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>레퍼런스</td>
+          <td>Braun T1000, HiFi 앰프</td>
+          <td>Braun T3, L1, AB1, SK4</td>
+          <td>Ulm school, Rams 포스터/카탈로그</td>
+        </tr>
+        <tr>
+          <td>BG 톤</td>
+          <td>차콜 #1A1A1A</td>
+          <td>웜 페블 그레이 #B8B1A3</td>
+          <td>아이보리 #EDE6D7</td>
+        </tr>
+        <tr>
+          <td>액센트 구조</td>
+          <td>Signal Green + TE Orange (2색)</td>
+          <td>Olive + Vermilion + Amber dot (채도 ↓ 3색)</td>
+          <td>Signal Green + TE Orange + Ink (2색 + 무채색)</td>
+        </tr>
+        <tr>
+          <td>심리 효과</td>
+          <td>"밤에 켜는 기기" 집중·계기적</td>
+          <td>"손에 든 제품" 낮의 생활감</td>
+          <td>"인쇄된 매뉴얼" 정적·학술적</td>
+        </tr>
+        <tr>
+          <td>사진 피드와의 궁합</td>
+          <td>사진 색 진하게 살아남 (검정 배경 효과)</td>
+          <td>사진 채도가 배경에 흡수됨</td>
+          <td>사진 발색 가장 자연 (갤러리 톤)</td>
+        </tr>
+        <tr>
+          <td>상태 표현 폭</td>
+          <td>넓음 (STANDBY / TUNING / LOCKED / TRANSMIT 4단계 구분 쉬움)</td>
+          <td>중간 (채도가 낮아 TUNING↔LOCKED 구분이 약함)</td>
+          <td>넓음 (Green = READY/OK, Orange = Transmit/Hot 2역할 유지)</td>
+        </tr>
+        <tr>
+          <td>Light / Dark 대응</td>
+          <td>Dark 네이티브 · Light 재설계 필요</td>
+          <td>Light 네이티브 · Dark 매핑 쉬움</td>
+          <td>Light 네이티브 · Dark 전면 재작성 필요</td>
+        </tr>
+        <tr>
+          <td>브랜드 인상</td>
+          <td>실험적·동시대 하드웨어</td>
+          <td>장인적·아날로그 복각</td>
+          <td>출판물·교과서·스튜디오</td>
+        </tr>
+        <tr>
+          <td>핵심 리스크</td>
+          <td>기존 다크 앱들과 구분 어려움</td>
+          <td>"올드"해 보일 수 있음, 채도 과감히 올려야 함</td>
+          <td>사진 피드에서 오렌지가 튀어 이미지 발색과 경쟁할 수 있음</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+// Build 12 ticks (+ 4 cardinal majors) on every dial
+document.querySelectorAll('.dial').forEach(dial => {
+  const indicator = dial.querySelector('.indicator');
+  for (let i = 0; i < 12; i++) {
+    const t = document.createElement('div');
+    const isMajor = (i % 3 === 0);
+    t.className = 'tick' + (isMajor ? ' major' : '');
+    t.style.transform = 'translateX(-50%) rotate(' + (i * 30) + 'deg)';
+    dial.insertBefore(t, indicator);
+  }
+});
+</script>
+
+</body>
+</html>
