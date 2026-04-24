@@ -100,8 +100,9 @@ function MobileRouter() {
       display: 'flex', flexDirection: 'column',
       overflow: 'hidden',
       paddingTop: 'env(safe-area-inset-top, 0)',
+      paddingBottom: 'env(safe-area-inset-bottom, 0)',
     }}>
-      {/* main screen area — 풀스크린, 각 컴포넌트가 flex:1 로 채움 */}
+      {/* 풀스크린 main screen — 디버깅용 nav bar 제거됨 (진짜 앱 모드) */}
       <div key={screen} data-mobile-main style={{
         flex: 1, minHeight: 0,
         display: 'flex', flexDirection: 'column',
@@ -110,62 +111,6 @@ function MobileRouter() {
       }}>
         <Current />
       </div>
-
-      {/* bottom nav bar */}
-      <nav style={{
-        flexShrink: 0,
-        background: 'var(--mist-1)',
-        borderTop: '1px solid var(--mist-3)',
-        padding: '6px 4px calc(env(safe-area-inset-bottom, 6px) + 6px)',
-        display: 'flex',
-        gap: 2,
-        overflowX: 'auto',
-      }} className="no-scrollbar">
-        {/* lang toggle */}
-        <div style={{
-          display: 'flex', gap: 2, padding: 2,
-          background: 'var(--mist-2)',
-          borderRadius: 3,
-          flexShrink: 0, alignSelf: 'center',
-          boxShadow: 'inset 0 1px 1px rgba(0,0,0,.06)',
-        }}>
-          {[['en','EN'],['kr','한']].map(([L, lbl]) => (
-            <button key={L} onClick={() => setLang(L)} style={{
-              border: 'none',
-              background: lang === L ? 'var(--ink)' : 'transparent',
-              color: lang === L ? 'var(--mist-0)' : 'var(--ink-55)',
-              fontFamily: 'var(--mono)', fontSize: 9, fontWeight: 600,
-              padding: '5px 7px', cursor: 'pointer', borderRadius: 2,
-              minWidth: 22,
-              letterSpacing: '0.04em',
-            }}>{lbl}</button>
-          ))}
-        </div>
-        <div style={{ width: 1, background: 'var(--mist-3)', alignSelf: 'stretch', margin: '4px 2px', flexShrink: 0 }}/>
-        {/* screen tabs */}
-        {screens.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => setScreen(i)}
-            style={{
-              flex: '1 0 auto',
-              padding: '6px 5px',
-              border: 'none',
-              background: i === screen ? 'var(--ink)' : 'transparent',
-              color: i === screen ? 'var(--mist-0)' : 'var(--ink-55)',
-              fontFamily: 'var(--mono)',
-              letterSpacing: '0.06em', fontWeight: 600,
-              borderRadius: 3, cursor: 'pointer',
-              display: 'flex', flexDirection: 'column',
-              gap: 1, alignItems: 'center', justifyContent: 'center',
-              minWidth: 40,
-            }}
-          >
-            <span style={{ fontSize: 8, opacity: 0.65 }}>{s.id}</span>
-            <span style={{ fontSize: 9 }}>{s.label}</span>
-          </button>
-        ))}
-      </nav>
     </div>
   );
 }

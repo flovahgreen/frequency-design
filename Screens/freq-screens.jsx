@@ -105,7 +105,7 @@ function Screen01TuneIn({ digits = ['4','4','7','1'], cursorAt = 4 }) {
       </div>{/* /centered cluster */}
 
       {/* keypad — pinned at bottom */}
-      <div style={{ padding:'14px 22px 28px', display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, flexShrink:0 }}>
+      <div style={{ padding:'14px 22px 8px', display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, flexShrink:0 }}>
         {['1','2','3','4','5','6','7','8','9','⌫','0','↵'].map((k,i)=>{
           const isEnter = k === '↵';
           const isBack = k === '⌫';
@@ -120,6 +120,20 @@ function Screen01TuneIn({ digits = ['4','4','7','1'], cursorAt = 4 }) {
               }}>{k}</button>
           );
         })}
+      </div>
+
+      {/* Open new channel — secondary entry */}
+      <div style={{ padding:'2px 22px 22px', display:'flex', justifyContent:'center', flexShrink:0 }}>
+        <button
+          onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('open'); }}
+          style={{
+            background:'transparent', border:'none', cursor:'pointer',
+            fontFamily:'var(--mono)', fontSize:10, letterSpacing:'.16em',
+            color:'var(--ink-55)', textTransform:'uppercase', fontWeight:500,
+            padding:'8px 12px',
+          }}>
+          + OPEN NEW CHANNEL
+        </button>
       </div>
     </div>
   );
@@ -351,7 +365,7 @@ function Screen03bReview() {
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       {/* top bar */}
       <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--mist-3)' }}>
-        <button style={{ border:'none', background:'transparent', padding:0, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+        <button onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('camera'); }} style={{ border:'none', background:'transparent', padding:0, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.4"/></svg>
           <span className="lbl">RETAKE</span>
         </button>
@@ -430,7 +444,7 @@ function Screen04Post() {
         padding:'12px 16px', display:'flex', alignItems:'center', gap:10,
         borderBottom:'1px solid var(--mist-3)',
       }}>
-        <button style={{ border:'none', background:'transparent', padding:0, cursor:'pointer' }}>
+        <button onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }} style={{ border:'none', background:'transparent', padding:0, cursor:'pointer' }}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.4"/></svg>
         </button>
         <Chip who="VELVIA"/>
@@ -675,10 +689,23 @@ function Screen06Members() {
       </div>
 
       {/* actions */}
-      <div style={{ padding:'14px 16px', borderTop:'1px solid var(--mist-3)', display:'flex', gap:8 }}>
+      <div style={{ padding:'14px 16px 6px', borderTop:'1px solid var(--mist-3)', display:'flex', gap:8 }}>
         <Keycap style={{ flex:1, height:40, fontSize:11 }}>INVITE</Keycap>
-        <Keycap style={{ flex:1, height:40, fontSize:11 }}>LEAVE</Keycap>
-        <Keycap amber style={{ flex:1, height:40, fontSize:11 }}>CLOSE CH</Keycap>
+        <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ flex:1, height:40, fontSize:11 }}>LEAVE</Keycap>
+        <Keycap amber onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ flex:1, height:40, fontSize:11 }}>CLOSE CH</Keycap>
+      </div>
+      {/* App settings entry */}
+      <div style={{ padding:'2px 16px 14px', display:'flex', justifyContent:'center', flexShrink:0 }}>
+        <button
+          onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('settings'); }}
+          style={{
+            background:'transparent', border:'none', cursor:'pointer',
+            fontFamily:'var(--mono)', fontSize:10, letterSpacing:'.16em',
+            color:'var(--ink-55)', textTransform:'uppercase', fontWeight:500,
+            padding:'8px 12px',
+          }}>
+          APP SETTINGS →
+        </button>
       </div>
     </div>
   );
@@ -732,7 +759,7 @@ function Screen07Settings() {
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       {/* top bar */}
       <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--mist-3)' }}>
-        <button style={{ border:'none', background:'transparent', padding:0, cursor:'pointer' }}>
+        <button onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('info'); }} style={{ border:'none', background:'transparent', padding:0, cursor:'pointer' }}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.4"/></svg>
         </button>
         <span className="lbl" style={{ color:'var(--ink)' }}>{T('settings')}</span>
