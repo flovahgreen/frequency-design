@@ -5,9 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FREQUENCY">
+<meta name="theme-color" content="#E6E4DF">
 <meta name="robots" content="noindex, nofollow">
 <title>FREQUENCY · Design Previews</title>
-<meta http-equiv="refresh" content="0; url=Screens/frequency.html">
+<script>
+  // 자동 분기: 모바일 (≤ 768px) 또는 iOS Safari → app.html (앱 모드)
+  // 그 외 (데스크탑) → frequency.html (디자인 캔버스)
+  (function(){
+    var w = window.innerWidth || document.documentElement.clientWidth;
+    var ua = navigator.userAgent || '';
+    var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    var isMobile = w <= 768 || (isTouch && /iPhone|iPad|iPod|Android/i.test(ua));
+    var target = isMobile ? 'Screens/app.html' : 'Screens/frequency.html';
+    location.replace(target);
+  })();
+</script>
 <style>
   body {
     margin: 0; padding: 80px 24px;
@@ -15,7 +28,7 @@
     font-family: ui-monospace, 'SF Mono', monospace;
     text-align: center;
   }
-  a { color: #197A3E; text-decoration: none; }
+  a { color: #197A3E; text-decoration: none; padding: 8px 12px; display: inline-block; }
   a:hover { text-decoration: underline; }
   .tag {
     font-size: 11px; letter-spacing: 0.18em; color: #6A6152;
@@ -25,6 +38,9 @@
 </head>
 <body>
   <p class="tag">FREQUENCY · PAPER MIST V1</p>
-  <p>리다이렉트 중 · <a href="Screens/frequency.html">디자인 캔버스 열기 →</a></p>
+  <p>리다이렉트 중 ·
+    <a href="Screens/app.html">📱 앱 모드</a>
+    <a href="Screens/frequency.html">🖥 디자인 캔버스</a>
+  </p>
 </body>
 </html>
