@@ -111,6 +111,7 @@ function Screen01TuneIn({ digits = ['4','4','7','1'], cursorAt = 4 }) {
           const isBack = k === '⌫';
           return (
             <button key={i} className={`cap ${isEnter?'cap-amber':''} ${isBack?'cap-graphite':''}`}
+              onClick={() => { if (isEnter && window.FREQ_NAV) window.FREQ_NAV('feed'); }}
               style={{
                 border:'none', height:46,
                 fontFamily:'var(--mono)', fontSize: isEnter||isBack?14:18,
@@ -145,8 +146,18 @@ function Mosaic({ n = 7 }) {
       {Array.from({ length: total }).map((_,i) => {
         const filled = i < n;
         const who = members[i];
+        const handleClick = () => {
+          if (filled && window.FREQ_NAV) window.FREQ_NAV('post');
+        };
         return (
-          <div key={i} style={{ position:'relative', background: filled ? undefined : 'var(--mist-1)' }}>
+          <div
+            key={i}
+            onClick={handleClick}
+            style={{
+              position:'relative',
+              background: filled ? undefined : 'var(--mist-1)',
+              cursor: filled ? 'pointer' : 'default',
+            }}>
             {filled ? (
               <div className="film-stripe" style={{
                 position:'absolute', inset:0,
@@ -292,19 +303,21 @@ function Screen03Camera({ holding = false }) {
 
         {/* Shutter */}
         <div style={{ display:'flex', flexDirection:'column', gap:8, alignItems:'center' }}>
-          <div style={{
-            width:84, height:84, borderRadius:'50%',
-            background:'#1a1917',
-            boxShadow:'inset 0 0 0 2px #000, 0 0 0 3px rgba(255,255,255,.15)',
-            display:'grid', placeItems:'center',
-          }}>
+          <button
+            onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('review'); }}
+            style={{
+              width:84, height:84, borderRadius:'50%',
+              background:'#1a1917', border:'none', padding:0, cursor:'pointer',
+              boxShadow:'inset 0 0 0 2px #000, 0 0 0 3px rgba(255,255,255,.15)',
+              display:'grid', placeItems:'center',
+            }}>
             <div style={{
               width:64, height:64, borderRadius:'50%',
               background: holding ? 'var(--amber)' : 'var(--mist-0)',
               boxShadow:'inset 0 -2px 0 rgba(0,0,0,.12), inset 0 2px 0 rgba(255,255,255,.5)',
               transition:'background 150ms',
             }}/>
-          </div>
+          </button>
           <span className="lbl-dk">Tap · Photo  ·  Hold · 5s</span>
         </div>
 
@@ -387,8 +400,8 @@ function Screen03bReview() {
 
       {/* actions */}
       <div style={{ padding:'14px 16px 16px', display:'flex', gap:8 }}>
-        <Keycap style={{ flex:1, height:48, fontSize:11 }}>RETAKE</Keycap>
-        <Keycap amber style={{ flex:2, height:48, fontSize:11 }}>SEND TO CHANNEL →</Keycap>
+        <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('camera'); }} style={{ flex:1, height:48, fontSize:11 }}>RETAKE</Keycap>
+        <Keycap amber onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }} style={{ flex:2, height:48, fontSize:11 }}>SEND TO CHANNEL →</Keycap>
       </div>
     </div>
   );
@@ -574,8 +587,8 @@ function Screen05Open({ phase = 'broadcast' }) {
 
           <div style={{ flex:1 }}/>
           <div style={{ display:'flex', gap:8, paddingBottom:14 }}>
-            <Keycap style={{ flex:1, height:44, fontSize:11 }}>CANCEL</Keycap>
-            <Keycap amber style={{ flex:2, height:44, fontSize:11 }}>START ROUND 01 →</Keycap>
+            <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ flex:1, height:44, fontSize:11 }}>CANCEL</Keycap>
+            <Keycap amber onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }} style={{ flex:2, height:44, fontSize:11 }}>START ROUND 01 →</Keycap>
           </div>
         </div>
       )}

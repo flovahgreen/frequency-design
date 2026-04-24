@@ -6,6 +6,18 @@ const { useState: useMState, useEffect: useMEffect } = React;
 
 try { window.FREQ_LANG = localStorage.getItem('FREQ_LANG') || 'kr'; } catch(e){ window.FREQ_LANG = 'kr'; }
 
+// id alias map: 시안 코드에서 window.FREQ_NAV('feed') 처럼 친숙한 이름으로 호출
+const NAV_ALIAS = {
+  tune: 0, '01': 0,
+  feed: 1, '02': 1,
+  camera: 2, cam: 2, '03': 2,
+  review: 3, '03b': 3,
+  post: 4, '04': 4,
+  open: 5, '05': 5,
+  info: 6, members: 6, '06': 6,
+  settings: 7, set: 7, '07': 7,
+};
+
 function MobileRouter() {
   const [screen, setScreen] = useMState(0);
   const [lang, setLangState] = useMState(window.FREQ_LANG || 'kr');
@@ -20,6 +32,24 @@ function MobileRouter() {
     { id: '06',  label: 'INFO',   Comp: Screen06Members },
     { id: '07',  label: 'SET',    Comp: Screen07Settings },
   ];
+
+  // 글로벌 navigate — 시안 컴포넌트에서 window.FREQ_NAV('feed') 처럼 호출
+  useMEffect(() => {
+    window.FREQ_NAV = (key) => {
+      const idx = (typeof key === 'number') ? key : NAV_ALIAS[String(key).toLowerCase()];
+      if (idx !== undefined) {
+        setScreen(idx);
+        // iOS 햅틱 (지원 시)
+        if (navigator.vibrate) { try { navigator.vibrate(8); } catch(e){} }
+        // 스크롤 맨 위로
+        setTimeout(() => {
+          const main = document.querySelector('[data-mobile-main]');
+          if (main) main.scrollTop = 0;
+        }, 0);
+      }
+    };
+    return () => { delete window.FREQ_NAV; };
+  }, []);
 
   const setLang = (L) => {
     window.FREQ_LANG = L;
@@ -72,7 +102,7 @@ function MobileRouter() {
       paddingTop: 'env(safe-area-inset-top, 0)',
     }}>
       {/* main screen area — 풀스크린, 각 컴포넌트가 flex:1 로 채움 */}
-      <div key={screen} style={{
+      <div key={screen} data-mobile-main style={{
         flex: 1, minHeight: 0,
         display: 'flex', flexDirection: 'column',
         overflow: 'auto',

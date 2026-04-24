@@ -197,17 +197,23 @@ function Phone({ children, style }) {
 
 // Tab bar at bottom — 4 items
 function TabBar({ active = 'feed' }) {
+  // navTo: tab id → router 의 alias key 로 매핑 (mobile router 가 받음)
+  const NAV_MAP = { feed: 'feed', tune: 'tune', cam: 'camera', info: 'info' };
   const Tab = ({ id, label, icon }) => {
     const on = active === id;
+    const handleClick = () => {
+      if (window.FREQ_NAV) window.FREQ_NAV(NAV_MAP[id] || id);
+    };
     return (
-      <div style={{
+      <button onClick={handleClick} style={{
         flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:4,
         padding:'8px 0 6px',
+        background: 'transparent', border: 'none', cursor: 'pointer',
         color: on ? 'var(--ink)' : 'var(--ink-35)',
       }}>
         <div style={{ width:18, height:18, display:'grid', placeItems:'center' }}>{icon}</div>
         <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.16em', textTransform:'uppercase', fontWeight: on?600:500 }}>{label}</span>
-      </div>
+      </button>
     );
   };
   return (
