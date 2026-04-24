@@ -510,10 +510,35 @@ function Screen04Post() {
 // ─────────────────────────────────────────────────────────────
 // 05 · OPEN CHANNEL — SETUP → BROADCAST → READY (slot reel)
 // ─────────────────────────────────────────────────────────────
-function Screen05Open({ phase = 'broadcast' }) {
-  // phase: 'setup' | 'broadcast' | 'ready'
+function Screen05Open({ phase: initPhase = 'setup' }) {
+  // phase: 'setup' | 'broadcast' | 'ready' — internal state so stepper/buttons can cycle
+  const [phase, setPhase] = React.useState(initPhase);
   const phases = ['setup', 'broadcast', 'ready'];
   const idx = phases.indexOf(phase);
+
+  // SETUP-phase state: regenerated frequency + session settings
+  const [freq, setFreq] = React.useState(['4','4','7','1']);
+  const [duration, setDuration] = React.useState('14');  // minutes per round
+  const [rounds, setRounds] = React.useState('12');      // rounds per session
+  const regenFreq = () => {
+    const rand = () => String(Math.floor(Math.random()*10));
+    setFreq([rand(), rand(), rand(), rand()]);
+    if (navigator.vibrate) { try { navigator.vibrate(8); } catch(e){} }
+  };
+
+  const PhaseBtn = ({ p, i }) => (
+    <button onClick={() => setPhase(p)} style={{
+      flex:1, display:'flex', flexDirection:'column', gap:4,
+      background:'transparent', border:'none', padding:0, cursor:'pointer',
+      textAlign:'left',
+    }}>
+      <div style={{ height:3, background: i <= idx ? 'var(--ink)' : 'var(--mist-2)' }}/>
+      <span className="lbl" style={{
+        color: i === idx ? 'var(--ink)' : 'var(--ink-35)',
+        fontSize:9,
+      }}>{`0${i+1} · ${p}`}</span>
+    </button>
+  );
 
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
@@ -522,20 +547,105 @@ function Screen05Open({ phase = 'broadcast' }) {
         <span className="lbl">{T('host_step')}</span>
       </div>
 
-      {/* Phase stepper */}
+      {/* Phase stepper — tappable for phase preview */}
       <div style={{ padding:'0 18px 14px', display:'flex', gap:4 }}>
-        {phases.map((p,i)=>(
-          <div key={p} style={{ flex:1, display:'flex', flexDirection:'column', gap:4 }}>
-            <div style={{ height:3, background: i <= idx ? 'var(--ink)' : 'var(--mist-2)' }}/>
-            <span className="lbl" style={{
-              color: i === idx ? 'var(--ink)' : 'var(--ink-35)',
-              fontSize:9,
-            }}>{`0${i+1} · ${p}`}</span>
-          </div>
-        ))}
+        {phases.map((p,i)=> <PhaseBtn key={p} p={p} i={i}/>)}
       </div>
 
-      {/* Broadcast — slot reel in session */}
+      {/* ─── SETUP — host configures frequency + session shape ─── */}
+      {phase === 'setup' && (
+        <div style={{ padding:'0 18px', flex:1, display:'flex', flexDirection:'column', gap:16, overflowY:'auto' }}>
+          {/* Frequency assignment card */}
+          <div style={{
+            background:'var(--mist-1)', padding:'16px 14px 14px',
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+          }}>
+            <div className="lbl" style={{ marginBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <span>Your Frequency</span>
+              <button onClick={regenFreq} style={{
+                background:'transparent', border:'none', cursor:'pointer',
+                fontFamily:'var(--mono)', fontSize:9.5, letterSpacing:'.14em',
+                color:'var(--ink-55)', textTransform:'uppercase', fontWeight:500,
+                display:'flex', alignItems:'center', gap:4, padding:0,
+              }}>
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6 A4 4 0 0 1 9 4" stroke="var(--ink-55)" strokeWidth="1.2"/>
+                  <path d="M7.5 2 L9 4 L7 4.5" stroke="var(--ink-55)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M10 6 A4 4 0 0 1 3 8" stroke="var(--ink-55)" strokeWidth="1.2"/>
+                  <path d="M4.5 10 L3 8 L5 7.5" stroke="var(--ink-55)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                REROLL
+              </button>
+            </div>
+            <div style={{ display:'flex', justifyContent:'center', gap:6, alignItems:'flex-end' }}>
+              {freq.slice(0,3).map((d,i)=>(
+                <div key={i} className="well" style={{
+                  width:50, height:66,
+                  display:'grid', placeItems:'center',
+                  fontFamily:'var(--mono)', fontSize:34, fontWeight:500, color:'var(--ink)',
+                  fontVariantNumeric:'tabular-nums',
+                }}>{d}</div>
+              ))}
+              <span style={{ fontFamily:'var(--mono)', fontSize:28, fontWeight:600, color:'var(--ink-35)', lineHeight:1, paddingBottom:10 }}>.</span>
+              <div className="well" style={{
+                width:50, height:66,
+                display:'grid', placeItems:'center',
+                fontFamily:'var(--mono)', fontSize:34, fontWeight:500, color:'var(--ink)',
+                fontVariantNumeric:'tabular-nums',
+              }}>{freq[3]}</div>
+              <span style={{ fontFamily:'var(--mono)', fontSize:10, letterSpacing:'.2em', color:'var(--ink-55)', paddingBottom:14 }}>MHZ</span>
+            </div>
+            <div className="lbl" style={{ marginTop:10, textAlign:'center', color:'var(--ink-35)' }}>
+              Guests tune in with this code
+            </div>
+          </div>
+
+          {/* Session shape */}
+          <div>
+            <div className="lbl" style={{ marginBottom:8 }}>Round Length</div>
+            <div style={{ display:'flex', gap:6 }}>
+              {[['14','14 MIN'],['30','30 MIN'],['60','60 MIN']].map(([v,label])=>(
+                <button key={v} onClick={()=>setDuration(v)} className={`cap ${duration===v?'cap-graphite':''}`} style={{
+                  flex:1, height:42, border:'none', cursor:'pointer',
+                  fontFamily:'var(--mono)', fontSize:11, fontWeight:500, letterSpacing:'.08em',
+                }}>{label}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="lbl" style={{ marginBottom:8 }}>Rounds Per Session</div>
+            <div style={{ display:'flex', gap:6 }}>
+              {[['6','06'],['12','12'],['24','24']].map(([v,label])=>(
+                <button key={v} onClick={()=>setRounds(v)} className={`cap ${rounds===v?'cap-graphite':''}`} style={{
+                  flex:1, height:42, border:'none', cursor:'pointer',
+                  fontFamily:'var(--mono)', fontSize:13, fontWeight:500, letterSpacing:'.08em',
+                }}>{label}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Summary line */}
+          <div style={{
+            padding:'10px 12px', background:'var(--mist-1)',
+            boxShadow:'inset 0 0 0 1px var(--mist-3)',
+            display:'flex', alignItems:'center', gap:6, flexWrap:'wrap',
+          }}>
+            <span className="lbl" style={{ color:'var(--ink-55)' }}>Session</span>
+            <span className="mono" style={{ fontSize:11, letterSpacing:'.06em' }}>
+              {rounds} rounds · {duration} min each · up to 9 people
+            </span>
+          </div>
+
+          <div style={{ flex:1 }}/>
+          <div style={{ display:'flex', gap:8, paddingBottom:14 }}>
+            <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ flex:1, height:44, fontSize:11 }}>CANCEL</Keycap>
+            <Keycap amber onClick={() => setPhase('broadcast')} style={{ flex:2, height:44, fontSize:11 }}>OPEN AIRWAVES →</Keycap>
+          </div>
+        </div>
+      )}
+
+      {/* ─── BROADCAST — airwaves live, guests incoming ─── */}
       {phase === 'broadcast' && (
         <div style={{ padding:'0 18px', flex:1, display:'flex', flexDirection:'column', gap:16 }}>
           <div style={{
@@ -550,7 +660,7 @@ function Screen05Open({ phase = 'broadcast' }) {
 
             {/* reel */}
             <div style={{ display:'flex', justifyContent:'center', gap:8, marginBottom:14 }}>
-              {['4','4','7','1'].map((d,i)=>(
+              {freq.map((d,i)=>(
                 <div key={i} style={{
                   width:56, height:76, background:'#1a1917',
                   boxShadow:'inset 0 0 0 1px rgba(255,255,255,.1), inset 0 -14px 0 rgba(0,0,0,.3), inset 0 14px 0 rgba(0,0,0,.3)',
@@ -577,7 +687,7 @@ function Screen05Open({ phase = 'broadcast' }) {
               <Chip who="YOU" size="lg"/>
               <span style={{ fontFamily:'var(--sans)', fontSize:14, fontWeight:500 }}>Jay</span>
               <div style={{ flex:1 }}/>
-              <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>9999 MHZ</span>
+              <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>{freq.slice(0,3).join('')}.{freq[3]} MHZ</span>
             </div>
           </div>
 
@@ -585,7 +695,7 @@ function Screen05Open({ phase = 'broadcast' }) {
           <div>
             <div className="lbl" style={{ marginBottom:8, display:'flex', justifyContent:'space-between' }}>
               <span>Incoming · 2 / 9</span>
-              <span>02:41 → 14:00</span>
+              <span>02:41 → {String(duration).padStart(2,'0')}:00</span>
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:6 }}>
               {['KODAK','EKTA'].map(m => <div key={m} style={{ padding:8, background:'var(--mist-1)', boxShadow:'inset 0 0 0 1px var(--mist-3)' }}>
@@ -601,7 +711,83 @@ function Screen05Open({ phase = 'broadcast' }) {
 
           <div style={{ flex:1 }}/>
           <div style={{ display:'flex', gap:8, paddingBottom:14 }}>
-            <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ flex:1, height:44, fontSize:11 }}>CANCEL</Keycap>
+            <Keycap onClick={() => setPhase('setup')} style={{ flex:1, height:44, fontSize:11 }}>BACK</Keycap>
+            <Keycap amber onClick={() => setPhase('ready')} style={{ flex:2, height:44, fontSize:11 }}>SEAL LOBBY →</Keycap>
+          </div>
+        </div>
+      )}
+
+      {/* ─── READY — lobby sealed, round 01 count-in ─── */}
+      {phase === 'ready' && (
+        <div style={{ padding:'0 18px', flex:1, display:'flex', flexDirection:'column', gap:16 }}>
+          {/* sealed banner */}
+          <div style={{
+            background:'var(--mist-1)', padding:'12px 14px',
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+            display:'flex', alignItems:'center', gap:10,
+          }}>
+            <div style={{
+              width:10, height:10, background:'var(--signal)',
+              boxShadow:'0 0 6px rgba(25,122,62,.5)',
+            }}/>
+            <div style={{ flex:1, display:'flex', flexDirection:'column', lineHeight:1.2 }}>
+              <span className="lbl">Lobby Sealed</span>
+              <span className="mono" style={{ fontSize:11, letterSpacing:'.06em', color:'var(--ink-70)' }}>
+                {freq.slice(0,3).join('')}.{freq[3]} MHZ · 3 tuned in
+              </span>
+            </div>
+            <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>{rounds} × {String(duration).padStart(2,'0')}:00</span>
+          </div>
+
+          {/* count-in */}
+          <div style={{
+            background:'var(--graphite)', color:'var(--mist-0)',
+            padding:'22px 18px', borderRadius:8,
+            boxShadow:'0 1px 0 #000, inset 0 1px 0 rgba(255,255,255,.08)',
+            display:'flex', flexDirection:'column', alignItems:'center', gap:10,
+          }}>
+            <span className="lbl-dk" style={{ letterSpacing:'.2em' }}>ROUND 01 BEGINS IN</span>
+            <div style={{
+              fontFamily:'var(--mono)', fontSize:56, fontWeight:500, lineHeight:1,
+              color:'var(--amber)', fontVariantNumeric:'tabular-nums',
+              textShadow:'0 0 16px rgba(233,106,42,.4)',
+              letterSpacing:'.04em',
+            }}>
+              00:03<span className="crt-cursor" style={{ verticalAlign:'baseline' }}/>
+            </div>
+            <span className="lbl-dk" style={{ color:'rgba(242,241,238,.4)' }}>Tap START to begin now</span>
+          </div>
+
+          {/* final roster */}
+          <div>
+            <div className="lbl" style={{ marginBottom:8, display:'flex', justifyContent:'space-between' }}>
+              <span>Tuned In · 3</span>
+              <span>Host · You</span>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:6 }}>
+              {[{ who:'YOU', name:'Jay', host:true },
+                { who:'KODAK', name:'Mira', host:false },
+                { who:'EKTA', name:'Rin', host:false },
+              ].map(m => (
+                <div key={m.who} style={{
+                  padding:'10px 8px', background:'var(--mist-1)',
+                  boxShadow:'inset 0 0 0 1px var(--mist-3)',
+                  display:'flex', flexDirection:'column', gap:6, alignItems:'flex-start',
+                }}>
+                  <Chip who={m.who}/>
+                  <span style={{ fontFamily:'var(--sans)', fontSize:12, fontWeight:500 }}>{m.name}</span>
+                  {m.host && <span style={{
+                    fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.14em',
+                    padding:'1px 4px', border:'1px solid var(--ink)', color:'var(--ink)',
+                  }}>HOST</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ flex:1 }}/>
+          <div style={{ display:'flex', gap:8, paddingBottom:14 }}>
+            <Keycap onClick={() => setPhase('broadcast')} style={{ flex:1, height:44, fontSize:11 }}>REOPEN</Keycap>
             <Keycap amber onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }} style={{ flex:2, height:44, fontSize:11 }}>START ROUND 01 →</Keycap>
           </div>
         </div>
