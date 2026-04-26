@@ -260,4 +260,60 @@ function FilmPlaceholder({ label, style, children }) {
   );
 }
 
-Object.assign(window, { MEMBER_COLORS, Chip, StatusLabel, ScreenHeader, Phone, TabBar, Keycap, FilmPlaceholder, T, FREQ_STRINGS });
+// ConfirmSheet — bottom sheet for destructive / irreversible actions.
+// Props: open, title, body, confirmLabel, cancelLabel, onConfirm, onCancel
+// 백드롭 클릭 또는 Cancel로 닫힘. Confirm 버튼은 amber (진행 액션이라).
+function ConfirmSheet({ open, title, body, confirmLabel = 'CONFIRM', cancelLabel = 'CANCEL', onConfirm, onCancel }) {
+  const [phase, setPhase] = React.useState('closed');
+
+  React.useEffect(() => {
+    if (open) {
+      requestAnimationFrame(() => setPhase('open'));
+    } else if (phase !== 'closed') {
+      setPhase('closing');
+      const t = setTimeout(() => setPhase('closed'), 220);
+      return () => clearTimeout(t);
+    }
+  }, [open]);
+
+  if (!open && phase === 'closed') return null;
+
+  const visible = phase === 'open';
+
+  return (
+    <div
+      onClick={onCancel}
+      style={{
+        position:'fixed', inset:0, zIndex:9000,
+        background: visible ? 'rgba(20,18,17,.45)' : 'rgba(20,18,17,0)',
+        transition:'background 220ms ease-out',
+        display:'flex', alignItems:'flex-end',
+      }}>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width:'100%', background:'var(--mist-0)',
+          padding:'18px 18px calc(env(safe-area-inset-bottom, 18px) + 18px)',
+          boxShadow:'0 -4px 20px rgba(0,0,0,.18)',
+          transform: visible ? 'translateY(0)' : 'translateY(110%)',
+          transition:'transform 240ms cubic-bezier(0.2,0,0,1)',
+          display:'flex', flexDirection:'column', gap:14,
+        }}>
+        <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+          <span className="lbl" style={{ color:'var(--ink)' }}>{title}</span>
+          {body && (
+            <span style={{ fontFamily:'var(--sans)', fontSize:14, lineHeight:1.5, color:'var(--ink-70)' }}>
+              {body}
+            </span>
+          )}
+        </div>
+        <div style={{ display:'flex', gap:8 }}>
+          <Keycap onClick={onCancel} style={{ flex:1, height:44, fontSize:11 }}>{cancelLabel}</Keycap>
+          <Keycap amber onClick={onConfirm} style={{ flex:1, height:44, fontSize:11 }}>{confirmLabel}</Keycap>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { MEMBER_COLORS, Chip, StatusLabel, ScreenHeader, Phone, TabBar, Keycap, FilmPlaceholder, ConfirmSheet, T, FREQ_STRINGS });

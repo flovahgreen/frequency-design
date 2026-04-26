@@ -278,9 +278,24 @@ function Screen02Feed() {
 function Screen03Camera({ holding = false }) {
   return (
     <div style={{ flex:1, background:'var(--graphite)', display:'flex', flexDirection:'column', color:'var(--mist-0)' }}>
-      {/* header */}
-      <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+      {/* header — close · title · timer */}
+      <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', gap:10 }}>
+        <button
+          onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }}
+          aria-label="Close camera"
+          style={{
+            width:28, height:28, padding:0,
+            border:'none', background:'transparent', cursor:'pointer',
+            display:'grid', placeItems:'center', marginLeft:-6,
+            WebkitTapHighlightColor:'transparent',
+          }}>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <line x1="2" y1="2" x2="12" y2="12" stroke="rgba(242,241,238,.7)" strokeWidth="1.4" strokeLinecap="round"/>
+            <line x1="12" y1="2" x2="2" y2="12" stroke="rgba(242,241,238,.7)" strokeWidth="1.4" strokeLinecap="round"/>
+          </svg>
+        </button>
         <span className="lbl-dk">{T('shoot_title')}</span>
+        <div style={{ flex:1 }}/>
         <span className="lbl-dk">{T('shoot_timer')}</span>
       </div>
 
@@ -1052,6 +1067,34 @@ function Screen07Settings() {
     { who:'SEPIA', name:'Yuna', host:false, last:'31m' },
   ];
 
+  // confirm sheet state for destructive actions
+  const [confirm, setConfirm] = React.useState(null); // null | 'leave' | 'close' | 'delete'
+  const isKr = lang === 'kr';
+  const confirmConfigs = {
+    leave: {
+      title: isKr ? '채널을 나갈까요?' : 'Leave channel?',
+      body:  isKr ? '오늘 라운드 진행과 보낸 사진에서 빠집니다. 다른 사람은 채널에 그대로 남아요.'
+                  : "You'll exit this round. Other members stay in the channel.",
+      yes:   isKr ? '나가기' : 'LEAVE',
+      run:   () => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); },
+    },
+    close: {
+      title: isKr ? '채널을 닫을까요?' : 'Close channel?',
+      body:  isKr ? '모든 멤버가 접근을 잃고 24시간 규칙대로 사진이 사라집니다. 되돌릴 수 없어요.'
+                  : "All members lose access and photos vanish per the 24h rule. Can't be undone.",
+      yes:   isKr ? '채널 닫기' : 'CLOSE CHANNEL',
+      run:   () => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); },
+    },
+    delete: {
+      title: isKr ? '계정을 삭제할까요?' : 'Delete account?',
+      body:  isKr ? '프로필, 기록, 호스팅한 채널이 영구 삭제됩니다. 되돌릴 수 없어요.'
+                  : "Your profile, history, and hosted channels are permanently erased. Can't be undone.",
+      yes:   isKr ? '계정 삭제' : 'DELETE ACCOUNT',
+      run:   () => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); },
+    },
+  };
+  const cfg = confirm ? confirmConfigs[confirm] : null;
+
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       {/* top bar — tab mode, no back button */}
@@ -1123,11 +1166,11 @@ function Screen07Settings() {
           </div>
         </div>
 
-        {/* Channel actions */}
+        {/* Channel actions — destructive ones go through confirm sheet */}
         <div style={{ padding:'12px 16px 18px', display:'flex', gap:8 }}>
           <Keycap style={{ flex:1, height:40, fontSize:11 }}>INVITE</Keycap>
-          <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ flex:1, height:40, fontSize:11 }}>LEAVE</Keycap>
-          <Keycap amber onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ flex:1, height:40, fontSize:11 }}>CLOSE CH</Keycap>
+          <Keycap graphite onClick={() => setConfirm('leave')} style={{ flex:1, height:40, fontSize:11 }}>LEAVE</Keycap>
+          <Keycap graphite onClick={() => setConfirm('close')} style={{ flex:1, height:40, fontSize:11 }}>CLOSE CH</Keycap>
         </div>
 
         {/* divider before personal/device settings */}
@@ -1218,11 +1261,25 @@ function Screen07Settings() {
 
         <div style={{ padding:'22px 16px 20px', display:'flex', flexDirection:'column', gap:8 }}>
           <Keycap style={{ width:'100%', height:42, fontSize:11 }}>{T('sign_out')}</Keycap>
-          <Keycap amber style={{ width:'100%', height:42, fontSize:11 }}>{T('delete_acct')}</Keycap>
+          <Keycap graphite onClick={() => setConfirm('delete')} style={{ width:'100%', height:42, fontSize:11 }}>{T('delete_acct')}</Keycap>
         </div>
       </div>
 
       <TabBar active="set"/>
+
+      <ConfirmSheet
+        open={!!confirm}
+        title={cfg?.title || ''}
+        body={cfg?.body || ''}
+        confirmLabel={cfg?.yes || 'CONFIRM'}
+        cancelLabel={isKr ? '취소' : 'CANCEL'}
+        onCancel={() => setConfirm(null)}
+        onConfirm={() => {
+          const fn = cfg?.run;
+          setConfirm(null);
+          if (fn) fn();
+        }}
+      />
     </div>
   );
 }

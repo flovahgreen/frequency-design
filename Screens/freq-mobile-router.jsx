@@ -63,6 +63,7 @@ function Splash({ onDismiss }) {
 }
 
 // id alias map: 시안 코드에서 window.FREQ_NAV('feed') 처럼 친숙한 이름으로 호출
+// info/members 라우트는 Settings의 Channel 섹션으로 통합됨 → 'set'으로 리다이렉트
 const NAV_ALIAS = {
   tune: 0, '01': 0,
   feed: 1, '02': 1,
@@ -70,8 +71,8 @@ const NAV_ALIAS = {
   review: 3, '03b': 3,
   post: 4, '04': 4,
   open: 5, '05': 5,
+  settings: 6, set: 6, '07': 6,
   info: 6, members: 6, '06': 6,
-  settings: 7, set: 7, '07': 7,
 };
 
 function MobileRouter() {
@@ -79,6 +80,7 @@ function MobileRouter() {
   const [lang, setLangState] = useMState(window.FREQ_LANG || 'kr');
   const [showSplash, setShowSplash] = useMState(true);
 
+  // INFO(Members) 화면은 Settings의 Channel 섹션으로 통합 → 라우터에서 제거
   const screens = [
     { id: '01',  label: 'TUNE',   Comp: Screen01TuneIn },
     { id: '02',  label: 'FEED',   Comp: Screen02Feed },
@@ -86,7 +88,6 @@ function MobileRouter() {
     { id: '03b', label: 'REVIEW', Comp: Screen03bReview },
     { id: '04',  label: 'POST',   Comp: Screen04Post },
     { id: '05',  label: 'OPEN',   Comp: Screen05Open },
-    { id: '06',  label: 'INFO',   Comp: Screen06Members },
     { id: '07',  label: 'SET',    Comp: Screen07Settings },
   ];
 
