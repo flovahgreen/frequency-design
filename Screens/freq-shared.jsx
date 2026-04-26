@@ -112,34 +112,39 @@ function StatusLabel({ children, variant = 'ink' }) {
   );
 }
 
-// Screen header — graphite bar with channel code + expiry timer
-// LIVE word removed (signal-dot pulse already conveys "live"), CHANNEL/EXPIRES sub-labels removed
+// Screen header — graphite bar. Layout: [signal] ··· [center: channel ⌄] ··· [timer]
+// 채널 코드 버튼이 가운데로 가서 방 목록 진입점이 명확
 function ScreenHeader({ channel = '4471', timer = '01:47:33', members = 7, onMenu, title }) {
   return (
     <div style={{
       background:'var(--graphite)', color:'var(--mist-0)',
-      padding:'12px 16px',
-      display:'flex', alignItems:'center', gap:10,
+      paddingTop:'calc(env(safe-area-inset-top, 0px) + 12px)',
+      paddingBottom:12, paddingLeft:16, paddingRight:16,
+      position:'relative',
+      display:'flex', alignItems:'center',
       boxShadow:'inset 0 -1px 0 rgba(0,0,0,.4)',
     }}>
-      {/* signal pulse only */}
+      {/* signal pulse — left */}
       <span className="signal-dot"/>
-      {/* Channel code as the headline — tappable to open Rooms list */}
+      <div style={{ flex:1 }}/>
+      {/* expiry timer — right */}
+      <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.08em', fontVariantNumeric:'tabular-nums', color:'rgba(240,232,216,.7)' }}>{timer}</span>
+
+      {/* Channel code button — absolutely centered, tappable to open Rooms */}
       <button
         onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('rooms'); }}
         style={{
+          position:'absolute', left:'50%', top:'calc(env(safe-area-inset-top, 0px) + 12px)',
+          transform:'translateX(-50%)',
           background:'transparent', border:'none', padding:0, cursor:'pointer',
           display:'flex', alignItems:'center', gap:6,
           WebkitTapHighlightColor:'transparent',
         }}>
-        <span style={{ fontFamily:'var(--mono)', fontSize:16, letterSpacing:'.16em', fontWeight:700, color:'var(--mist-0)' }}>{channel}</span>
-        <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
-          <path d="M2 3.5 L5 6.5 L8 3.5" stroke="rgba(240,232,216,.6)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        <span style={{ fontFamily:'var(--mono)', fontSize:17, letterSpacing:'.16em', fontWeight:700, color:'var(--mist-0)' }}>{channel}</span>
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2 3.5 L5 6.5 L8 3.5" stroke="rgba(240,232,216,.7)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
-      <div style={{ flex:1 }}/>
-      {/* expiry timer (no label — context implied) */}
-      <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.08em', fontVariantNumeric:'tabular-nums', color:'rgba(240,232,216,.7)' }}>{timer}</span>
     </div>
   );
 }

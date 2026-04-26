@@ -34,8 +34,8 @@ function Screen01TuneIn({ initialDigits = [] }) {
   };
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      {/* top label strip — minimal */}
-      <div style={{ padding:'20px 22px 0' }}>
+      {/* top label strip — minimal, safe-area aware */}
+      <div style={{ padding:'calc(env(safe-area-inset-top, 0px) + 18px) 22px 0' }}>
         <span style={{
           fontFamily:'var(--mono)', fontSize:14, fontWeight:700,
           letterSpacing:'.2em', textTransform:'uppercase', color:'var(--ink)',
@@ -288,28 +288,26 @@ function Screen02Feed() {
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       <ScreenHeader channel="4471" timer="01:47:33" members={7}/>
 
-      {/* round indicator strip — no label, bars + count tells the story */}
-      <div style={{ padding:'14px 18px 8px', display:'flex', alignItems:'center', gap:10 }}>
-        <div style={{ flex:1, display:'flex', gap:3 }}>
-          {Array.from({length: totalRounds}).map((_,i)=>(
-            <div key={i} style={{
-              flex:1, height:5, borderRadius:3,
-              background: i < round-1 ? 'var(--mist-3)'
-                         : i === round-1 ? 'var(--ink)'
-                         : 'var(--mist-2)',
-            }}/>
-          ))}
-        </div>
-        <span className="mono" style={{ fontSize:11, letterSpacing:'.08em', fontWeight:700 }}>{round}/{totalRounds}</span>
-      </div>
-
-      {/* scroll area — mosaic + meta + member strip */}
+      {/* scroll area — mosaic + round strip + meta */}
       <div className="no-scrollbar" style={{ flex:1, minHeight:0, overflowY:'auto', padding:'18px 18px 16px', display:'flex', flexDirection:'column', gap:14 }}>
-        <div>
-          <Mosaic n={7}/>
+        <Mosaic n={7}/>
+
+        {/* round indicator strip — moved BELOW mosaic per request */}
+        <div style={{ padding:'2px 0 0', display:'flex', alignItems:'center', gap:10 }}>
+          <div style={{ flex:1, display:'flex', gap:3 }}>
+            {Array.from({length: totalRounds}).map((_,i)=>(
+              <div key={i} style={{
+                flex:1, height:5, borderRadius:3,
+                background: i < round-1 ? 'var(--mist-3)'
+                           : i === round-1 ? 'var(--ink)'
+                           : 'var(--mist-2)',
+              }}/>
+            ))}
+          </div>
+          <span className="mono" style={{ fontSize:11, letterSpacing:'.08em', fontWeight:700 }}>{round}/{totalRounds}</span>
         </div>
 
-        {/* meta row — just round timer, signal already in header */}
+        {/* meta row — round timer */}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'flex-end' }}>
           <span className="lbl">14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
         </div>
@@ -386,8 +384,8 @@ function Screen03Camera() {
 
   return (
     <div style={{ flex:1, background:'var(--graphite)', display:'flex', flexDirection:'column', color:'var(--mist-0)' }}>
-      {/* header — close · title · timer */}
-      <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', gap:10 }}>
+      {/* header — close · title · timer (safe-area aware, graphite extends to notch) */}
+      <div style={{ padding:'calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px', display:'flex', alignItems:'center', gap:10 }}>
         <button
           onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }}
           aria-label="Close camera"
@@ -530,22 +528,22 @@ function Screen03bReview() {
   const [caption, setCaption] = React.useState('');
   const onCap = (e) => setCaption(e.target.value.slice(0,40));
 
-  // SEND TO CHANNEL: persist user's caption so FEED Mosaic picks it up
+  // SEND → 캡션 저장 후 SendTo 화면으로 (방 선택 단계)
   const sendToChannel = () => {
     const cap = caption.trim();
     try {
       if (cap) localStorage.setItem('FREQ_USER_POST', cap);
       else localStorage.removeItem('FREQ_USER_POST');
     } catch(_){}
-    if (navigator.vibrate) { try { navigator.vibrate(10); } catch(_){} }
+    if (navigator.vibrate) { try { navigator.vibrate(8); } catch(_){} }
     setCaption('');
-    if (window.FREQ_NAV) window.FREQ_NAV('feed');
+    if (window.FREQ_NAV) window.FREQ_NAV('sendto');
   };
 
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       {/* top bar — back chevron + review title + round timer */}
-      <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--mist-3)' }}>
+      <div style={{ padding:'calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--mist-3)' }}>
         <button
           onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('camera'); }}
           aria-label="Back to camera"
@@ -660,9 +658,10 @@ function Screen04Post() {
 
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      {/* top bar */}
+      {/* top bar — safe-area aware */}
       <div style={{
-        padding:'12px 16px', display:'flex', alignItems:'center', gap:10,
+        padding:'calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px',
+        display:'flex', alignItems:'center', gap:10,
         borderBottom:'1px solid var(--mist-3)',
       }}>
         <button onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }} style={{ border:'none', background:'transparent', padding:0, cursor:'pointer' }}>
@@ -791,7 +790,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
 
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      <div style={{ padding:'16px 18px 8px', display:'flex', justifyContent:'space-between' }}>
+      <div style={{ padding:'calc(env(safe-area-inset-top, 0px) + 14px) 18px 8px', display:'flex', justifyContent:'space-between' }}>
         <span className="lbl">{T('open_channel')}</span>
         <span className="lbl">{T('host_step')}</span>
       </div>
@@ -1160,9 +1159,10 @@ function Screen08Rooms() {
 
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      {/* top bar */}
+      {/* top bar — safe-area aware */}
       <div style={{
-        padding:'14px 16px', display:'flex', alignItems:'center', justifyContent:'space-between',
+        padding:'calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px',
+        display:'flex', alignItems:'center', justifyContent:'space-between',
         borderBottom:'1px solid var(--mist-3)',
       }}>
         <button
@@ -1249,8 +1249,138 @@ function Screen08Rooms() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────
+// 09 · SEND TO — choose which rooms to post into
+// ─────────────────────────────────────────────────────────────
+function Screen09SendTo() {
+  const isKr = window.FREQ_LANG === 'kr';
+  const rooms = [
+    { code:'447.1', name: isKr ? '가족'        : 'Family',         members:7, default:true },
+    { code:'661.4', name: isKr ? '커피 크루'    : 'Coffee Crew',     members:4, default:false },
+    { code:'888.2', name: isKr ? '일요 등산'    : 'Sunday Hiking',   members:5, default:false, ended:true },
+  ];
+  // multi-select state — default 현재 방
+  const [selected, setSelected] = React.useState(() => {
+    const s = new Set();
+    rooms.forEach(r => { if (r.default) s.add(r.code); });
+    return s;
+  });
+  const toggle = (code) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(code)) next.delete(code); else next.add(code);
+      return next;
+    });
+    if (navigator.vibrate) { try { navigator.vibrate(6); } catch(_){} }
+  };
+  const send = () => {
+    if (selected.size === 0) return;
+    if (navigator.vibrate) { try { navigator.vibrate(10); } catch(_){} }
+    if (window.FREQ_NAV) window.FREQ_NAV('feed');
+  };
+
+  return (
+    <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
+      {/* top bar */}
+      <div style={{
+        padding:'calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px',
+        display:'flex', alignItems:'center', justifyContent:'space-between',
+        borderBottom:'1px solid var(--mist-3)',
+      }}>
+        <button
+          onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('review'); }}
+          aria-label="Back to review"
+          style={{
+            width:28, height:28, padding:0, marginLeft:-8,
+            border:'none', background:'transparent', cursor:'pointer',
+            display:'grid', placeItems:'center', WebkitTapHighlightColor:'transparent',
+          }}>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.5"/>
+          </svg>
+        </button>
+        <span style={{
+          fontFamily:'var(--mono)', fontSize:15, fontWeight:700,
+          letterSpacing: isKr ? '.04em' : '.18em',
+          textTransform: isKr ? 'none' : 'uppercase',
+          color:'var(--ink)',
+        }}>{isKr ? '보낼 곳' : 'Send to'}</span>
+        <span style={{ width:28 }}/>
+      </div>
+
+      {/* rooms list with checkboxes */}
+      <div style={{ flex:1, overflowY:'auto', padding:'18px 16px 24px', display:'flex', flexDirection:'column', gap:10 }}>
+        {rooms.map(r => {
+          const checked = selected.has(r.code);
+          return (
+            <button key={r.code}
+              onClick={() => !r.ended && toggle(r.code)}
+              disabled={r.ended}
+              style={{
+                border:'none', cursor: r.ended ? 'default' : 'pointer', textAlign:'left',
+                padding:'14px 14px', borderRadius:14,
+                background: checked
+                  ? 'linear-gradient(180deg, rgba(255,119,168,.18), rgba(255,119,168,.10))'
+                  : 'linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.4))',
+                border: `1.5px solid ${checked ? 'var(--amber)' : 'var(--mist-3)'}`,
+                boxShadow: checked
+                  ? 'inset 0 1px 0 rgba(255,255,255,.6), 0 2px 8px rgba(255,119,168,.2)'
+                  : 'inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(58,51,42,.06)',
+                opacity: r.ended ? 0.4 : 1,
+                display:'flex', alignItems:'center', gap:14,
+                WebkitTapHighlightColor:'transparent',
+                transition:'background 120ms, border-color 120ms',
+              }}>
+              {/* checkbox */}
+              <div style={{
+                width:22, height:22, borderRadius:7,
+                border:`2px solid ${checked ? 'var(--amber)' : 'var(--mist-4)'}`,
+                background: checked ? 'var(--amber)' : 'transparent',
+                display:'grid', placeItems:'center', flexShrink:0,
+                transition:'all 120ms',
+              }}>
+                {checked && (
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                    <path d="M3 7.5 L6 10 L11 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </div>
+
+              <div style={{ flex:1, display:'flex', flexDirection:'column', gap:3, minWidth:0 }}>
+                <div style={{ display:'flex', alignItems:'baseline', gap:8 }}>
+                  <span style={{ fontFamily:'var(--mono)', fontSize:17, fontWeight:700, letterSpacing:'.06em', color:'var(--ink)' }}>{r.code}</span>
+                  <span style={{ fontFamily:'var(--sans)', fontSize:13, fontWeight:500, color:'var(--ink-70)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{r.name}</span>
+                </div>
+                <span className="lbl" style={{ color:'var(--ink-55)' }}>{r.members} {isKr ? '명' : 'MEMBERS'}{r.ended ? (isKr ? ' · 종료' : ' · ENDED') : ''}</span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* bottom send action — sticky */}
+      <div style={{
+        padding:'14px 16px 16px',
+        borderTop:'1px solid var(--mist-3)',
+        background:'var(--mist-0)',
+        flexShrink:0,
+      }}>
+        <Keycap amber onClick={send} style={{
+          width:'100%', height:48, fontSize:12,
+          opacity: selected.size > 0 ? 1 : 0.4,
+          cursor: selected.size > 0 ? 'pointer' : 'default',
+        }}>
+          {isKr
+            ? `${selected.size}개 방으로 보내기 →`
+            : `SEND TO ${selected.size} ROOM${selected.size === 1 ? '' : 'S'} →`}
+        </Keycap>
+      </div>
+    </div>
+  );
+}
+
 Object.assign(window, {
-  Screen01TuneIn, Screen02Feed, Screen03Camera, Screen03bReview, Screen04Post, Screen05Open, Screen06Members, Screen07Settings, Screen08Rooms,
+  Screen01TuneIn, Screen02Feed, Screen03Camera, Screen03bReview, Screen04Post, Screen05Open, Screen06Members, Screen07Settings, Screen08Rooms, Screen09SendTo,
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -1369,8 +1499,8 @@ function Screen07Settings() {
 
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      {/* top bar — tab mode, screen title (larger) */}
-      <div style={{ padding:'14px 16px', display:'flex', alignItems:'center', justifyContent:'center', borderBottom:'1px solid var(--mist-3)' }}>
+      {/* top bar — tab mode, screen title (larger), safe-area aware */}
+      <div style={{ padding:'calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px', display:'flex', alignItems:'center', justifyContent:'center', borderBottom:'1px solid var(--mist-3)' }}>
         <span style={{
           fontFamily:'var(--mono)', fontSize:15, fontWeight:700,
           letterSpacing: isKr ? '.04em' : '.18em',

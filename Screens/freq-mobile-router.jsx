@@ -74,6 +74,7 @@ const NAV_ALIAS = {
   settings: 6, set: 6, '07': 6,
   info: 6, members: 6, '06': 6,
   rooms: 7, room_list: 7, '08': 7,
+  sendto: 8, send_to: 8, '09': 8,
 };
 
 function MobileRouter() {
@@ -93,6 +94,7 @@ function MobileRouter() {
     { id: '05',  label: 'OPEN',   Comp: Screen05Open,      tab: '' },
     { id: '07',  label: 'SET',    Comp: Screen07Settings,  tab: 'set' },
     { id: '08',  label: 'ROOMS',  Comp: Screen08Rooms,     tab: 'feed' },
+    { id: '09',  label: 'SENDTO', Comp: Screen09SendTo,    tab: '' },
   ];
 
   // 글로벌 navigate — 시안 컴포넌트에서 window.FREQ_NAV('feed') 처럼 호출
@@ -173,8 +175,8 @@ function MobileRouter() {
       color: 'var(--ink)',
       display: 'flex', flexDirection: 'column',
       overflow: 'hidden',
-      paddingTop: 'env(safe-area-inset-top, 0)',
-      // paddingBottom 제거 → TabBar가 자체 safe-area 처리, 화면 바닥까지 닿음
+      // paddingTop 제거 → 각 화면의 헤더가 노치까지 자기 색으로 닿음
+      // paddingBottom 제거 → TabBar가 자체 safe-area 처리
     }}>
       {/* scrollable main area — TabBar 영역만큼 줄어든 viewport */}
       <div key={screen} data-mobile-main style={{
