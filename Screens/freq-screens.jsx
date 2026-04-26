@@ -150,7 +150,7 @@ function Screen01TuneIn({ initialDigits = [] }) {
       </div>
 
       {/* Open new channel — secondary entry */}
-      <div style={{ padding:'2px 22px 22px', display:'flex', justifyContent:'center', flexShrink:0 }}>
+      <div style={{ padding:'2px 22px 16px', display:'flex', justifyContent:'center', flexShrink:0 }}>
         <button
           onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('open'); }}
           style={{
@@ -314,8 +314,7 @@ function Screen02Feed() {
           <span className="lbl">14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
         </div>
       </div>
-
-      <TabBar active="feed"/>
+      {/* TabBar는 라우터 레벨에서 fixed로 렌더 */}
     </div>
   );
 }
@@ -449,7 +448,7 @@ function Screen03Camera() {
       <div style={{ flex:1 }}/>
 
       {/* controls — left: last shot (filmstrip peek), center: shutter, right: flip */}
-      <div style={{ padding:'14px 22px 22px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+      <div style={{ padding:'14px 22px calc(env(safe-area-inset-bottom, 0px) + 16px)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         {/* Last frame peek */}
         <div style={{ display:'flex', flexDirection:'column', gap:6, alignItems:'center' }}>
           <div style={{
@@ -729,8 +728,12 @@ function Screen04Post() {
         ))}
       </div>
 
-      {/* comment input */}
-      <div style={{ padding:'10px 16px', borderTop:'1px solid var(--mist-3)', display:'flex', gap:8, alignItems:'center' }}>
+      {/* comment input — flex:0이라 스크롤 영역 밖에서 고정 */}
+      <div style={{
+        padding:'10px 16px',
+        borderTop:'1px solid var(--mist-3)', display:'flex', gap:8, alignItems:'center',
+        background:'var(--mist-0)', flexShrink:0,
+      }}>
         <div className="well" style={{ flex:1, padding:'6px 10px', display:'flex', alignItems:'center', gap:6 }}>
           <input
             value={draft}
@@ -1445,7 +1448,7 @@ function Screen07Settings() {
         </>)}
       </div>
 
-      <TabBar active="set"/>
+      {/* TabBar는 라우터 레벨에서 fixed로 렌더 */}
 
       <ConfirmSheet
         open={!!confirm}

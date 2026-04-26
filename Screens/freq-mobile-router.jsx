@@ -81,14 +81,16 @@ function MobileRouter() {
   const [showSplash, setShowSplash] = useMState(true);
 
   // INFO(Members) 화면은 Settings의 Channel 섹션으로 통합 → 라우터에서 제거
+  // tab: 활성 표시할 탭 id (빈 값=어떤 탭도 활성 아님)
+  // hideNav: 카메라 같은 풀스크린 모드에서 TabBar 자체 숨김
   const screens = [
-    { id: '01',  label: 'TUNE',   Comp: Screen01TuneIn },
-    { id: '02',  label: 'FEED',   Comp: Screen02Feed },
-    { id: '03',  label: 'CAM',    Comp: Screen03Camera },
-    { id: '03b', label: 'REVIEW', Comp: Screen03bReview },
-    { id: '04',  label: 'POST',   Comp: Screen04Post },
-    { id: '05',  label: 'OPEN',   Comp: Screen05Open },
-    { id: '07',  label: 'SET',    Comp: Screen07Settings },
+    { id: '01',  label: 'TUNE',   Comp: Screen01TuneIn,    tab: '' },
+    { id: '02',  label: 'FEED',   Comp: Screen02Feed,      tab: 'feed' },
+    { id: '03',  label: 'CAM',    Comp: Screen03Camera,    tab: '',     hideNav: true },
+    { id: '03b', label: 'REVIEW', Comp: Screen03bReview,   tab: '' },
+    { id: '04',  label: 'POST',   Comp: Screen04Post,      tab: 'feed' },
+    { id: '05',  label: 'OPEN',   Comp: Screen05Open,      tab: '' },
+    { id: '07',  label: 'SET',    Comp: Screen07Settings,  tab: 'set' },
   ];
 
   // 글로벌 navigate — 시안 컴포넌트에서 window.FREQ_NAV('feed') 처럼 호출
@@ -159,6 +161,8 @@ function MobileRouter() {
   }, [screen]);
 
   const Current = screens[screen].Comp;
+  const currentTab = screens[screen].tab;
+  const hideNav = !!screens[screen].hideNav;
 
   return (
     <div style={{
@@ -168,9 +172,9 @@ function MobileRouter() {
       display: 'flex', flexDirection: 'column',
       overflow: 'hidden',
       paddingTop: 'env(safe-area-inset-top, 0)',
-      paddingBottom: 'env(safe-area-inset-bottom, 0)',
+      // paddingBottom 제거 → TabBar가 자체 safe-area 처리, 화면 바닥까지 닿음
     }}>
-      {/* 풀스크린 main screen — 디버깅용 nav bar 제거됨 (진짜 앱 모드) */}
+      {/* scrollable main area — TabBar 영역만큼 줄어든 viewport */}
       <div key={screen} data-mobile-main style={{
         flex: 1, minHeight: 0,
         display: 'flex', flexDirection: 'column',
@@ -179,6 +183,8 @@ function MobileRouter() {
       }}>
         <Current />
       </div>
+      {/* TabBar — 스크롤과 무관하게 항상 바닥에 고정. 카메라에서만 숨김 */}
+      {!hideNav && <TabBar active={currentTab}/>}
       {showSplash && <Splash onDismiss={() => setShowSplash(false)} />}
     </div>
   );
