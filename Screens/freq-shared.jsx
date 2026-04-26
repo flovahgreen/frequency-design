@@ -280,10 +280,9 @@ function FilmPlaceholder({ label, style, children }) {
   );
 }
 
-// ConfirmSheet — bottom sheet for destructive / irreversible actions.
-// Props: open, title, body, confirmLabel, cancelLabel, onConfirm, onCancel
-// 백드롭 클릭 또는 Cancel로 닫힘. Confirm 버튼은 amber (진행 액션이라).
-function ConfirmSheet({ open, title, body, confirmLabel = 'CONFIRM', cancelLabel = 'CANCEL', onConfirm, onCancel }) {
+// BottomSheet — generic backdrop + slide-up shell. children rendered inside.
+// Props: open, onClose (백드롭 클릭), children
+function BottomSheet({ open, onClose, children }) {
   const [phase, setPhase] = React.useState('closed');
 
   React.useEffect(() => {
@@ -297,12 +296,11 @@ function ConfirmSheet({ open, title, body, confirmLabel = 'CONFIRM', cancelLabel
   }, [open]);
 
   if (!open && phase === 'closed') return null;
-
   const visible = phase === 'open';
 
   return (
     <div
-      onClick={onCancel}
+      onClick={onClose}
       style={{
         position:'fixed', inset:0, zIndex:9000,
         background: visible ? 'rgba(20,18,17,.45)' : 'rgba(20,18,17,0)',
@@ -319,21 +317,116 @@ function ConfirmSheet({ open, title, body, confirmLabel = 'CONFIRM', cancelLabel
           transition:'transform 240ms cubic-bezier(0.2,0,0,1)',
           display:'flex', flexDirection:'column', gap:14,
         }}>
-        <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
-          <span className="lbl" style={{ color:'var(--ink)' }}>{title}</span>
-          {body && (
-            <span style={{ fontFamily:'var(--sans)', fontSize:14, lineHeight:1.5, color:'var(--ink-70)' }}>
-              {body}
-            </span>
-          )}
-        </div>
-        <div style={{ display:'flex', gap:8 }}>
-          <Keycap onClick={onCancel} style={{ flex:1, height:44, fontSize:11 }}>{cancelLabel}</Keycap>
-          <Keycap amber onClick={onConfirm} style={{ flex:1, height:44, fontSize:11 }}>{confirmLabel}</Keycap>
-        </div>
+        {children}
       </div>
     </div>
   );
 }
 
-Object.assign(window, { MEMBER_COLORS, Chip, StatusLabel, ScreenHeader, Phone, TabBar, Keycap, FilmPlaceholder, ConfirmSheet, T, FREQ_STRINGS });
+// ConfirmSheet — bottom sheet for destructive / irreversible actions.
+function ConfirmSheet({ open, title, body, confirmLabel = 'CONFIRM', cancelLabel = 'CANCEL', onConfirm, onCancel }) {
+  return (
+    <BottomSheet open={open} onClose={onCancel}>
+      <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+        <span className="lbl" style={{ color:'var(--ink)' }}>{title}</span>
+        {body && (
+          <span style={{ fontFamily:'var(--sans)', fontSize:14, lineHeight:1.5, color:'var(--ink-70)' }}>
+            {body}
+          </span>
+        )}
+      </div>
+      <div style={{ display:'flex', gap:8 }}>
+        <Keycap onClick={onCancel} style={{ flex:1, height:44, fontSize:11 }}>{cancelLabel}</Keycap>
+        <Keycap amber onClick={onConfirm} style={{ flex:1, height:44, fontSize:11 }}>{confirmLabel}</Keycap>
+      </div>
+    </BottomSheet>
+  );
+}
+
+// InviteSheet — share channel code with friends.
+// Big mono code display + COPY + SHARE actions.
+function InviteSheet({ open, onClose, channel = '447.1' }) {
+  const isKr = (window.FREQ_LANG || 'en') === 'kr';
+  const [copyState, setCopyState] = React.useState('idle'); // 'idle' | 'copied'
+  const code = channel;
+  const shareText = isKr
+    ? `FREQUENCY 채널 ${code} MHZ로 들어와줘`
+    : `Tune in to my FREQUENCY channel: ${code} MHZ`;
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopyState('copied');
+      if (navigator.vibrate) { try { navigator.vibrate(8); } catch(_){} }
+      setTimeout(() => setCopyState('idle'), 1500);
+    } catch(_) {
+      // older browsers — fallback
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = code;
+        document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+        setCopyState('copied');
+        setTimeout(() => setCopyState('idle'), 1500);
+      } catch(__) {}
+    }
+  };
+
+  const share = async () => {
+    if (navigator.share) {
+      try { await navigator.share({ title: 'FREQUENCY', text: shareText }); }
+      catch(_) { /* user cancelled */ }
+    } else {
+      try { await navigator.clipboard.writeText(shareText); setCopyState('copied'); setTimeout(() => setCopyState('idle'), 1500); }
+      catch(_) {}
+    }
+  };
+
+  // reset copy state when sheet closes
+  React.useEffect(() => { if (!open) setCopyState('idle'); }, [open]);
+
+  // split channel into NNN + N for display formatting
+  const parts = code.split('.');
+  const intPart = parts[0] || code;
+  const decPart = parts[1] || '';
+
+  return (
+    <BottomSheet open={open} onClose={onClose}>
+      <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
+        <span className="lbl" style={{ color:'var(--ink)' }}>{isKr ? '채널 초대' : 'INVITE TO CHANNEL'}</span>
+        <span style={{ fontFamily:'var(--sans)', fontSize:13, color:'var(--ink-70)', lineHeight:1.5 }}>
+          {isKr ? '아래 주파수 코드를 친구에게 공유하세요. TUNE 화면에서 입력하면 들어옵니다.' : 'Share this code with friends. They tune in from the TUNE screen.'}
+        </span>
+      </div>
+
+      {/* big mono channel code */}
+      <div style={{
+        margin:'4px 0 6px',
+        padding:'18px 14px',
+        background:'var(--mist-1)',
+        boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+        display:'flex', alignItems:'baseline', justifyContent:'center', gap:6,
+      }}>
+        <span style={{ fontFamily:'var(--mono)', fontSize:42, fontWeight:600, letterSpacing:'.06em', color:'var(--ink)', fontVariantNumeric:'tabular-nums' }}>{intPart}</span>
+        {decPart && (<>
+          <span style={{ fontFamily:'var(--mono)', fontSize:36, fontWeight:600, color:'var(--ink-35)', lineHeight:1 }}>.</span>
+          <span style={{ fontFamily:'var(--mono)', fontSize:42, fontWeight:600, letterSpacing:'.06em', color:'var(--ink)', fontVariantNumeric:'tabular-nums' }}>{decPart}</span>
+        </>)}
+        <span style={{ fontFamily:'var(--mono)', fontSize:11, letterSpacing:'.2em', color:'var(--ink-55)', alignSelf:'flex-end', paddingBottom:6, marginLeft:4 }}>MHZ</span>
+      </div>
+
+      {/* actions */}
+      <div style={{ display:'flex', gap:8 }}>
+        <Keycap onClick={copyCode} style={{ flex:1, height:44, fontSize:11 }}>
+          {copyState === 'copied' ? (isKr ? '복사됨' : 'COPIED') : (isKr ? '코드 복사' : 'COPY CODE')}
+        </Keycap>
+        <Keycap amber onClick={share} style={{ flex:1, height:44, fontSize:11 }}>
+          {isKr ? '공유하기' : 'SHARE'}
+        </Keycap>
+      </div>
+    </BottomSheet>
+  );
+}
+
+Object.assign(window, { MEMBER_COLORS, Chip, StatusLabel, ScreenHeader, Phone, TabBar, Keycap, FilmPlaceholder, BottomSheet, ConfirmSheet, InviteSheet, T, FREQ_STRINGS });

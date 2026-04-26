@@ -1183,6 +1183,9 @@ function Screen07Settings() {
   // top-level segment: room (channel info) | general (device + account)
   const [section, setSection] = React.useState('room');
 
+  // invite sheet
+  const [inviteOpen, setInviteOpen] = React.useState(false);
+
   // confirm sheet state for destructive actions
   const [confirm, setConfirm] = React.useState(null); // null | 'leave' | 'close' | 'delete'
   const isKr = lang === 'kr';
@@ -1306,7 +1309,7 @@ function Screen07Settings() {
 
         {/* Channel actions — destructive ones go through confirm sheet */}
         <div style={{ padding:'12px 16px 22px', display:'flex', gap:8 }}>
-          <Keycap style={{ flex:1, height:40, fontSize:11 }}>INVITE</Keycap>
+          <Keycap onClick={() => setInviteOpen(true)} style={{ flex:1, height:40, fontSize:11 }}>INVITE</Keycap>
           <Keycap graphite onClick={() => setConfirm('leave')} style={{ flex:1, height:40, fontSize:11 }}>LEAVE</Keycap>
           <Keycap graphite onClick={() => setConfirm('close')} style={{ flex:1, height:40, fontSize:11 }}>CLOSE CH</Keycap>
         </div>
@@ -1393,6 +1396,12 @@ function Screen07Settings() {
           setConfirm(null);
           if (fn) fn();
         }}
+      />
+
+      <InviteSheet
+        open={inviteOpen}
+        onClose={() => setInviteOpen(false)}
+        channel="447.1"
       />
     </div>
   );
