@@ -325,7 +325,7 @@ function Screen03Camera() {
       recIntervalRef.current = setInterval(() => {
         const t = (Date.now() - startRef.current - 300) / 1000;
         setRecT(t);
-        if (t >= 5) {
+        if (t >= 3) {
           doneRef.current = true;
           cleanup();
           setHolding(false);
@@ -354,7 +354,7 @@ function Screen03Camera() {
     }
   };
 
-  const pct = Math.min(recT / 5, 1);
+  const pct = Math.min(recT / 3, 1);
   const C = 2 * Math.PI * 38;
 
   return (
@@ -474,7 +474,7 @@ function Screen03Camera() {
               </svg>
             )}
           </button>
-          <span className="lbl-dk">{holding ? 'Recording · release to stop' : 'Tap · Photo  ·  Hold · 5s'}</span>
+          <span className="lbl-dk">{holding ? 'Recording · release to stop' : 'Tap · Photo  ·  Hold · 3s'}</span>
         </div>
 
         {/* FLIP camera */}
@@ -1119,10 +1119,7 @@ function Screen07Settings() {
   const saveBool = (k, v) => { try { localStorage.setItem('FREQ_SET_' + k, v ? '1' : '0'); } catch(e){} };
 
   const [shutter, setShutter] = React.useState(() => loadBool('shutter', true));
-  const [haptic, setHaptic]   = React.useState(() => loadBool('haptic', true));
   const [grid, setGrid]       = React.useState(() => loadBool('grid', false));
-  const [receipts, setReceipts] = React.useState(() => loadBool('receipts', false));
-  const [screenLock, setScreenLock] = React.useState(() => loadBool('screenLock', true));
 
   const flip = (key, val, setter) => {
     setter(val);
@@ -1159,8 +1156,16 @@ function Screen07Settings() {
     </button>
   );
   const Section = ({ title, children }) => (
-    <div style={{ marginTop:18 }}>
-      <div className="lbl" style={{ padding:'0 16px 8px' }}>{title}</div>
+    <div style={{ marginTop:22 }}>
+      <div style={{
+        padding:'0 16px 8px',
+        fontFamily:'var(--mono)',
+        fontSize:12,
+        fontWeight:700,
+        letterSpacing:'.18em',
+        textTransform:'uppercase',
+        color:'var(--ink)',
+      }}>{title}</div>
       {children}
     </div>
   );
@@ -1349,48 +1354,21 @@ function Screen07Settings() {
         </Section>
 
         <Section title={T('signal_sec')}>
-          <Row first label={T('default_unit')} value="MHZ · 3+1 DECIMAL"/>
-          <Row label={T('auto_tune')} value="Last used · 447.1"/>
-          <Row label={T('led_bright')} value="04 / 08" right={
-            <div style={{ display:'flex', gap:3 }}>
-              {Array.from({length:8}).map((_,i)=>(
-                <div key={i} style={{ width:3, height:14, background: i<4 ? 'var(--signal)' : 'var(--mist-3)' }}/>
-              ))}
-            </div>
-          }/>
+          <Row first label={T('auto_tune')} value="Last used · 447.1"/>
         </Section>
 
         <Section title={T('capture')}>
           <Row first label={T('aspect')} value="3 : 4 · Locked"/>
-          {/* boolean-only toggles drop the value text — toggle visual is the source of truth */}
           <Row label={T('shutter_sound')} value="" right={<Toggle on={shutter} onToggle={(v)=>flip('shutter', v, setShutter)}/>}/>
-          {/* HAPTIC keeps intensity label even when off (dimmed) */}
-          <Row label={T('haptic')} value={<span style={{ opacity: haptic ? 1 : 0.4 }}>MEDIUM</span>} right={<Toggle on={haptic} onToggle={(v)=>flip('haptic', v, setHaptic)}/>}/>
-          {/* GRID keeps grid pattern label */}
           <Row label={T('grid')} value={<span style={{ opacity: grid ? 1 : 0.4 }}>3 × 3</span>} right={<Toggle on={grid} onToggle={(v)=>flip('grid', v, setGrid)}/>}/>
         </Section>
 
         <Section title={T('privacy')}>
           <Row first label={T('auto_vanish')} value="24H · Non-negotiable"/>
-          <Row label={T('receipts')} value="" right={<Toggle on={receipts} onToggle={(v)=>flip('receipts', v, setReceipts)}/>}/>
-          <Row label={T('screen_lock')} value="" right={<Toggle on={screenLock} onToggle={(v)=>flip('screenLock', v, setScreenLock)}/>}/>
-        </Section>
-
-        <Section title={T('appearance')}>
-          <Row first label="PALETTE" value="Paper Mist" right={
-            <div style={{ display:'flex', gap:4 }}>
-              <div style={{ width:14, height:14, background:'var(--mist-0)', boxShadow:'0 0 0 1.5px var(--ink)' }}/>
-              <div style={{ width:14, height:14, background:'var(--graphite)', boxShadow:'inset 0 0 0 1px rgba(255,255,255,.1)' }}/>
-              <div style={{ width:14, height:14, background:'#EDE6D7', boxShadow:'inset 0 0 0 1px var(--mist-3)' }}/>
-            </div>
-          }/>
-          <Row label={T('accent')} value="Amber · #E96A2A" right={<div style={{ width:14, height:14, background:'var(--amber)' }}/>}/>
-          <Row label={T('type_scale')} value="STANDARD"/>
         </Section>
 
         <Section title={T('about')}>
           <Row first label={T('version')} value="0.4 · Rev 2026.04.24"/>
-          <Row label={T('build')} value="FREQ-IOS-0421"/>
           <Row label={T('terms')} value={T('view')}/>
         </Section>
 
