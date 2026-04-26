@@ -34,10 +34,12 @@ function Screen01TuneIn({ initialDigits = [] }) {
   };
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      {/* top label strip */}
-      <div style={{ padding:'18px 22px 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-        <span className="lbl">{T('tune_top')}</span>
-        <span className="lbl">{T('step')}</span>
+      {/* top label strip — minimal */}
+      <div style={{ padding:'20px 22px 0' }}>
+        <span style={{
+          fontFamily:'var(--mono)', fontSize:14, fontWeight:700,
+          letterSpacing:'.2em', textTransform:'uppercase', color:'var(--ink)',
+        }}>FREQUENCY</span>
       </div>
 
       {/* centered cluster: dial + 4-digit display */}
@@ -153,11 +155,11 @@ function Screen01TuneIn({ initialDigits = [] }) {
           onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('open'); }}
           style={{
             background:'transparent', border:'none', cursor:'pointer',
-            fontFamily:'var(--mono)', fontSize:10, letterSpacing:'.16em',
-            color:'var(--ink-55)', textTransform:'uppercase', fontWeight:500,
+            fontFamily:'var(--mono)', fontSize:11, letterSpacing:'.18em',
+            color:'var(--ink-55)', textTransform:'uppercase', fontWeight:700,
             padding:'8px 12px',
           }}>
-          + OPEN NEW CHANNEL
+          + NEW
         </button>
       </div>
     </div>
@@ -286,9 +288,8 @@ function Screen02Feed() {
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       <ScreenHeader channel="4471" timer="01:47:33" members={7}/>
 
-      {/* round indicator strip */}
-      <div style={{ padding:'12px 18px 8px', display:'flex', alignItems:'center', gap:10 }}>
-        <span className="lbl">{T('feed_round')}</span>
+      {/* round indicator strip — no label, bars + count tells the story */}
+      <div style={{ padding:'14px 18px 8px', display:'flex', alignItems:'center', gap:10 }}>
         <div style={{ flex:1, display:'flex', gap:3 }}>
           {Array.from({length: totalRounds}).map((_,i)=>(
             <div key={i} style={{
@@ -308,15 +309,9 @@ function Screen02Feed() {
           <Mosaic n={7}/>
         </div>
 
-        {/* meta row */}
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <span className="lbl">Round 08 · 14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
-          </div>
-          <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-            <span className="signal-dot"/>
-            <span className="lbl" style={{ color:'var(--signal)' }}>{T('feed_live')}</span>
-          </div>
+        {/* meta row — just round timer, signal already in header */}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'flex-end' }}>
+          <span className="lbl">14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
         </div>
       </div>
 
@@ -408,7 +403,6 @@ function Screen03Camera() {
             <line x1="12" y1="2" x2="2" y2="12" stroke="rgba(240,232,216,.7)" strokeWidth="1.4" strokeLinecap="round"/>
           </svg>
         </button>
-        <span className="lbl-dk">{T('shoot_title')}</span>
         <div style={{ flex:1 }}/>
         <span className="lbl-dk">{T('shoot_timer')}</span>
       </div>
@@ -441,13 +435,11 @@ function Screen03Camera() {
             <line x1="6" y1="12" x2="10" y2="12" stroke="rgba(255,255,255,.7)" strokeWidth="1"/>
             <line x1="14" y1="12" x2="18" y2="12" stroke="rgba(255,255,255,.7)" strokeWidth="1"/>
           </svg>
-          <div style={{ position:'absolute', top:14, right:14, background:'rgba(0,0,0,.45)', padding:'4px 8px', borderRadius:8 }}>
-            <span className="mono" style={{ fontSize:9, letterSpacing:'.14em', color:'rgba(255,255,255,.85)' }}>F·08</span>
-          </div>
+          {/* F·08 frame indicator removed — too noisy. REC pill kept (essential during recording) */}
           {holding && (
             <div style={{ position:'absolute', top:14, left:14, display:'flex', alignItems:'center', gap:6, background:'rgba(0,0,0,.45)', padding:'4px 8px', borderRadius:8 }}>
               <div style={{ width:6, height:6, borderRadius:'50%', background:'var(--amber)', animation:'breathe 1s ease-in-out infinite' }}/>
-              <span className="mono" style={{ fontSize:9, letterSpacing:'.14em', color:'#fff' }}>REC {recT.toFixed(1)}</span>
+              <span className="mono" style={{ fontSize:10, letterSpacing:'.14em', color:'#fff', fontWeight:700 }}>{recT.toFixed(1)}</span>
             </div>
           )}
         </div>
@@ -469,7 +461,6 @@ function Screen03Camera() {
           }}>
             <div className="film-stripe" style={{ position:'absolute', inset:0, opacity:.8 }}/>
           </div>
-          <span className="lbl-dk">Last</span>
         </div>
 
         {/* Shutter — tap = photo, hold = 5s video */}
@@ -508,7 +499,7 @@ function Screen03Camera() {
               </svg>
             )}
           </button>
-          <span className="lbl-dk">{holding ? 'Recording · release to stop' : 'Tap · Photo  ·  Hold · 3s'}</span>
+          {holding && <span className="lbl-dk" style={{ color:'var(--amber)' }}>● REC</span>}
         </div>
 
         {/* FLIP camera */}
@@ -527,7 +518,6 @@ function Screen03Camera() {
               <path d="M7 16 L5 14 L7 12" stroke="rgba(240,232,216,.85)" strokeWidth="1.3" fill="none"/>
             </svg>
           </button>
-          <span className="lbl-dk">Flip</span>
         </div>
       </div>
     </div>
@@ -568,7 +558,7 @@ function Screen03bReview() {
           }}>
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.4"/></svg>
         </button>
-        <span className="lbl" style={{ color:'var(--ink)' }}>REVIEW · F·08</span>
+        <span style={{ fontFamily:'var(--mono)', fontSize:13, fontWeight:700, letterSpacing:'.18em', textTransform:'uppercase', color:'var(--ink)' }}>REVIEW</span>
         <span style={{ width:28 }}/>{/* spacer for symmetry with back chevron */}
       </div>
 
@@ -612,12 +602,11 @@ function Screen03bReview() {
         </div>
       </div>
 
-      {/* meta row */}
+      {/* meta row — chip + round timer only */}
       <div style={{ padding:'14px 16px 0', display:'flex', alignItems:'center', gap:10 }}>
         <Chip who="YOU"/>
-        <span className="lbl">Round 08 · 14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
         <div style={{ flex:1 }}/>
-        <span className="lbl">24H Expires</span>
+        <span className="lbl">14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
       </div>
 
       <div style={{ flex:1 }}/>
@@ -689,7 +678,6 @@ function Screen04Post() {
         <span style={{ fontFamily:'var(--sans)', fontSize:13, fontWeight:500, color:'var(--ink)' }}>{authorName}</span>
         <span className="lbl" style={{ color:'var(--ink-35)' }}>· 03m {isPostKr ? '전' : 'ago'}</span>
         <div style={{ flex:1 }}/>
-        <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>F·08</span>
       </div>
 
       {/* image */}
@@ -935,10 +923,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
               ))}
             </div>
 
-            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-              <span className="lbl-dk">Airwaves · Open</span>
-              <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'rgba(240,232,216,.4)' }}>ETA 00:12</span>
-            </div>
+            {/* Airwaves · Open + ETA 라벨 제거 — Broadcasting 카운트다운으로 충분 */}
           </div>
 
           {/* your identity card */}
@@ -1284,9 +1269,14 @@ function Screen07Settings() {
 
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      {/* top bar — tab mode, no back button */}
-      <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'center', borderBottom:'1px solid var(--mist-3)' }}>
-        <span className="lbl" style={{ color:'var(--ink)' }}>{T('settings')}</span>
+      {/* top bar — tab mode, screen title (larger) */}
+      <div style={{ padding:'14px 16px', display:'flex', alignItems:'center', justifyContent:'center', borderBottom:'1px solid var(--mist-3)' }}>
+        <span style={{
+          fontFamily:'var(--mono)', fontSize:15, fontWeight:700,
+          letterSpacing: isKr ? '.04em' : '.18em',
+          textTransform: isKr ? 'none' : 'uppercase',
+          color:'var(--ink)',
+        }}>{T('settings')}</span>
       </div>
 
       {/* ROOM ↔ GENERAL segmented switch */}

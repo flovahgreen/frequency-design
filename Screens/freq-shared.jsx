@@ -112,33 +112,23 @@ function StatusLabel({ children, variant = 'ink' }) {
   );
 }
 
-// Screen header — graphite bar, CH xxxx / timer / members / menu
+// Screen header — graphite bar with channel code + expiry timer
+// LIVE word removed (signal-dot pulse already conveys "live"), CHANNEL/EXPIRES sub-labels removed
 function ScreenHeader({ channel = '4471', timer = '01:47:33', members = 7, onMenu, title }) {
   return (
     <div style={{
       background:'var(--graphite)', color:'var(--mist-0)',
-      padding:'10px 14px 10px 16px',
+      padding:'12px 16px',
       display:'flex', alignItems:'center', gap:10,
       boxShadow:'inset 0 -1px 0 rgba(0,0,0,.4)',
     }}>
-      {/* Left: LIVE signal */}
-      <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-        <span className="signal-dot"/>
-        <span style={{ fontFamily:'var(--mono)', fontSize:9.5, letterSpacing:'.16em', color:'rgba(240,232,216,.7)' }}>LIVE</span>
-      </div>
-      <div style={{ width:1, height:14, background:'rgba(255,255,255,.12)' }}/>
-      {/* Channel code */}
-      <div style={{ display:'flex', flexDirection:'column', lineHeight:1.1 }}>
-        <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.18em', color:'rgba(240,232,216,.4)' }}>CHANNEL</span>
-        <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.15em', fontWeight:600, color:'var(--mist-0)' }}>{channel}</span>
-      </div>
+      {/* signal pulse only */}
+      <span className="signal-dot"/>
+      {/* Channel code as the headline */}
+      <span style={{ fontFamily:'var(--mono)', fontSize:16, letterSpacing:'.16em', fontWeight:700, color:'var(--mist-0)' }}>{channel}</span>
       <div style={{ flex:1 }}/>
-      {/* Timer — channel expiration countdown */}
-      <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', lineHeight:1.1 }}>
-        <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.18em', color:'rgba(240,232,216,.4)', textTransform:'uppercase' }}>{T('expires')}</span>
-        <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.08em', fontVariantNumeric:'tabular-nums', color:'var(--mist-0)' }}>{timer}</span>
-      </div>
-      {/* hamburger removed — SET tab in bottom nav covers settings */}
+      {/* expiry timer (no label — context implied) */}
+      <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.08em', fontVariantNumeric:'tabular-nums', color:'rgba(240,232,216,.7)' }}>{timer}</span>
     </div>
   );
 }
@@ -188,23 +178,37 @@ function Phone({ children, style }) {
 
 // Tab bar at bottom — 4 items
 function TabBar({ active = 'feed' }) {
-  // 3-tab nav: FEED / SHOOT / SET (Info merged into Set)
+  // 3-tab nav: FEED(mint) / SHOOT(pink) / SET(blue) — each tab has its own polycarbonate accent color
   const NAV_MAP = { feed: 'feed', cam: 'camera', set: 'settings' };
-  const Tab = ({ id, label, icon }) => {
+  const Tab = ({ id, label, icon, color, glowColor }) => {
     const on = active === id;
     const handleClick = () => {
       if (window.FREQ_NAV) window.FREQ_NAV(NAV_MAP[id] || id);
     };
     return (
       <button onClick={handleClick} style={{
-        flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:4,
-        padding:'8px 0 6px',
+        flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:5,
+        padding:'10px 0 8px',
         background: 'transparent', border: 'none', cursor: 'pointer',
-        color: on ? 'var(--ink)' : 'var(--ink-35)',
         WebkitTapHighlightColor:'transparent',
       }}>
-        <div style={{ width:18, height:18, display:'grid', placeItems:'center' }}>{icon}</div>
-        <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.16em', textTransform:'uppercase', fontWeight: on?600:500 }}>{label}</span>
+        <div style={{
+          width:42, height:30, borderRadius:14,
+          display:'grid', placeItems:'center',
+          background: on
+            ? `linear-gradient(180deg, ${color}, ${color})`
+            : 'transparent',
+          boxShadow: on
+            ? `0 2px 8px ${glowColor}, inset 0 1px 0 rgba(255,255,255,.35)`
+            : 'none',
+          color: on ? '#FFFFFF' : 'var(--ink-35)',
+          transition: 'background 150ms, box-shadow 150ms',
+        }}>{icon}</div>
+        <span style={{
+          fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.16em', textTransform:'uppercase',
+          fontWeight: on ? 700 : 500,
+          color: on ? 'var(--ink)' : 'var(--ink-35)',
+        }}>{label}</span>
       </button>
     );
   };
@@ -213,32 +217,34 @@ function TabBar({ active = 'feed' }) {
       borderTop:'1px solid var(--mist-3)',
       background:'var(--mist-0)',
       display:'flex',
-      // safe-area는 너무 큼 → cap해서 버튼이 화면 바닥에 더 가깝게
       paddingBottom:'min(env(safe-area-inset-bottom, 0px), 10px)',
     }}>
-      {/* FEED · 3x3 mosaic dots with rounded corners (polycarbonate) */}
-      <Tab id="feed" label="Feed" icon={
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          {[0,1,2].flatMap(r => [0,1,2].map(c => (
-            <rect key={`${r}-${c}`} x={1 + c*6} y={1 + r*6} width="4" height="4" rx="1" ry="1" fill="currentColor"/>
-          )))}
-        </svg>
-      }/>
-      {/* SHOOT · aperture / shutter — concentric rings + center dot */}
-      <Tab id="cam" label="Shoot" icon={
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <circle cx="9" cy="9" r="7.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
-          <circle cx="9" cy="9" r="4.6" stroke="currentColor" strokeWidth="1" fill="none"/>
-          <circle cx="9" cy="9" r="1.6" fill="currentColor"/>
-        </svg>
-      }/>
-      {/* SET · TE-style knob with single tick at 2 o'clock */}
-      <Tab id="set" label="Set" icon={
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <circle cx="9" cy="9" r="7.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
-          <line x1="13.2" y1="4.8" x2="11.4" y2="6.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-        </svg>
-      }/>
+      <Tab id="feed" label="Feed"
+        color="var(--m-mint)" glowColor="rgba(93,221,167,.45)"
+        icon={
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            {[0,1,2].flatMap(r => [0,1,2].map(c => (
+              <rect key={`${r}-${c}`} x={1 + c*6} y={1 + r*6} width="4" height="4" rx="1" ry="1" fill="currentColor"/>
+            )))}
+          </svg>
+        }/>
+      <Tab id="cam" label="Shoot"
+        color="var(--amber)" glowColor="rgba(255,119,168,.5)"
+        icon={
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7.5" stroke="currentColor" strokeWidth="1.4" fill="none"/>
+            <circle cx="9" cy="9" r="4.6" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+            <circle cx="9" cy="9" r="1.8" fill="currentColor"/>
+          </svg>
+        }/>
+      <Tab id="set" label="Set"
+        color="var(--m-ekta)" glowColor="rgba(74,120,214,.45)"
+        icon={
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7.5" stroke="currentColor" strokeWidth="1.4" fill="none"/>
+            <line x1="13.2" y1="4.8" x2="11.4" y2="6.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+          </svg>
+        }/>
     </div>
   );
 }
