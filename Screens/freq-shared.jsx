@@ -69,6 +69,56 @@ function T(key){
   return (FREQ_STRINGS[lang] && FREQ_STRINGS[lang][key]) || FREQ_STRINGS.en[key] || key;
 }
 
+// ── FREQ_ROOMS · 사용자가 참여 중인 채널 데이터 (single source of truth) ──
+// nameKr/nameEn = 양 언어. members = mosaic에 표시될 chip id 배열 (YOU 포함).
+// captions = 멤버별 샘플 캡션 (kr/en 키). round/totalRounds, expiresIn = 헤더/strip.
+const FREQ_ROOMS = [
+  {
+    code:'447.1',
+    nameKr:'가족',           nameEn:'Family',
+    members:['YOU','KODAK','VELVIA','POLAROID','EKTA','MINT','SEPIA'],
+    round:8, totalRounds:12, expiresIn:'22h 12m',
+    captions:{
+      kr:{ KODAK:'햇살 미쳤다', VELVIA:'여기 카페 어디?', POLAROID:'아침 산책', EKTA:'필름 다 썼어', MINT:'컵 사고 싶다', SEPIA:'오후 빛' },
+      en:{ KODAK:'light is unreal', VELVIA:'where is this', POLAROID:'morning walk', EKTA:'roll finished', MINT:'i need this mug', SEPIA:'afternoon light' },
+    },
+  },
+  {
+    code:'661.4',
+    nameKr:'커피 크루',       nameEn:'Coffee Crew',
+    members:['YOU','EKTA','MINT','BURNT'],
+    round:3, totalRounds:12, expiresIn:'22h 30m',
+    captions:{
+      kr:{ EKTA:'아메리카노', MINT:'오늘 신메뉴', BURNT:'시럽 한번 더' },
+      en:{ EKTA:'americano', MINT:'new bean today', BURNT:'extra syrup' },
+    },
+  },
+  {
+    code:'888.2',
+    nameKr:'일요 등산',       nameEn:'Sunday Hiking',
+    members:['YOU','KODAK','POLAROID','SEPIA','LAVENDER'],
+    round:12, totalRounds:12, expiresIn:'ENDED',
+    ended:true,
+    captions:{
+      kr:{ KODAK:'정상 도착', POLAROID:'바람 시원', SEPIA:'내려가기 싫다', LAVENDER:'단풍' },
+      en:{ KODAK:'summit', POLAROID:'breezy', SEPIA:'don’t wanna go down', LAVENDER:'autumn leaves' },
+    },
+  },
+];
+
+// active room helpers
+function getActiveRoomIndex(){
+  try {
+    const v = parseInt(localStorage.getItem('FREQ_ACTIVE_ROOM') || '0', 10);
+    return Math.max(0, Math.min(FREQ_ROOMS.length - 1, isNaN(v) ? 0 : v));
+  } catch(_) { return 0; }
+}
+function setActiveRoomIndex(i){
+  try { localStorage.setItem('FREQ_ACTIVE_ROOM', String(i)); } catch(_){}
+  window.dispatchEvent(new CustomEvent('freq-room-change'));
+}
+function getActiveRoom(){ return FREQ_ROOMS[getActiveRoomIndex()]; }
+
 const MEMBER_COLORS = {
   YOU: { name: 'YOU', color: 'var(--signal)' },
   KODAK: { name: 'KODAK', color: 'var(--m-kodak)' },
@@ -459,4 +509,8 @@ function InviteSheet({ open, onClose, channel = '447.1' }) {
   );
 }
 
-Object.assign(window, { MEMBER_COLORS, Chip, StatusLabel, ScreenHeader, Phone, TabBar, Keycap, FilmPlaceholder, BottomSheet, ConfirmSheet, InviteSheet, T, FREQ_STRINGS });
+Object.assign(window, {
+  MEMBER_COLORS, Chip, StatusLabel, ScreenHeader, Phone, TabBar, Keycap, FilmPlaceholder,
+  BottomSheet, ConfirmSheet, InviteSheet, T, FREQ_STRINGS,
+  FREQ_ROOMS, getActiveRoomIndex, setActiveRoomIndex, getActiveRoom,
+});

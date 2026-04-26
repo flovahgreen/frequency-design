@@ -169,7 +169,14 @@ function Screen01TuneIn({ initialDigits = [] }) {
 // ─────────────────────────────────────────────────────────────
 // 02 · CHANNEL FEED — mosaic grid + round swipe
 // ─────────────────────────────────────────────────────────────
-function Mosaic({ n = 7 }) {
+function Mosaic({ members: membersProp, captions: captionsProp }) {
+  // 기본값은 active room에서 자동 추출 (방 바뀌면 알아서 갱신)
+  const isKr = window.FREQ_LANG === 'kr';
+  const room = window.getActiveRoom ? window.getActiveRoom() : { members: ['YOU','KODAK','VELVIA','POLAROID','EKTA','MINT','SEPIA'], captions:{kr:{},en:{}} };
+  const members = membersProp || room.members;
+  const captionsForRoom = captionsProp || (isKr ? room.captions.kr : room.captions.en);
+  const n = members.length;
+
   // Layout: 1→1x1; 2→2x1; 3,4→2x2; 5,6→3x2; 7,8,9→3x3
   let cols = 3, rows = 3;
   if (n === 1) { cols = 1; rows = 1; }
@@ -177,24 +184,14 @@ function Mosaic({ n = 7 }) {
   else if (n <= 4) { cols = 2; rows = 2; }
   else if (n <= 6) { cols = 3; rows = 2; }
   const total = cols * rows;
-  const members = ['YOU','KODAK','VELVIA','POLAROID','EKTA','MINT','SEPIA','LAVENDER','BURNT'];
+
   // YOU의 최신 캡션은 localStorage 에서 (Review SEND 시 저장됨)
   const userCap = (() => {
     try { return localStorage.getItem('FREQ_USER_POST'); } catch(_) { return null; }
   })();
-  const isKr = window.FREQ_LANG === 'kr';
 
-  // sample captions per member — YOU만 동적 (없으면 빈 상태)
-  const captions = {
-    KODAK:    isKr ? '햇살 미쳤다'      : 'light is unreal',
-    VELVIA:   isKr ? '여기 카페 어디?'   : 'where is this',
-    POLAROID: isKr ? '아침 산책'        : 'morning walk',
-    EKTA:     isKr ? '필름 다 썼어'     : 'roll finished',
-    MINT:     isKr ? '컵 사고 싶다'     : 'i need this mug',
-    SEPIA:    isKr ? '오후 빛'          : 'afternoon light',
-    LAVENDER: isKr ? '가을이네'         : 'autumn vibes',
-    BURNT:    isKr ? '한 입만'          : 'one bite',
-  };
+  // captions 합치기 — room 데이터 + YOU localStorage override
+  const captions = { ...captionsForRoom };
   if (userCap) captions.YOU = userCap;
 
   const youHasPost = !!userCap;
@@ -282,17 +279,34 @@ function Mosaic({ n = 7 }) {
 }
 
 function Screen02Feed() {
-  const round = 8;
-  const totalRounds = 12;
+  // active room state (FREQ_ROOMS 기반). 방 변경 이벤트 들으면 re-render
+  const [, force] = React.useReducer(x => x+1, 0);
+  React.useEffect(() => {
+    const h = () => force();
+    window.addEventListener('freq-room-change', h);
+    window.addEventListener('freq-lang-change', h);
+    return () => {
+      window.removeEventListener('freq-room-change', h);
+      window.removeEventListener('freq-lang-change', h);
+    };
+  }, []);
+  const room = window.getActiveRoom();
+  const isKr = window.FREQ_LANG === 'kr';
+  const { code, members, round, totalRounds, expiresIn, ended } = room;
+  // ended room이면 round timer는 의미 없으니 ENDED 표기
+  const roundLabel = ended
+    ? (isKr ? '종료됨' : 'ENDED')
+    : `14:00 ${isKr ? '남음' : 'LEFT'}`;
+
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      <ScreenHeader channel="4471" timer="22h 12m" members={7}/>
+      <ScreenHeader channel={code} timer={expiresIn} members={members.length}/>
 
       {/* scroll area — mosaic + round strip + meta */}
       <div className="no-scrollbar" style={{ flex:1, minHeight:0, overflowY:'auto', padding:'30px 18px 16px', display:'flex', flexDirection:'column', gap:14 }}>
-        <Mosaic n={7}/>
+        <Mosaic/>
 
-        {/* round indicator strip — moved BELOW mosaic per request */}
+        {/* round indicator strip */}
         <div style={{ padding:'2px 0 0', display:'flex', alignItems:'center', gap:10 }}>
           <div style={{ flex:1, display:'flex', gap:3 }}>
             {Array.from({length: totalRounds}).map((_,i)=>(
@@ -309,7 +323,7 @@ function Screen02Feed() {
 
         {/* meta row — round timer */}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'flex-end' }}>
-          <span className="lbl">14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
+          <span className="lbl">{roundLabel}</span>
         </div>
       </div>
       {/* TabBar는 라우터 레벨에서 fixed로 렌더 */}
@@ -1160,11 +1174,25 @@ function Screen06Members() {
 // ─────────────────────────────────────────────────────────────
 function Screen08Rooms() {
   const isKr = window.FREQ_LANG === 'kr';
-  const rooms = [
-    { code:'447.1', name: isKr ? '가족'        : 'Family',         members:7, active:true,  status: isKr ? '8/12 · 14:00 남음' : '8/12 · 14:00 LEFT' },
-    { code:'661.4', name: isKr ? '커피 크루'    : 'Coffee Crew',     members:4, active:false, status: isKr ? '3/12 · 22h 남음'   : '3/12 · 22h LEFT' },
-    { code:'888.2', name: isKr ? '일요 등산'    : 'Sunday Hiking',   members:5, active:false, status: isKr ? '종료'              : 'ENDED', ended:true },
-  ];
+  const activeIdx = window.getActiveRoomIndex();
+  // FREQ_ROOMS 공통 데이터 사용 + active 표시
+  const rooms = window.FREQ_ROOMS.map((r, i) => ({
+    code: r.code,
+    name: isKr ? r.nameKr : r.nameEn,
+    members: r.members.length,
+    active: i === activeIdx,
+    ended: r.ended,
+    status: r.ended
+      ? (isKr ? '종료' : 'ENDED')
+      : (isKr ? `${r.round}/${r.totalRounds} · ${r.expiresIn} 남음` : `${r.round}/${r.totalRounds} · ${r.expiresIn} LEFT`),
+    idx: i,
+  }));
+
+  const switchRoom = (idx) => {
+    if (window.setActiveRoomIndex) window.setActiveRoomIndex(idx);
+    if (navigator.vibrate) { try { navigator.vibrate(8); } catch(_){} }
+    if (window.FREQ_NAV) window.FREQ_NAV('feed');
+  };
 
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
@@ -1199,9 +1227,10 @@ function Screen08Rooms() {
       <div style={{ flex:1, overflowY:'auto', padding:'18px 16px 24px', display:'flex', flexDirection:'column', gap:10 }}>
         {rooms.map(r => (
           <button key={r.code}
-            onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }}
+            onClick={() => !r.ended && switchRoom(r.idx)}
+            disabled={r.ended}
             style={{
-              border:'none', cursor:'pointer', textAlign:'left',
+              border:'none', cursor: r.ended ? 'default' : 'pointer', textAlign:'left',
               padding:'14px 16px', borderRadius:14,
               background: r.active
                 ? 'linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.7))'
@@ -1263,15 +1292,19 @@ function Screen08Rooms() {
 // ─────────────────────────────────────────────────────────────
 function Screen09SendTo() {
   const isKr = window.FREQ_LANG === 'kr';
-  const rooms = [
-    { code:'447.1', name: isKr ? '가족'        : 'Family',         members:7, default:true },
-    { code:'661.4', name: isKr ? '커피 크루'    : 'Coffee Crew',     members:4, default:false },
-    { code:'888.2', name: isKr ? '일요 등산'    : 'Sunday Hiking',   members:5, default:false, ended:true },
-  ];
+  const activeIdx = window.getActiveRoomIndex();
+  // FREQ_ROOMS 공통 데이터 사용. 현재 방을 default로 선택
+  const rooms = window.FREQ_ROOMS.map((r, i) => ({
+    code: r.code,
+    name: isKr ? r.nameKr : r.nameEn,
+    members: r.members.length,
+    default: i === activeIdx,
+    ended: r.ended,
+  }));
   // multi-select state — default 현재 방
   const [selected, setSelected] = React.useState(() => {
     const s = new Set();
-    rooms.forEach(r => { if (r.default) s.add(r.code); });
+    rooms.forEach(r => { if (r.default && !r.ended) s.add(r.code); });
     return s;
   });
   const toggle = (code) => {
