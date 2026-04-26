@@ -38,7 +38,7 @@ function Splash({ onDismiss }) {
       <span style={{
         width:8, height:8, borderRadius:'50%',
         background:'var(--signal)',
-        boxShadow:'0 0 8px rgba(25,122,62,.55)',
+        boxShadow:'0 0 10px rgba(181,255,68,.7)',
         opacity: visible ? 1 : 0,
         transition: 'opacity 320ms ease-out 60ms',
         animation: visible ? 'breathe 1.6s ease-in-out infinite' : 'none',

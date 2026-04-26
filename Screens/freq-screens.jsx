@@ -88,7 +88,7 @@ function Screen01TuneIn({ initialDigits = [] }) {
               <div style={{
                 width:8, height:8, borderRadius:'50%',
                 background: locked ? 'var(--signal)' : 'var(--mist-3)',
-                boxShadow: locked ? '0 0 6px rgba(25,122,62,.6)' : 'inset 0 1px 1px rgba(0,0,0,.2)',
+                boxShadow: locked ? '0 0 8px rgba(181,255,68,.75)' : 'inset 0 1px 1px rgba(58,51,42,.2)',
                 animation: locked ? 'breathe 1.8s ease-in-out infinite' : 'none',
               }}/>
               <span className="lbl" style={{ color: locked?'var(--signal)':'var(--ink-35)' }}>{locked?T('locked'):T('scanning')}</span>
@@ -930,7 +930,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
           }}>
             <div style={{
               width:10, height:10, background:'var(--signal)',
-              boxShadow:'0 0 6px rgba(25,122,62,.5)',
+              boxShadow:'0 0 8px rgba(181,255,68,.7)',
             }}/>
             <div style={{ flex:1, display:'flex', flexDirection:'column', lineHeight:1.2 }}>
               <span className="lbl">Lobby Sealed</span>
@@ -952,7 +952,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
             <div style={{
               fontFamily:'var(--mono)', fontSize:56, fontWeight:500, lineHeight:1,
               color:'var(--amber)', fontVariantNumeric:'tabular-nums',
-              textShadow:'0 0 16px rgba(233,106,42,.4)',
+              textShadow:'0 0 16px rgba(255,119,168,.45)',
               letterSpacing:'.04em',
             }}>
               00:03<span className="crt-cursor" style={{ verticalAlign:'baseline' }}/>
