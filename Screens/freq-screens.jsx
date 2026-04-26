@@ -286,10 +286,10 @@ function Screen02Feed() {
   const totalRounds = 12;
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      <ScreenHeader channel="4471" timer="01:47:33" members={7}/>
+      <ScreenHeader channel="4471" timer="22h 12m" members={7}/>
 
       {/* scroll area — mosaic + round strip + meta */}
-      <div className="no-scrollbar" style={{ flex:1, minHeight:0, overflowY:'auto', padding:'18px 18px 16px', display:'flex', flexDirection:'column', gap:14 }}>
+      <div className="no-scrollbar" style={{ flex:1, minHeight:0, overflowY:'auto', padding:'30px 18px 16px', display:'flex', flexDirection:'column', gap:14 }}>
         <Mosaic n={7}/>
 
         {/* round indicator strip — moved BELOW mosaic per request */}
@@ -559,42 +559,51 @@ function Screen03bReview() {
         <span style={{ width:28 }}/>{/* spacer for symmetry with back chevron */}
       </div>
 
-      {/* preview (3:4) */}
+      {/* preview (3:4) — 사진 + 하단에 캡션 오버레이 */}
       <div style={{ padding:'14px 16px 0' }}>
-        <FilmPlaceholder label="Captured · Round 08">
-          <div style={{ position:'absolute', top:10, left:10, background:'rgba(0,0,0,.55)', padding:'3px 7px' }}>
-            <span className="mono" style={{ fontSize:9, letterSpacing:'.16em', color:'#fff' }}>F·08 · 2026.04.24</span>
+        <div style={{ position:'relative' }}>
+          <FilmPlaceholder label="Captured · Round 08">
+            <div style={{ position:'absolute', top:10, left:10, background:'rgba(0,0,0,.55)', padding:'3px 7px', borderRadius:6 }}>
+              <span className="mono" style={{ fontSize:9, letterSpacing:'.16em', color:'#fff' }}>F·08 · 2026.04.24</span>
+            </div>
+            <div style={{ position:'absolute', top:10, right:10, background:'rgba(0,0,0,.55)', padding:'3px 7px', borderRadius:6, display:'flex', alignItems:'center', gap:5 }}>
+              <div style={{ width:5, height:5, borderRadius:'50%', background:'var(--amber)' }}/>
+              <span className="mono" style={{ fontSize:9, letterSpacing:'.16em', color:'#fff' }}>PHOTO</span>
+            </div>
+          </FilmPlaceholder>
+          {/* caption overlay — 사진 하단에 그라디언트 + 흰색 텍스트 입력 */}
+          <div style={{
+            position:'absolute', bottom:0, left:0, right:0,
+            padding:'30px 16px 14px',
+            background:'linear-gradient(180deg, rgba(45,38,32,0) 0%, rgba(45,38,32,.6) 50%, rgba(45,38,32,.78) 100%)',
+            borderRadius:'0 0 12px 12px',
+            pointerEvents:'auto',
+          }}>
+            <textarea
+              autoFocus
+              className="input-on-dark"
+              value={caption}
+              onChange={onCap}
+              maxLength={40}
+              rows={1}
+              placeholder="comment"
+              style={{
+                width:'100%',
+                border:'none', outline:'none', background:'transparent', resize:'none',
+                fontFamily:'var(--sans)', fontSize:15, fontWeight:500,
+                color:'#FFFFFF', textAlign:'center',
+                caretColor:'var(--amber)',
+                lineHeight:1.4,
+                padding:0,
+                textShadow:'0 1px 2px rgba(0,0,0,.4)',
+              }}
+            />
           </div>
-          <div style={{ position:'absolute', top:10, right:10, background:'rgba(0,0,0,.55)', padding:'3px 7px', display:'flex', alignItems:'center', gap:5 }}>
-            <div style={{ width:5, height:5, background:'var(--amber)' }}/>
-            <span className="mono" style={{ fontSize:9, letterSpacing:'.16em', color:'#fff' }}>PHOTO</span>
-          </div>
-        </FilmPlaceholder>
-      </div>
-
-      {/* caption — 사진 바로 아래 인라인. autoFocus로 키보드 자동 노출 */}
-      <div style={{ padding:'16px 24px 4px' }}>
-        <textarea
-          autoFocus
-          value={caption}
-          onChange={onCap}
-          maxLength={40}
-          rows={1}
-          placeholder={(window.FREQ_LANG === 'kr') ? '한 줄 적기...' : 'add a line...'}
-          style={{
-            width:'100%',
-            border:'none', outline:'none', background:'transparent', resize:'none',
-            fontFamily:'var(--sans)', fontSize:16, fontWeight:500,
-            color:'var(--ink)', textAlign:'center',
-            caretColor:'var(--amber)',
-            lineHeight:1.4,
-            padding:0,
-          }}
-        />
+        </div>
       </div>
 
       {/* meta row — chip + char counter + round timer */}
-      <div style={{ padding:'8px 16px 0', display:'flex', alignItems:'center', gap:10 }}>
+      <div style={{ padding:'14px 16px 0', display:'flex', alignItems:'center', gap:10 }}>
         <Chip who="YOU"/>
         <div style={{ flex:1 }}/>
         <span className="mono" style={{ fontSize:9.5, color:'var(--ink-35)', letterSpacing:'.06em' }}>{caption.length}/40</span>
@@ -1060,7 +1069,7 @@ function Screen06Members() {
   ];
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      <ScreenHeader channel="4471" timer="01:47:33"/>
+      <ScreenHeader channel="4471" timer="22h 12m"/>
 
       {/* Channel info card */}
       <div style={{ padding:'14px 16px 0' }}>

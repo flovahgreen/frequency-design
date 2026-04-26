@@ -139,6 +139,12 @@ function MobileRouter() {
     };
   }, [lang]);
 
+  // screen 변경 시 body bg도 동기화 — 카메라일 땐 graphite
+  useMEffect(() => {
+    const isCam = !!screens[screen]?.hideNav;
+    document.body.classList.toggle('screen-camera', isCam);
+  }, [screen]);
+
   // swipe gesture (좌우 스와이프로 시안 이동)
   useMEffect(() => {
     let startX = 0, startY = 0, moved = false;
@@ -171,7 +177,8 @@ function MobileRouter() {
   return (
     <div style={{
       position: 'fixed', inset: 0,
-      background: 'var(--mist-0)',
+      // 카메라(hideNav)일 땐 부모 bg를 그래파이트로 → 바닥까지 graphite 통일
+      background: hideNav ? 'var(--graphite)' : 'var(--mist-0)',
       color: 'var(--ink)',
       display: 'flex', flexDirection: 'column',
       overflow: 'hidden',

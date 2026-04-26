@@ -127,8 +127,15 @@ function ScreenHeader({ channel = '4471', timer = '01:47:33', members = 7, onMen
       {/* signal pulse — left */}
       <span className="signal-dot"/>
       <div style={{ flex:1 }}/>
-      {/* expiry timer — right */}
-      <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.08em', fontVariantNumeric:'tabular-nums', color:'rgba(240,232,216,.7)' }}>{timer}</span>
+      {/* expiry timer — right · 작은 모래시계 아이콘 + 듀레이션 형식으로 "잔여 시간" 명확 */}
+      <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+          <path d="M3 1.5 H9 L7 5 L9 8.5 V10.5 H3 V8.5 L5 5 L3 1.5 Z"
+            stroke="rgba(240,232,216,.65)" strokeWidth="1.1" strokeLinejoin="round" fill="none"/>
+          <path d="M4.5 9.5 H7.5" stroke="rgba(240,232,216,.65)" strokeWidth="1.1" strokeLinecap="round"/>
+        </svg>
+        <span style={{ fontFamily:'var(--mono)', fontSize:12, letterSpacing:'.06em', fontVariantNumeric:'tabular-nums', color:'rgba(240,232,216,.85)', fontWeight:600 }}>{timer}</span>
+      </div>
 
       {/* Channel code button — absolutely centered, tappable to open Rooms */}
       <button
