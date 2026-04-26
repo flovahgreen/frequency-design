@@ -85,16 +85,17 @@ function MobileRouter() {
   // INFO(Members) 화면은 Settings의 Channel 섹션으로 통합 → 라우터에서 제거
   // tab: 활성 표시할 탭 id (빈 값=어떤 탭도 활성 아님)
   // hideNav: 카메라 같은 풀스크린 모드에서 TabBar 자체 숨김
+  // back: 좌→우 스와이프 시 돌아갈 부모 화면 id (null이면 back 동작 없음)
   const screens = [
-    { id: '01',  label: 'TUNE',   Comp: Screen01TuneIn,    tab: '' },
-    { id: '02',  label: 'FEED',   Comp: Screen02Feed,      tab: 'feed' },
-    { id: '03',  label: 'CAM',    Comp: Screen03Camera,    tab: '',     hideNav: true },
-    { id: '03b', label: 'REVIEW', Comp: Screen03bReview,   tab: '' },
-    { id: '04',  label: 'POST',   Comp: Screen04Post,      tab: 'feed' },
-    { id: '05',  label: 'OPEN',   Comp: Screen05Open,      tab: '' },
-    { id: '07',  label: 'SET',    Comp: Screen07Settings,  tab: 'set' },
-    { id: '08',  label: 'ROOMS',  Comp: Screen08Rooms,     tab: 'feed' },
-    { id: '09',  label: 'SENDTO', Comp: Screen09SendTo,    tab: '' },
+    { id: '01',  label: 'TUNE',   Comp: Screen01TuneIn,    tab: '',      back: null },
+    { id: '02',  label: 'FEED',   Comp: Screen02Feed,      tab: 'feed',  back: null },
+    { id: '03',  label: 'CAM',    Comp: Screen03Camera,    tab: '',      hideNav: true, back: 'feed' },
+    { id: '03b', label: 'REVIEW', Comp: Screen03bReview,   tab: '',      back: 'camera' },
+    { id: '04',  label: 'POST',   Comp: Screen04Post,      tab: 'feed',  back: 'feed' },
+    { id: '05',  label: 'OPEN',   Comp: Screen05Open,      tab: '',      back: 'tune' },
+    { id: '07',  label: 'SET',    Comp: Screen07Settings,  tab: 'set',   back: null },
+    { id: '08',  label: 'ROOMS',  Comp: Screen08Rooms,     tab: 'feed',  back: 'feed' },
+    { id: '09',  label: 'SENDTO', Comp: Screen09SendTo,    tab: '',      back: 'review' },
   ];
 
   // 글로벌 navigate — 시안 컴포넌트에서 window.FREQ_NAV('feed') 처럼 호출
@@ -145,7 +146,8 @@ function MobileRouter() {
     document.body.classList.toggle('screen-camera', isCam);
   }, [screen]);
 
-  // swipe gesture (좌우 스와이프로 시안 이동)
+  // swipe gesture — 좌→우 스와이프만 부모 화면(back)으로 이동
+  // 우→좌 스와이프는 무시 (forward 네비게이션 없음)
   useMEffect(() => {
     let startX = 0, startY = 0, moved = false;
     const onStart = (e) => {
@@ -156,10 +158,11 @@ function MobileRouter() {
       if (moved) return;
       const t = e.touches ? e.touches[0] : e;
       const dx = t.clientX - startX, dy = t.clientY - startY;
-      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      // 좌→우 스와이프(dx > 60) + 가로 우세 + 시작점이 좌측 가장자리에서 너무 안 멀면 처리
+      if (dx > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
         moved = true;
-        if (dx < 0 && screen < screens.length - 1) setScreen(screen + 1);
-        else if (dx > 0 && screen > 0) setScreen(screen - 1);
+        const back = screens[screen]?.back;
+        if (back && window.FREQ_NAV) window.FREQ_NAV(back);
       }
     };
     document.addEventListener('touchstart', onStart, { passive: true });
