@@ -138,16 +138,7 @@ function ScreenHeader({ channel = '4471', timer = '01:47:33', members = 7, onMen
         <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.18em', color:'rgba(240,232,216,.4)', textTransform:'uppercase' }}>{T('expires')}</span>
         <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.08em', fontVariantNumeric:'tabular-nums', color:'var(--mist-0)' }}>{timer}</span>
       </div>
-      <button onClick={onMenu} style={{
-        width:28, height:28, border:'none', background:'transparent', cursor:'pointer',
-        display:'grid', placeItems:'center',
-      }}>
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <rect y="2" width="14" height="1.2" fill="rgba(240,232,216,.7)"/>
-          <rect y="6.4" width="14" height="1.2" fill="rgba(240,232,216,.7)"/>
-          <rect y="10.8" width="14" height="1.2" fill="rgba(240,232,216,.7)"/>
-        </svg>
-      </button>
+      {/* hamburger removed — SET tab in bottom nav covers settings */}
     </div>
   );
 }

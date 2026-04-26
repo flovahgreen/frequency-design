@@ -270,14 +270,8 @@ function Screen02Feed() {
 
       {/* scroll area — mosaic + meta + member strip */}
       <div className="no-scrollbar" style={{ flex:1, minHeight:0, overflowY:'auto', padding:'18px 18px 16px', display:'flex', flexDirection:'column', gap:14 }}>
-        <div style={{ position:'relative' }}>
+        <div>
           <Mosaic n={7}/>
-          {/* peek next round */}
-          <div style={{
-            position:'absolute', right:-26, top:18, bottom:18, width:20,
-            background:'var(--mist-2)', borderLeft:'1px solid var(--mist-3)',
-            borderRadius:'10px 0 0 10px',
-          }}/>
         </div>
 
         {/* meta row */}
@@ -541,7 +535,7 @@ function Screen03bReview() {
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.4"/></svg>
         </button>
         <span className="lbl" style={{ color:'var(--ink)' }}>REVIEW · F·08</span>
-        <span className="lbl">03:09</span>
+        <span style={{ width:28 }}/>{/* spacer for symmetry with back chevron */}
       </div>
 
       {/* preview (3:4) */}
@@ -1148,6 +1142,7 @@ function Screen07Settings() {
 
   const [shutter, setShutter] = React.useState(() => loadBool('shutter', true));
   const [grid, setGrid]       = React.useState(() => loadBool('grid', false));
+  const [autoTune, setAutoTune] = React.useState(() => loadBool('autoTune', true));
 
   const flip = (key, val, setter) => {
     setter(val);
@@ -1360,7 +1355,8 @@ function Screen07Settings() {
             <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>{T('profile_tag')}</span>
           </div>
           <div style={{ flex:1 }}/>
-          <span className="lbl">{T('edit')}</span>
+          {/* EDIT 액션 미구현 — opacity 0.35로 비활성 표시, → 화살표 제거 */}
+          <span className="lbl" style={{ opacity:0.35, cursor:'default' }}>{isKr ? '편집' : 'EDIT'}</span>
         </div>
 
         <Section title={T('language')}>
@@ -1386,7 +1382,10 @@ function Screen07Settings() {
         </Section>
 
         <Section title={T('signal_sec')}>
-          <Row first label={T('auto_tune')} value="Last used · 447.1"/>
+          <Row first label={T('auto_tune')}
+            value={<span style={{ opacity: autoTune ? 1 : 0.4 }}>Last used · 447.1</span>}
+            right={<Toggle on={autoTune} onToggle={(v)=>flip('autoTune', v, setAutoTune)}/>}
+          />
         </Section>
 
         <Section title={T('capture')}>
@@ -1401,11 +1400,13 @@ function Screen07Settings() {
 
         <Section title={T('about')}>
           <Row first label={T('version')} value="0.4 · Rev 2026.04.24"/>
-          <Row label={T('terms')} value={T('view')}/>
+          {/* TERMS 액션 미구현 — '→' 화살표 제거하고 그냥 'View'만, dim 처리 */}
+          <Row label={T('terms')} value={<span style={{ opacity:0.4 }}>{isKr ? '보기' : 'View'}</span>}/>
         </Section>
 
         <div style={{ padding:'22px 16px 20px', display:'flex', flexDirection:'column', gap:8 }}>
-          <Keycap style={{ width:'100%', height:42, fontSize:11 }}>{T('sign_out')}</Keycap>
+          {/* SIGN OUT 미구현 — disabled 비주얼, no onClick */}
+          <Keycap style={{ width:'100%', height:42, fontSize:11, opacity:0.4, cursor:'default' }}>{T('sign_out')}</Keycap>
           <Keycap graphite onClick={() => setConfirm('delete')} style={{ width:'100%', height:42, fontSize:11 }}>{T('delete_acct')}</Keycap>
         </div>
         </>)}
