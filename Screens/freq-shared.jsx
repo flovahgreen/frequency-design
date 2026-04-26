@@ -197,8 +197,8 @@ function Phone({ children, style }) {
 
 // Tab bar at bottom — 4 items
 function TabBar({ active = 'feed' }) {
-  // navTo: tab id → router 의 alias key 로 매핑 (mobile router 가 받음)
-  const NAV_MAP = { feed: 'feed', tune: 'tune', cam: 'camera', info: 'info' };
+  // 3-tab nav: FEED / SHOOT / SET (Info merged into Set)
+  const NAV_MAP = { feed: 'feed', cam: 'camera', set: 'settings' };
   const Tab = ({ id, label, icon }) => {
     const on = active === id;
     const handleClick = () => {
@@ -210,6 +210,7 @@ function TabBar({ active = 'feed' }) {
         padding:'8px 0 6px',
         background: 'transparent', border: 'none', cursor: 'pointer',
         color: on ? 'var(--ink)' : 'var(--ink-35)',
+        WebkitTapHighlightColor:'transparent',
       }}>
         <div style={{ width:18, height:18, display:'grid', placeItems:'center' }}>{icon}</div>
         <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.16em', textTransform:'uppercase', fontWeight: on?600:500 }}>{label}</span>
@@ -221,11 +222,11 @@ function TabBar({ active = 'feed' }) {
       borderTop:'1px solid var(--mist-3)',
       background:'var(--mist-0)',
       display:'flex',
+      paddingBottom:'env(safe-area-inset-bottom, 0)',
     }}>
       <Tab id="feed" label="Feed" icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" stroke="currentColor" strokeWidth="1.2"/><rect x="9" y="1" width="6" height="6" stroke="currentColor" strokeWidth="1.2"/><rect x="1" y="9" width="6" height="6" stroke="currentColor" strokeWidth="1.2"/><rect x="9" y="9" width="6" height="6" stroke="currentColor" strokeWidth="1.2"/></svg>}/>
-      <Tab id="tune" label="Tune" icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2"/><line x1="8" y1="2" x2="8" y2="4.5" stroke="currentColor" strokeWidth="1.2"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/></svg>}/>
       <Tab id="cam" label="Shoot" icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3.5" width="14" height="10" stroke="currentColor" strokeWidth="1.2"/><circle cx="8" cy="8.5" r="2.8" stroke="currentColor" strokeWidth="1.2"/><rect x="5" y="1.5" width="6" height="2" stroke="currentColor" strokeWidth="1.2"/></svg>}/>
-      <Tab id="info" label="Info" icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2"/><rect x="7.4" y="6.5" width="1.2" height="5" fill="currentColor"/><rect x="7.4" y="4" width="1.2" height="1.4" fill="currentColor"/></svg>}/>
+      <Tab id="set" label="Set" icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.4" stroke="currentColor" strokeWidth="1.2"/><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2"/><line x1="8" y1="1.5" x2="8" y2="3.6" stroke="currentColor" strokeWidth="1.2"/><line x1="8" y1="12.4" x2="8" y2="14.5" stroke="currentColor" strokeWidth="1.2"/><line x1="1.5" y1="8" x2="3.6" y2="8" stroke="currentColor" strokeWidth="1.2"/><line x1="12.4" y1="8" x2="14.5" y2="8" stroke="currentColor" strokeWidth="1.2"/></svg>}/>
     </div>
   );
 }

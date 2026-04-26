@@ -436,6 +436,7 @@ function Screen03bReview() {
               border:'none', outline:'none', background:'transparent', resize:'none',
               fontFamily:'var(--sans)', fontSize:15, color:'var(--ink)', lineHeight:1.4,
               padding:0, minHeight:44,
+              caretColor:'var(--amber)',
             }}
           />
         </div>
@@ -569,6 +570,7 @@ function Screen04Post() {
               flex:1, border:'none', outline:'none', background:'transparent',
               fontFamily:'var(--sans)', fontSize:14, color:'var(--ink)',
               padding:'4px 0', minWidth:0,
+              caretColor:'var(--amber)',
             }}
           />
           <span className="mono" style={{ fontSize:9.5, color:'var(--ink-35)', flexShrink:0 }}>{draft.length}/40</span>
@@ -1039,20 +1041,100 @@ function Screen07Settings() {
       {children}
     </div>
   );
+  // roster for the embedded Channel section
+  const roster = [
+    { who:'YOU', name:'Jay', host:true, last:'just now' },
+    { who:'KODAK', name:'Mira', host:false, last:'2m' },
+    { who:'VELVIA', name:'Sung', host:false, last:'5m' },
+    { who:'POLAROID', name:'Ada', host:false, last:'12m' },
+    { who:'EKTA', name:'Rin', host:false, last:'18m' },
+    { who:'MINT', name:'Ben', host:false, last:'24m' },
+    { who:'SEPIA', name:'Yuna', host:false, last:'31m' },
+  ];
+
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      {/* top bar */}
-      <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--mist-3)' }}>
-        <button onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('info'); }} style={{ border:'none', background:'transparent', padding:0, cursor:'pointer' }}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.4"/></svg>
-        </button>
+      {/* top bar — tab mode, no back button */}
+      <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'center', borderBottom:'1px solid var(--mist-3)' }}>
         <span className="lbl" style={{ color:'var(--ink)' }}>{T('settings')}</span>
-        <span style={{ width:16 }}/>
       </div>
 
       <div style={{ flex:1, overflowY:'auto', padding:'14px 0 0' }}>
+        {/* ─── CHANNEL section (room info) ─── */}
+        <div className="lbl" style={{ padding:'0 16px 8px' }}>Channel</div>
+
+        {/* Channel code card */}
+        <div style={{
+          margin:'0 16px',
+          background:'var(--mist-1)', padding:'14px 14px 12px',
+          boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+        }}>
+          <div className="lbl" style={{ marginBottom:6, color:'var(--ink-55)' }}>Code</div>
+          <div style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:10 }}>
+            <span style={{ fontFamily:'var(--mono)', fontSize:26, fontWeight:600, letterSpacing:'.08em' }}>447.1</span>
+            <span className="mono" style={{ fontSize:10, color:'var(--ink-35)', letterSpacing:'.14em' }}>· MHZ</span>
+          </div>
+          <div style={{ display:'flex', gap:18 }}>
+            {[
+              ['Members', '7 / 9'],
+              ['Rounds', '8 / 12'],
+              ['Expires', '22H 12M'],
+            ].map(([k,v])=>(
+              <div key={k}>
+                <div className="lbl" style={{ fontSize:8.5 }}>{k}</div>
+                <div className="mono" style={{ fontSize:11, letterSpacing:'.06em', fontWeight:500 }}>{v}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Roster */}
+        <div style={{ padding:'14px 16px 4px' }}>
+          <div className="lbl" style={{ marginBottom:8, display:'flex', justifyContent:'space-between' }}>
+            <span>Roster · {roster.length}</span>
+            <span>Host · You</span>
+          </div>
+          <div>
+            {roster.map((r,i)=>(
+              <div key={r.who} style={{
+                display:'flex', alignItems:'center', gap:10,
+                padding:'9px 0',
+                borderTop: i === 0 ? '1px solid var(--mist-3)' : 'none',
+                borderBottom:'1px solid var(--mist-3)',
+              }}>
+                <Chip who={r.who}/>
+                <span style={{ fontFamily:'var(--sans)', fontSize:13, fontWeight:500 }}>{r.name}</span>
+                {r.host && <span style={{
+                  fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.14em', textTransform:'uppercase',
+                  padding:'2px 5px', border:'1px solid var(--ink)', color:'var(--ink)',
+                }}>HOST</span>}
+                <div style={{ flex:1 }}/>
+                <span className="mono" style={{ fontSize:9.5, letterSpacing:'.1em', color:'var(--ink-35)' }}>{r.last}</span>
+              </div>
+            ))}
+            {Array.from({length:9 - roster.length}).map((_,i)=>(
+              <div key={i} className="slot-empty" style={{
+                padding:'9px 12px', borderBottom:'1px solid var(--mist-3)',
+                display:'flex', alignItems:'center', gap:10,
+              }}>
+                <span className="lbl" style={{ color:'var(--ink-35)' }}>Open slot</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Channel actions */}
+        <div style={{ padding:'12px 16px 18px', display:'flex', gap:8 }}>
+          <Keycap style={{ flex:1, height:40, fontSize:11 }}>INVITE</Keycap>
+          <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ flex:1, height:40, fontSize:11 }}>LEAVE</Keycap>
+          <Keycap amber onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ flex:1, height:40, fontSize:11 }}>CLOSE CH</Keycap>
+        </div>
+
+        {/* divider before personal/device settings */}
+        <div style={{ height:8, background:'var(--mist-1)', boxShadow:'inset 0 1px 0 var(--mist-3), inset 0 -1px 0 var(--mist-3)' }}/>
+
         {/* Profile */}
-        <div style={{ padding:'6px 16px 14px', display:'flex', alignItems:'center', gap:12 }}>
+        <div style={{ padding:'14px 16px 6px', display:'flex', alignItems:'center', gap:12 }}>
           <div style={{
             width:44, height:44, background:'var(--signal)',
             display:'grid', placeItems:'center',
@@ -1139,6 +1221,8 @@ function Screen07Settings() {
           <Keycap amber style={{ width:'100%', height:42, fontSize:11 }}>{T('delete_acct')}</Keycap>
         </div>
       </div>
+
+      <TabBar active="set"/>
     </div>
   );
 }
