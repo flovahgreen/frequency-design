@@ -4,12 +4,34 @@
 // ─────────────────────────────────────────────────────────────
 // 01 · TUNE IN — half-circle dial + 4-digit entry + LED lock
 // ─────────────────────────────────────────────────────────────
-function Screen01TuneIn({ digits = ['4','4','7','1'], cursorAt = 4 }) {
-  // digits: 4 slots, display as AAA.D (3 int + 1 decimal, e.g. 447.1 MHz)
-  // digits fully entered → indicator at 0°, LED locked
+function Screen01TuneIn({ initialDigits = [] }) {
+  // 4-digit MHz channel entry (NNN.N) — internal state, real keypad input
+  const [digits, setDigits] = React.useState(() => {
+    const d = ['','','',''];
+    initialDigits.slice(0,4).forEach((v,i) => { d[i] = v; });
+    return d;
+  });
   const filled = digits.filter(d => d !== '').length;
   const locked = filled === 4;
+  const cursorAt = filled; // next empty slot
   const angle = locked ? 0 : (-90 + (filled/4)*90); // sweep from -90° to 0°
+
+  const pressKey = (k) => {
+    if (navigator.vibrate) { try { navigator.vibrate(6); } catch(e){} }
+    if (k === '⌫') {
+      if (filled === 0) return;
+      const next = [...digits];
+      next[filled - 1] = '';
+      setDigits(next);
+    } else if (k === '↵') {
+      if (locked && window.FREQ_NAV) window.FREQ_NAV('feed');
+    } else {
+      if (filled >= 4) return;
+      const next = [...digits];
+      next[filled] = k;
+      setDigits(next);
+    }
+  };
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       {/* top label strip */}
@@ -109,14 +131,19 @@ function Screen01TuneIn({ digits = ['4','4','7','1'], cursorAt = 4 }) {
         {['1','2','3','4','5','6','7','8','9','⌫','0','↵'].map((k,i)=>{
           const isEnter = k === '↵';
           const isBack = k === '⌫';
+          const enabled = isEnter ? locked : (isBack ? filled > 0 : filled < 4);
           return (
-            <button key={i} className={`cap ${isEnter?'cap-amber':''} ${isBack?'cap-graphite':''}`}
-              onClick={() => { if (isEnter && window.FREQ_NAV) window.FREQ_NAV('feed'); }}
+            <button key={i}
+              className={`cap ${isEnter?'cap-amber':''} ${isBack?'cap-graphite':''}`}
+              onClick={() => pressKey(k)}
+              disabled={!enabled}
               style={{
                 border:'none', height:46,
                 fontFamily:'var(--mono)', fontSize: isEnter||isBack?14:18,
                 fontWeight:500, letterSpacing:'.04em',
-                cursor:'pointer',
+                cursor: enabled ? 'pointer' : 'default',
+                opacity: enabled ? 1 : 0.4,
+                transition:'opacity 120ms ease-out',
               }}>{k}</button>
           );
         })}
@@ -361,6 +388,8 @@ function Screen03Camera({ holding = false }) {
 // 03b · CAPTION REVIEW — after capture, review + caption
 // ─────────────────────────────────────────────────────────────
 function Screen03bReview() {
+  const [caption, setCaption] = React.useState('');
+  const onCap = (e) => setCaption(e.target.value.slice(0,40));
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       {/* top bar */}
@@ -386,19 +415,29 @@ function Screen03bReview() {
         </FilmPlaceholder>
       </div>
 
-      {/* caption input with CRT cursor */}
+      {/* caption input — real text input, 40 char limit */}
       <div style={{ padding:'16px 16px 0' }}>
         <div className="lbl" style={{ marginBottom:8, display:'flex', justifyContent:'space-between' }}>
-          <span>Caption · Optional</span>
-          <span>12 / 40</span>
+          <span>{T('caption_opt')}</span>
+          <span>{caption.length} / 40</span>
         </div>
         <div className="well" style={{
-          padding:'12px 14px', minHeight:66,
+          padding:'10px 14px', minHeight:66,
           display:'flex', alignItems:'flex-start',
         }}>
-          <span style={{ fontFamily:'var(--sans)', fontSize:15, color:'var(--ink)', lineHeight:1.4 }}>
-            Coffee, finally<span className="crt-cursor"/>
-          </span>
+          <textarea
+            value={caption}
+            onChange={onCap}
+            maxLength={40}
+            rows={2}
+            placeholder="Coffee, finally..."
+            style={{
+              flex:1, width:'100%',
+              border:'none', outline:'none', background:'transparent', resize:'none',
+              fontFamily:'var(--sans)', fontSize:15, color:'var(--ink)', lineHeight:1.4,
+              padding:0, minHeight:44,
+            }}
+          />
         </div>
       </div>
 
@@ -425,18 +464,38 @@ function Screen03bReview() {
 // 04 · POST DETAIL — 3:4 image + 5 stamps + 40-char comments
 // ─────────────────────────────────────────────────────────────
 function Screen04Post() {
-  const stamps = [
+  // stamps: each has count + whether YOU pressed it
+  const [stamps, setStamps] = React.useState([
     { k:'heart', label:'♥', count:3, active:true },
-    { k:'fire',  label:'🔥', count:1 },
-    { k:'haha',  label:'😂', count:2 },
-    { k:'bicep', label:'💪', count:0 },
-    { k:'eyes',  label:'👀', count:4 },
-  ];
-  const comments = [
+    { k:'fire',  label:'🔥', count:1, active:false },
+    { k:'haha',  label:'😂', count:2, active:false },
+    { k:'bicep', label:'💪', count:0, active:false },
+    { k:'eyes',  label:'👀', count:4, active:false },
+  ]);
+  const toggleStamp = (k) => {
+    if (navigator.vibrate) { try { navigator.vibrate(6); } catch(e){} }
+    setStamps(prev => prev.map(s => s.k === k
+      ? { ...s, active: !s.active, count: s.count + (s.active ? -1 : 1) }
+      : s
+    ));
+  };
+
+  const [comments, setComments] = React.useState([
     { who:'KODAK', text:'light is unreal here', time:'2m' },
     { who:'EKTA', text:'drop the cafe name', time:'4m' },
     { who:'MINT', text:'i need this mug', time:'7m' },
-  ];
+  ]);
+  const [draft, setDraft] = React.useState('');
+  const sendComment = () => {
+    const t = draft.trim();
+    if (!t) return;
+    if (navigator.vibrate) { try { navigator.vibrate(8); } catch(e){} }
+    setComments(prev => [...prev, { who:'YOU', text:t.slice(0,40), time:'now' }]);
+    setDraft('');
+  };
+  const onDraftChange = (e) => setDraft(e.target.value.slice(0,40));
+  const onDraftKey = (e) => { if (e.key === 'Enter') { e.preventDefault(); sendComment(); } };
+
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       {/* top bar */}
@@ -468,7 +527,7 @@ function Screen04Post() {
       {/* stamps row */}
       <div style={{ padding:'8px 16px 12px', display:'flex', gap:6 }}>
         {stamps.map(s => (
-          <button key={s.k} style={{
+          <button key={s.k} onClick={() => toggleStamp(s.k)} style={{
             flex:1, border:'none', cursor:'pointer',
             background: s.active ? 'var(--ink)' : 'var(--mist-1)',
             color: s.active ? 'var(--mist-0)' : 'var(--ink)',
@@ -476,14 +535,18 @@ function Screen04Post() {
               : 'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
             padding:'7px 0',
             display:'flex', flexDirection:'column', alignItems:'center', gap:2,
+            transition: 'background 100ms ease-out',
+            WebkitTapHighlightColor: 'transparent',
           }}>
             <span style={{ fontSize:14, lineHeight:1 }}>{s.label}</span>
             <span style={{ fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.08em' }}>{s.count||'·'}</span>
           </button>
         ))}
-      </div>      {/* comments */}
+      </div>
+
+      {/* comments */}
       <div style={{ flex:1, borderTop:'1px solid var(--mist-3)', padding:'12px 16px 0', overflowY:'auto' }}>
-        <div className="lbl" style={{ marginBottom:8 }}>Comments · 3</div>
+        <div className="lbl" style={{ marginBottom:8 }}>Comments · {comments.length}</div>
         {comments.map((c,i)=>(
           <div key={i} style={{ display:'flex', gap:8, marginBottom:10, alignItems:'flex-start' }}>
             <Chip who={c.who}/>
@@ -495,13 +558,27 @@ function Screen04Post() {
 
       {/* comment input */}
       <div style={{ padding:'10px 16px', borderTop:'1px solid var(--mist-3)', display:'flex', gap:8, alignItems:'center' }}>
-        <div className="well" style={{ flex:1, padding:'8px 10px', display:'flex', alignItems:'center' }}>
-          <span style={{ fontFamily:'var(--sans)', fontSize:13, color:'var(--ink)', flex:1 }}>
-            <span style={{ color:'var(--ink-35)' }}>Say</span><span className="crt-cursor crt-cursor-sm"/>
-          </span>
-          <span className="mono" style={{ fontSize:9.5, color:'var(--ink-35)' }}>3/40</span>
+        <div className="well" style={{ flex:1, padding:'6px 10px', display:'flex', alignItems:'center', gap:6 }}>
+          <input
+            value={draft}
+            onChange={onDraftChange}
+            onKeyDown={onDraftKey}
+            placeholder={T('say_placeholder')}
+            maxLength={40}
+            style={{
+              flex:1, border:'none', outline:'none', background:'transparent',
+              fontFamily:'var(--sans)', fontSize:14, color:'var(--ink)',
+              padding:'4px 0', minWidth:0,
+            }}
+          />
+          <span className="mono" style={{ fontSize:9.5, color:'var(--ink-35)', flexShrink:0 }}>{draft.length}/40</span>
         </div>
-        <Keycap amber style={{ width:44, height:36, fontSize:11 }}>SEND</Keycap>
+        <Keycap amber onClick={sendComment} style={{
+          width:50, height:38, fontSize:11,
+          opacity: draft.trim() ? 1 : 0.45,
+          cursor: draft.trim() ? 'pointer' : 'default',
+          transition:'opacity 120ms ease-out',
+        }}>SEND</Keycap>
       </div>
     </div>
   );
@@ -908,6 +985,26 @@ function Screen07Settings() {
   const [, force] = React.useReducer(x => x+1, 0);
   const lang = window.FREQ_LANG || 'en';
   const setLang = (L) => { window.FREQ_LANG = L; try { localStorage.setItem('FREQ_LANG', L); } catch(e){} force(); window.dispatchEvent(new CustomEvent('freq-lang-change')); };
+
+  // Toggle states (persisted in localStorage)
+  const loadBool = (k, def) => {
+    try { const v = localStorage.getItem('FREQ_SET_' + k); return v === null ? def : v === '1'; }
+    catch(e) { return def; }
+  };
+  const saveBool = (k, v) => { try { localStorage.setItem('FREQ_SET_' + k, v ? '1' : '0'); } catch(e){} };
+
+  const [shutter, setShutter] = React.useState(() => loadBool('shutter', true));
+  const [haptic, setHaptic]   = React.useState(() => loadBool('haptic', true));
+  const [grid, setGrid]       = React.useState(() => loadBool('grid', false));
+  const [receipts, setReceipts] = React.useState(() => loadBool('receipts', false));
+  const [screenLock, setScreenLock] = React.useState(() => loadBool('screenLock', true));
+
+  const flip = (key, val, setter) => {
+    setter(val);
+    saveBool(key, val);
+    if (navigator.vibrate) { try { navigator.vibrate(6); } catch(e){} }
+  };
+
   const Row = ({ label, value, right, first }) => (
     <div style={{
       padding:'13px 16px', display:'flex', alignItems:'center', gap:10,
@@ -920,12 +1017,13 @@ function Screen07Settings() {
       {right}
     </div>
   );
-  const Toggle = ({ on }) => (
-    <div style={{
-      width:34, height:20,
+  const Toggle = ({ on, onToggle }) => (
+    <button onClick={() => onToggle && onToggle(!on)} style={{
+      width:34, height:20, padding:0, border:'none', cursor: onToggle ? 'pointer' : 'default',
       background: on ? 'var(--signal)' : 'var(--mist-3)',
       boxShadow:'inset 0 1px 2px rgba(0,0,0,.15)',
       position:'relative', transition:'background 150ms',
+      WebkitTapHighlightColor:'transparent',
     }}>
       <div style={{
         position:'absolute', top:2, left: on ? 16 : 2, width:16, height:16,
@@ -933,7 +1031,7 @@ function Screen07Settings() {
         boxShadow:'0 1px 2px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.6)',
         transition:'left 150ms',
       }}/>
-    </div>
+    </button>
   );
   const Section = ({ title, children }) => (
     <div style={{ marginTop:18 }}>
@@ -1007,15 +1105,15 @@ function Screen07Settings() {
 
         <Section title={T('capture')}>
           <Row first label={T('aspect')} value="3 : 4 · Locked"/>
-          <Row label={T('shutter_sound')} value="ON" right={<Toggle on/>}/>
-          <Row label={T('haptic')} value="MEDIUM" right={<Toggle on/>}/>
-          <Row label={T('grid')} value="3 × 3" right={<Toggle/>}/>
+          <Row label={T('shutter_sound')} value={shutter ? 'ON' : 'OFF'} right={<Toggle on={shutter} onToggle={(v)=>flip('shutter', v, setShutter)}/>}/>
+          <Row label={T('haptic')} value={haptic ? 'MEDIUM' : 'OFF'} right={<Toggle on={haptic} onToggle={(v)=>flip('haptic', v, setHaptic)}/>}/>
+          <Row label={T('grid')} value={grid ? '3 × 3' : 'OFF'} right={<Toggle on={grid} onToggle={(v)=>flip('grid', v, setGrid)}/>}/>
         </Section>
 
         <Section title={T('privacy')}>
           <Row first label={T('auto_vanish')} value="24H · Non-negotiable"/>
-          <Row label={T('receipts')} value="OFF" right={<Toggle/>}/>
-          <Row label={T('screen_lock')} value="ON" right={<Toggle on/>}/>
+          <Row label={T('receipts')} value={receipts ? 'ON' : 'OFF'} right={<Toggle on={receipts} onToggle={(v)=>flip('receipts', v, setReceipts)}/>}/>
+          <Row label={T('screen_lock')} value={screenLock ? 'ON' : 'OFF'} right={<Toggle on={screenLock} onToggle={(v)=>flip('screenLock', v, setScreenLock)}/>}/>
         </Section>
 
         <Section title={T('appearance')}>

@@ -6,6 +6,62 @@ const { useState: useMState, useEffect: useMEffect } = React;
 
 try { window.FREQ_LANG = localStorage.getItem('FREQ_LANG') || 'kr'; } catch(e){ window.FREQ_LANG = 'kr'; }
 
+// ── Splash A: wordmark + signal dot ──
+// pre → in (fade-in + letterspacing ease) → out (fade-out)
+function Splash({ onDismiss }) {
+  const [phase, setPhase] = React.useState('pre');
+
+  React.useEffect(() => {
+    const r = requestAnimationFrame(() => setPhase('in'));
+    const t1 = setTimeout(() => setPhase('out'), 1100);
+    const t2 = setTimeout(onDismiss, 1400);
+    return () => { cancelAnimationFrame(r); clearTimeout(t1); clearTimeout(t2); };
+  }, [onDismiss]);
+
+  const visible = phase === 'in';
+  const wordSpacing = phase === 'pre' ? '.55em' : '.36em';
+
+  return (
+    <div
+      onClick={onDismiss}
+      style={{
+        position:'fixed', inset:0, zIndex:9999,
+        background:'var(--mist-0)',
+        display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+        gap:18,
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 280ms ease-out',
+        cursor:'pointer',
+        WebkitTapHighlightColor:'transparent',
+        userSelect:'none',
+      }}>
+      <span style={{
+        width:8, height:8, borderRadius:'50%',
+        background:'var(--signal)',
+        boxShadow:'0 0 8px rgba(25,122,62,.55)',
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 320ms ease-out 60ms',
+        animation: visible ? 'breathe 1.6s ease-in-out infinite' : 'none',
+      }}/>
+      <span style={{
+        fontFamily:'var(--mono)', fontWeight:600,
+        fontSize:18, textTransform:'uppercase',
+        letterSpacing: wordSpacing,
+        color:'var(--ink)',
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 360ms ease-out 180ms, letter-spacing 480ms ease-out 180ms',
+      }}>FREQUENCY</span>
+      <span style={{
+        fontFamily:'var(--mono)', fontWeight:500,
+        fontSize:8.5, letterSpacing:'.28em', textTransform:'uppercase',
+        color:'var(--ink-35)',
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 320ms ease-out 460ms',
+      }}>FM · 0000.0</span>
+    </div>
+  );
+}
+
 // id alias map: 시안 코드에서 window.FREQ_NAV('feed') 처럼 친숙한 이름으로 호출
 const NAV_ALIAS = {
   tune: 0, '01': 0,
@@ -21,6 +77,7 @@ const NAV_ALIAS = {
 function MobileRouter() {
   const [screen, setScreen] = useMState(0);
   const [lang, setLangState] = useMState(window.FREQ_LANG || 'kr');
+  const [showSplash, setShowSplash] = useMState(true);
 
   const screens = [
     { id: '01',  label: 'TUNE',   Comp: Screen01TuneIn },
@@ -111,6 +168,7 @@ function MobileRouter() {
       }}>
         <Current />
       </div>
+      {showSplash && <Splash onDismiss={() => setShowSplash(false)} />}
     </div>
   );
 }
