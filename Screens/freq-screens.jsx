@@ -1067,6 +1067,9 @@ function Screen07Settings() {
     { who:'SEPIA', name:'Yuna', host:false, last:'31m' },
   ];
 
+  // top-level segment: room (channel info) | general (device + account)
+  const [section, setSection] = React.useState('room');
+
   // confirm sheet state for destructive actions
   const [confirm, setConfirm] = React.useState(null); // null | 'leave' | 'close' | 'delete'
   const isKr = lang === 'kr';
@@ -1102,9 +1105,31 @@ function Screen07Settings() {
         <span className="lbl" style={{ color:'var(--ink)' }}>{T('settings')}</span>
       </div>
 
+      {/* ROOM ↔ GENERAL segmented switch */}
+      <div style={{ padding:'14px 16px 0' }}>
+        <div style={{
+          display:'flex', gap:4, padding:3,
+          background:'var(--mist-2)',
+          boxShadow:'inset 0 1px 2px rgba(0,0,0,.08)',
+        }}>
+          {[['room', isKr ? '방' : 'ROOM'], ['general', isKr ? '일반' : 'GENERAL']].map(([k, lbl]) => (
+            <button key={k} onClick={() => setSection(k)} style={{
+              flex:1, border:'none', cursor:'pointer',
+              padding:'9px 0',
+              fontFamily:'var(--mono)', fontSize:11, letterSpacing:'.18em', textTransform:'uppercase',
+              background: section === k ? 'var(--ink)' : 'transparent',
+              color: section === k ? 'var(--mist-0)' : 'var(--ink-55)',
+              fontWeight: section === k ? 600 : 500,
+              WebkitTapHighlightColor:'transparent',
+              transition:'background 120ms ease-out, color 120ms ease-out',
+            }}>{lbl}</button>
+          ))}
+        </div>
+      </div>
+
       <div style={{ flex:1, overflowY:'auto', padding:'14px 0 0' }}>
+        {section === 'room' && (<>
         {/* ─── CHANNEL section (room info) ─── */}
-        <div className="lbl" style={{ padding:'0 16px 8px' }}>Channel</div>
 
         {/* Channel code card */}
         <div style={{
@@ -1167,15 +1192,14 @@ function Screen07Settings() {
         </div>
 
         {/* Channel actions — destructive ones go through confirm sheet */}
-        <div style={{ padding:'12px 16px 18px', display:'flex', gap:8 }}>
+        <div style={{ padding:'12px 16px 22px', display:'flex', gap:8 }}>
           <Keycap style={{ flex:1, height:40, fontSize:11 }}>INVITE</Keycap>
           <Keycap graphite onClick={() => setConfirm('leave')} style={{ flex:1, height:40, fontSize:11 }}>LEAVE</Keycap>
           <Keycap graphite onClick={() => setConfirm('close')} style={{ flex:1, height:40, fontSize:11 }}>CLOSE CH</Keycap>
         </div>
+        </>)}
 
-        {/* divider before personal/device settings */}
-        <div style={{ height:8, background:'var(--mist-1)', boxShadow:'inset 0 1px 0 var(--mist-3), inset 0 -1px 0 var(--mist-3)' }}/>
-
+        {section === 'general' && (<>
         {/* Profile */}
         <div style={{ padding:'14px 16px 6px', display:'flex', alignItems:'center', gap:12 }}>
           <div style={{
@@ -1263,6 +1287,7 @@ function Screen07Settings() {
           <Keycap style={{ width:'100%', height:42, fontSize:11 }}>{T('sign_out')}</Keycap>
           <Keycap graphite onClick={() => setConfirm('delete')} style={{ width:'100%', height:42, fontSize:11 }}>{T('delete_acct')}</Keycap>
         </div>
+        </>)}
       </div>
 
       <TabBar active="set"/>
