@@ -123,6 +123,16 @@ function MobileRouter() {
     return () => window.removeEventListener('freq-lang-change', h);
   }, []);
 
+  // lang 변경 시 body class 토글 → CSS 110% 스케일 적용
+  useMEffect(() => {
+    document.body.classList.toggle('lang-kr', lang === 'kr');
+    document.body.classList.toggle('lang-en', lang === 'en');
+    return () => {
+      document.body.classList.remove('lang-kr');
+      document.body.classList.remove('lang-en');
+    };
+  }, [lang]);
+
   // swipe gesture (좌우 스와이프로 시안 이동)
   useMEffect(() => {
     let startX = 0, startY = 0, moved = false;

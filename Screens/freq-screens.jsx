@@ -178,6 +178,18 @@ function Mosaic({ n = 7 }) {
   else if (n <= 6) { cols = 3; rows = 2; }
   const total = cols * rows;
   const members = ['YOU','KODAK','VELVIA','POLAROID','EKTA','MINT','SEPIA','LAVENDER','BURNT'];
+  // sample captions per member — 셀에 들어갈 한 줄 멘션
+  const captions = {
+    YOU:      (window.FREQ_LANG === 'kr') ? '드디어 커피'      : 'coffee, finally',
+    KODAK:    (window.FREQ_LANG === 'kr') ? '햇살 미쳤다'      : 'light is unreal',
+    VELVIA:   (window.FREQ_LANG === 'kr') ? '여기 카페 어디?'   : 'where is this',
+    POLAROID: (window.FREQ_LANG === 'kr') ? '아침 산책'        : 'morning walk',
+    EKTA:     (window.FREQ_LANG === 'kr') ? '필름 다 썼어'     : 'roll finished',
+    MINT:     (window.FREQ_LANG === 'kr') ? '컵 사고 싶다'     : 'i need this mug',
+    SEPIA:    (window.FREQ_LANG === 'kr') ? '오후 빛'          : 'afternoon light',
+    LAVENDER: (window.FREQ_LANG === 'kr') ? '가을이네'         : 'autumn vibes',
+    BURNT:    (window.FREQ_LANG === 'kr') ? '한 입만'          : 'one bite',
+  };
   return (
     <div style={{
       display:'grid', gridTemplateColumns:`repeat(${cols}, 1fr)`, gridTemplateRows:`repeat(${rows}, 1fr)`,
@@ -187,6 +199,7 @@ function Mosaic({ n = 7 }) {
       {Array.from({ length: total }).map((_,i) => {
         const filled = i < n;
         const who = members[i];
+        const cap = captions[who];
         const handleClick = () => {
           if (filled && window.FREQ_NAV) window.FREQ_NAV('post');
         };
@@ -202,9 +215,21 @@ function Mosaic({ n = 7 }) {
             {filled ? (
               <div className="film-stripe" style={{
                 position:'absolute', inset:0,
-                display:'grid', placeItems:'end stretch', padding:6,
+                display:'flex', flexDirection:'column', justifyContent:'flex-end',
+                padding:6, gap:3,
               }}>
-                <Chip who={who} style={{ fontSize:8.5, padding:'2px 4px', background:'rgba(242,241,238,.88)' }}/>
+                {/* caption above chip — 1 line ellipsis */}
+                {cap && (
+                  <span style={{
+                    fontFamily:'var(--sans)', fontSize:9.5, lineHeight:1.2,
+                    color:'#fff',
+                    padding:'2px 4px',
+                    background:'rgba(20,18,17,.55)',
+                    overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
+                    alignSelf:'flex-start', maxWidth:'100%',
+                  }}>{cap}</span>
+                )}
+                <Chip who={who} style={{ fontSize:8.5, padding:'2px 4px', background:'rgba(242,241,238,.88)', alignSelf:'flex-start' }}/>
               </div>
             ) : (
               <div className="slot-empty" style={{ position:'absolute', inset:0 }}/>
@@ -260,11 +285,6 @@ function Screen02Feed() {
             <span className="lbl" style={{ color:'var(--signal)' }}>{T('feed_live')}</span>
           </div>
         </div>
-
-        {/* member strip */}
-        <div className="no-scrollbar" style={{ display:'flex', gap:6, overflowX:'auto', paddingBottom:4, flexShrink:0 }}>
-          {['YOU','KODAK','VELVIA','POLAROID','EKTA','MINT','SEPIA'].map(m=> <Chip key={m} who={m}/>)}
-        </div>
       </div>
 
       <TabBar active="feed"/>
@@ -275,7 +295,68 @@ function Screen02Feed() {
 // ─────────────────────────────────────────────────────────────
 // 03 · CAMERA — tap=photo / hold=5s video + caption
 // ─────────────────────────────────────────────────────────────
-function Screen03Camera({ holding = false }) {
+function Screen03Camera() {
+  // tap = photo (instant), hold ≥300ms = video mode (max 5s)
+  const [holding, setHolding] = React.useState(false);
+  const [recT, setRecT] = React.useState(0);
+  const startRef = React.useRef(0);
+  const holdTimerRef = React.useRef(null);
+  const recIntervalRef = React.useRef(null);
+  const doneRef = React.useRef(false);
+
+  const cleanup = () => {
+    clearTimeout(holdTimerRef.current);
+    clearInterval(recIntervalRef.current);
+    holdTimerRef.current = null;
+    recIntervalRef.current = null;
+  };
+  React.useEffect(() => () => cleanup(), []);
+
+  const goReview = () => { if (window.FREQ_NAV) window.FREQ_NAV('review'); };
+
+  const onPressStart = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (doneRef.current) return;
+    startRef.current = Date.now();
+    setRecT(0);
+    holdTimerRef.current = setTimeout(() => {
+      setHolding(true);
+      if (navigator.vibrate) { try { navigator.vibrate(12); } catch(_){} }
+      recIntervalRef.current = setInterval(() => {
+        const t = (Date.now() - startRef.current - 300) / 1000;
+        setRecT(t);
+        if (t >= 5) {
+          doneRef.current = true;
+          cleanup();
+          setHolding(false);
+          goReview();
+        }
+      }, 50);
+    }, 300);
+  };
+
+  const onPressEnd = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (doneRef.current) return;
+    const dt = Date.now() - startRef.current;
+    const wasHolding = holding;
+    cleanup();
+    if (dt < 300) {
+      // tap = photo
+      doneRef.current = true;
+      if (navigator.vibrate) { try { navigator.vibrate(6); } catch(_){} }
+      goReview();
+    } else if (wasHolding) {
+      // released during hold = stop video early
+      doneRef.current = true;
+      setHolding(false);
+      goReview();
+    }
+  };
+
+  const pct = Math.min(recT / 5, 1);
+  const C = 2 * Math.PI * 38;
+
   return (
     <div style={{ flex:1, background:'var(--graphite)', display:'flex', flexDirection:'column', color:'var(--mist-0)' }}>
       {/* header — close · title · timer */}
@@ -333,7 +414,7 @@ function Screen03Camera({ holding = false }) {
           {holding && (
             <div style={{ position:'absolute', top:14, left:14, display:'flex', alignItems:'center', gap:6, background:'rgba(0,0,0,.4)', padding:'3px 6px' }}>
               <div style={{ width:6, height:6, background:'var(--amber)', animation:'breathe 1s ease-in-out infinite' }}/>
-              <span className="mono" style={{ fontSize:9, letterSpacing:'.14em', color:'#fff' }}>REC 2.3</span>
+              <span className="mono" style={{ fontSize:9, letterSpacing:'.14em', color:'#fff' }}>REC {recT.toFixed(1)}</span>
             </div>
           )}
         </div>
@@ -357,15 +438,22 @@ function Screen03Camera({ holding = false }) {
           <span className="lbl-dk">Last</span>
         </div>
 
-        {/* Shutter */}
+        {/* Shutter — tap = photo, hold = 5s video */}
         <div style={{ display:'flex', flexDirection:'column', gap:8, alignItems:'center' }}>
           <button
-            onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('review'); }}
+            onTouchStart={onPressStart}
+            onTouchEnd={onPressEnd}
+            onTouchCancel={onPressEnd}
+            onMouseDown={onPressStart}
+            onMouseUp={onPressEnd}
+            onMouseLeave={(e) => { if (holdTimerRef.current || recIntervalRef.current) onPressEnd(e); }}
             style={{
+              position:'relative',
               width:84, height:84, borderRadius:'50%',
               background:'#1a1917', border:'none', padding:0, cursor:'pointer',
               boxShadow:'inset 0 0 0 2px #000, 0 0 0 3px rgba(255,255,255,.15)',
               display:'grid', placeItems:'center',
+              WebkitTapHighlightColor:'transparent', userSelect:'none',
             }}>
             <div style={{
               width:64, height:64, borderRadius:'50%',
@@ -373,8 +461,20 @@ function Screen03Camera({ holding = false }) {
               boxShadow:'inset 0 -2px 0 rgba(0,0,0,.12), inset 0 2px 0 rgba(255,255,255,.5)',
               transition:'background 150ms',
             }}/>
+            {/* progress ring during video hold */}
+            {holding && (
+              <svg width="84" height="84" style={{ position:'absolute', inset:0, transform:'rotate(-90deg)', pointerEvents:'none' }}>
+                <circle cx="42" cy="42" r="38" fill="none"
+                  stroke="rgba(255,255,255,.15)" strokeWidth="2.5"/>
+                <circle cx="42" cy="42" r="38" fill="none"
+                  stroke="var(--amber)" strokeWidth="2.5" strokeLinecap="round"
+                  strokeDasharray={C}
+                  strokeDashoffset={(1 - pct) * C}
+                  style={{ transition:'stroke-dashoffset 50ms linear' }}/>
+              </svg>
+            )}
           </button>
-          <span className="lbl-dk">Tap · Photo  ·  Hold · 5s</span>
+          <span className="lbl-dk">{holding ? 'Recording · release to stop' : 'Tap · Photo  ·  Hold · 5s'}</span>
         </div>
 
         {/* FLIP camera */}

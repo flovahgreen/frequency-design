@@ -224,9 +224,29 @@ function TabBar({ active = 'feed' }) {
       display:'flex',
       paddingBottom:'env(safe-area-inset-bottom, 0)',
     }}>
-      <Tab id="feed" label="Feed" icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" stroke="currentColor" strokeWidth="1.2"/><rect x="9" y="1" width="6" height="6" stroke="currentColor" strokeWidth="1.2"/><rect x="1" y="9" width="6" height="6" stroke="currentColor" strokeWidth="1.2"/><rect x="9" y="9" width="6" height="6" stroke="currentColor" strokeWidth="1.2"/></svg>}/>
-      <Tab id="cam" label="Shoot" icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3.5" width="14" height="10" stroke="currentColor" strokeWidth="1.2"/><circle cx="8" cy="8.5" r="2.8" stroke="currentColor" strokeWidth="1.2"/><rect x="5" y="1.5" width="6" height="2" stroke="currentColor" strokeWidth="1.2"/></svg>}/>
-      <Tab id="set" label="Set" icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.4" stroke="currentColor" strokeWidth="1.2"/><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2"/><line x1="8" y1="1.5" x2="8" y2="3.6" stroke="currentColor" strokeWidth="1.2"/><line x1="8" y1="12.4" x2="8" y2="14.5" stroke="currentColor" strokeWidth="1.2"/><line x1="1.5" y1="8" x2="3.6" y2="8" stroke="currentColor" strokeWidth="1.2"/><line x1="12.4" y1="8" x2="14.5" y2="8" stroke="currentColor" strokeWidth="1.2"/></svg>}/>
+      {/* FEED · 3x3 mosaic dots, denser and more refined */}
+      <Tab id="feed" label="Feed" icon={
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          {[0,1,2].flatMap(r => [0,1,2].map(c => (
+            <rect key={`${r}-${c}`} x={1 + c*6} y={1 + r*6} width="4" height="4" fill="currentColor"/>
+          )))}
+        </svg>
+      }/>
+      {/* SHOOT · aperture / shutter — concentric rings + center dot */}
+      <Tab id="cam" label="Shoot" icon={
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="9" r="7.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+          <circle cx="9" cy="9" r="4.6" stroke="currentColor" strokeWidth="1" fill="none"/>
+          <circle cx="9" cy="9" r="1.6" fill="currentColor"/>
+        </svg>
+      }/>
+      {/* SET · TE-style knob with single tick at 2 o'clock */}
+      <Tab id="set" label="Set" icon={
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="9" r="7.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+          <line x1="13.2" y1="4.8" x2="11.4" y2="6.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+        </svg>
+      }/>
     </div>
   );
 }

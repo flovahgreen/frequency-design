@@ -104,6 +104,18 @@
     box-shadow: inset 0 0 0 1px var(--mist-3);
   }
   .chip .sw{ width:6px; height:6px; background:currentColor; }
+
+  /* ═══ 한글 폰트 글로벌 110% 스케일링 ═══
+     px 인라인 사이즈는 자동 스케일 안 됨. 클래스 기반 텍스트와 폼 입력만 자동 적용.
+     특정 px 인라인이 너무 작게 느껴지면 개별 컴포넌트에서 추가 조정 필요. */
+  body.lang-kr { font-size: 16.5px; }  /* 기본 15px → 16.5px (110%) */
+  body.lang-kr .lbl       { font-size: 11px; }     /* 10 → 11 */
+  body.lang-kr .lbl-dk    { font-size: 11px; }     /* 10 → 11 */
+  body.lang-kr .mono      { font-size: 11px; letter-spacing: .04em; } /* 베이스 mono 약 110% */
+  body.lang-kr .chip      { font-size: 10.5px; }   /* 9.5 → 10.5 */
+  body.lang-kr input,
+  body.lang-kr textarea   { font-size: 16.5px; }   /* 캡션/댓글 입력 */
+  body.lang-kr button     { font-size: inherit; }  /* 버튼 텍스트는 부모 따라감 */
 </style>
 </head>
 <body>
