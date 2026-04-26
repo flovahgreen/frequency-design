@@ -182,9 +182,8 @@ function Mosaic({ n = 7 }) {
   })();
   const isKr = window.FREQ_LANG === 'kr';
 
-  // sample captions per member — 셀에 들어갈 한 줄 멘션
+  // sample captions per member — YOU만 동적 (없으면 빈 상태)
   const captions = {
-    YOU:      userCap || (isKr ? '드디어 커피' : 'coffee, finally'),
     KODAK:    isKr ? '햇살 미쳤다'      : 'light is unreal',
     VELVIA:   isKr ? '여기 카페 어디?'   : 'where is this',
     POLAROID: isKr ? '아침 산책'        : 'morning walk',
@@ -194,6 +193,10 @@ function Mosaic({ n = 7 }) {
     LAVENDER: isKr ? '가을이네'         : 'autumn vibes',
     BURNT:    isKr ? '한 입만'          : 'one bite',
   };
+  if (userCap) captions.YOU = userCap;
+
+  const youHasPost = !!userCap;
+
   return (
     <div style={{
       display:'grid', gridTemplateColumns:`repeat(${cols}, 1fr)`, gridTemplateRows:`repeat(${rows}, 1fr)`,
@@ -203,8 +206,39 @@ function Mosaic({ n = 7 }) {
         const filled = i < n;
         const who = members[i];
         const cap = captions[who];
+
+        // YOU 셀 빈 상태: 캡션 안 썼으면 사진 없는 슬롯 + Tap to shoot CTA
+        if (filled && who === 'YOU' && !youHasPost) {
+          return (
+            <div key={i}
+              onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('camera'); }}
+              style={{
+                position:'relative',
+                cursor:'pointer',
+                borderRadius:8, overflow:'hidden',
+                background:'var(--mist-1)',
+                border:'1.5px dashed var(--mist-4)',
+                display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:6,
+                padding:6,
+              }}>
+              <Chip who="YOU" style={{ fontSize:8.5, padding:'2px 5px' }}/>
+              <span style={{
+                fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.08em',
+                color:'var(--ink-55)', textTransform:'uppercase', fontWeight:700,
+                textAlign:'center', lineHeight:1.3,
+              }}>
+                {isKr ? '+ 촬영' : '+ Shoot'}
+              </span>
+            </div>
+          );
+        }
+
         const handleClick = () => {
-          if (filled && window.FREQ_NAV) window.FREQ_NAV('post');
+          if (filled && window.FREQ_NAV) {
+            // 클릭한 셀의 멤버 정보를 POST detail로 전달
+            window.FREQ_POST_TARGET = { who, caption: cap };
+            window.FREQ_NAV('post');
+          }
         };
         return (
           <div
@@ -601,6 +635,14 @@ function Screen03bReview() {
 // 04 · POST DETAIL — 3:4 image + 5 stamps + 40-char comments
 // ─────────────────────────────────────────────────────────────
 function Screen04Post() {
+  // 클릭한 셀에서 전달받은 작성자/캡션 (없으면 default)
+  const target = window.FREQ_POST_TARGET || { who:'VELVIA', caption:'Coffee, finally' };
+  const isPostKr = window.FREQ_LANG === 'kr';
+  const authorName = ({
+    YOU:'Jay', KODAK:'Mira', VELVIA:'Sung', POLAROID:'Ada',
+    EKTA:'Rin', MINT:'Ben', SEPIA:'Yuna', LAVENDER:'Eun', BURNT:'Jin',
+  })[target.who] || target.who;
+
   // stamps: each has count + whether YOU pressed it
   const [stamps, setStamps] = React.useState([
     { k:'heart', label:'♥', count:3, active:true },
@@ -643,22 +685,23 @@ function Screen04Post() {
         <button onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }} style={{ border:'none', background:'transparent', padding:0, cursor:'pointer' }}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.4"/></svg>
         </button>
-        <Chip who="VELVIA"/>
-        <span className="lbl" style={{ color:'var(--ink-35)' }}>· 03m ago</span>
+        <Chip who={target.who}/>
+        <span style={{ fontFamily:'var(--sans)', fontSize:13, fontWeight:500, color:'var(--ink)' }}>{authorName}</span>
+        <span className="lbl" style={{ color:'var(--ink-35)' }}>· 03m {isPostKr ? '전' : 'ago'}</span>
         <div style={{ flex:1 }}/>
         <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>F·08</span>
       </div>
 
       {/* image */}
       <div style={{ padding:'14px 16px 0' }}>
-        <FilmPlaceholder label="Velvia · Round 08"/>
+        <FilmPlaceholder label={`${target.who} · Round 08`}/>
       </div>
 
       {/* caption */}
       <div style={{ padding:'12px 16px 8px', display:'flex', alignItems:'flex-start', gap:8 }}>
-        <span style={{ fontFamily:'var(--sans)', fontSize:14, lineHeight:1.4, color:'var(--ink)' }}>Coffee, finally</span>
+        <span style={{ fontFamily:'var(--sans)', fontSize:14, lineHeight:1.4, color:'var(--ink)' }}>{target.caption || (isPostKr ? '한 줄 없음' : 'no caption')}</span>
         <div style={{ flex:1 }}/>
-        <span className="mono" style={{ fontSize:9.5, color:'var(--ink-35)' }}>12/40</span>
+        <span className="mono" style={{ fontSize:9.5, color:'var(--ink-35)' }}>{(target.caption || '').length}/40</span>
       </div>
 
       {/* stamps row */}
