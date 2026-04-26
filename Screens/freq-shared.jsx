@@ -124,18 +124,18 @@ function ScreenHeader({ channel = '4471', timer = '01:47:33', members = 7, onMen
       {/* Left: LIVE signal */}
       <div style={{ display:'flex', alignItems:'center', gap:6 }}>
         <span className="signal-dot"/>
-        <span style={{ fontFamily:'var(--mono)', fontSize:9.5, letterSpacing:'.16em', color:'rgba(242,241,238,.7)' }}>LIVE</span>
+        <span style={{ fontFamily:'var(--mono)', fontSize:9.5, letterSpacing:'.16em', color:'rgba(240,232,216,.7)' }}>LIVE</span>
       </div>
       <div style={{ width:1, height:14, background:'rgba(255,255,255,.12)' }}/>
       {/* Channel code */}
       <div style={{ display:'flex', flexDirection:'column', lineHeight:1.1 }}>
-        <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.18em', color:'rgba(242,241,238,.4)' }}>CHANNEL</span>
+        <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.18em', color:'rgba(240,232,216,.4)' }}>CHANNEL</span>
         <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.15em', fontWeight:600, color:'var(--mist-0)' }}>{channel}</span>
       </div>
       <div style={{ flex:1 }}/>
       {/* Timer — channel expiration countdown */}
       <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', lineHeight:1.1 }}>
-        <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.18em', color:'rgba(242,241,238,.4)', textTransform:'uppercase' }}>{T('expires')}</span>
+        <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.18em', color:'rgba(240,232,216,.4)', textTransform:'uppercase' }}>{T('expires')}</span>
         <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.08em', fontVariantNumeric:'tabular-nums', color:'var(--mist-0)' }}>{timer}</span>
       </div>
       <button onClick={onMenu} style={{
@@ -143,9 +143,9 @@ function ScreenHeader({ channel = '4471', timer = '01:47:33', members = 7, onMen
         display:'grid', placeItems:'center',
       }}>
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <rect y="2" width="14" height="1.2" fill="rgba(242,241,238,.7)"/>
-          <rect y="6.4" width="14" height="1.2" fill="rgba(242,241,238,.7)"/>
-          <rect y="10.8" width="14" height="1.2" fill="rgba(242,241,238,.7)"/>
+          <rect y="2" width="14" height="1.2" fill="rgba(240,232,216,.7)"/>
+          <rect y="6.4" width="14" height="1.2" fill="rgba(240,232,216,.7)"/>
+          <rect y="10.8" width="14" height="1.2" fill="rgba(240,232,216,.7)"/>
         </svg>
       </button>
     </div>
@@ -274,7 +274,7 @@ function FilmPlaceholder({ label, style, children }) {
       boxShadow:'inset 0 0 0 1px rgba(0,0,0,.06)',
       ...style,
     }}>
-      <span className="lbl" style={{ color:'rgba(20,18,17,.35)' }}>{label || 'FRAME'}</span>
+      <span className="lbl" style={{ color:'rgba(45,38,32,.35)' }}>{label || 'FRAME'}</span>
       {children}
     </div>
   );
@@ -303,7 +303,7 @@ function BottomSheet({ open, onClose, children }) {
       onClick={onClose}
       style={{
         position:'fixed', inset:0, zIndex:9000,
-        background: visible ? 'rgba(20,18,17,.45)' : 'rgba(20,18,17,0)',
+        background: visible ? 'rgba(45,38,32,.45)' : 'rgba(45,38,32,0)',
         transition:'background 220ms ease-out',
         display:'flex', alignItems:'flex-end',
       }}>

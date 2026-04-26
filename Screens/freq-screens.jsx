@@ -178,17 +178,23 @@ function Mosaic({ n = 7 }) {
   else if (n <= 6) { cols = 3; rows = 2; }
   const total = cols * rows;
   const members = ['YOU','KODAK','VELVIA','POLAROID','EKTA','MINT','SEPIA','LAVENDER','BURNT'];
+  // YOU의 최신 캡션은 localStorage 에서 (Review SEND 시 저장됨)
+  const userCap = (() => {
+    try { return localStorage.getItem('FREQ_USER_POST'); } catch(_) { return null; }
+  })();
+  const isKr = window.FREQ_LANG === 'kr';
+
   // sample captions per member — 셀에 들어갈 한 줄 멘션
   const captions = {
-    YOU:      (window.FREQ_LANG === 'kr') ? '드디어 커피'      : 'coffee, finally',
-    KODAK:    (window.FREQ_LANG === 'kr') ? '햇살 미쳤다'      : 'light is unreal',
-    VELVIA:   (window.FREQ_LANG === 'kr') ? '여기 카페 어디?'   : 'where is this',
-    POLAROID: (window.FREQ_LANG === 'kr') ? '아침 산책'        : 'morning walk',
-    EKTA:     (window.FREQ_LANG === 'kr') ? '필름 다 썼어'     : 'roll finished',
-    MINT:     (window.FREQ_LANG === 'kr') ? '컵 사고 싶다'     : 'i need this mug',
-    SEPIA:    (window.FREQ_LANG === 'kr') ? '오후 빛'          : 'afternoon light',
-    LAVENDER: (window.FREQ_LANG === 'kr') ? '가을이네'         : 'autumn vibes',
-    BURNT:    (window.FREQ_LANG === 'kr') ? '한 입만'          : 'one bite',
+    YOU:      userCap || (isKr ? '드디어 커피' : 'coffee, finally'),
+    KODAK:    isKr ? '햇살 미쳤다'      : 'light is unreal',
+    VELVIA:   isKr ? '여기 카페 어디?'   : 'where is this',
+    POLAROID: isKr ? '아침 산책'        : 'morning walk',
+    EKTA:     isKr ? '필름 다 썼어'     : 'roll finished',
+    MINT:     isKr ? '컵 사고 싶다'     : 'i need this mug',
+    SEPIA:    isKr ? '오후 빛'          : 'afternoon light',
+    LAVENDER: isKr ? '가을이네'         : 'autumn vibes',
+    BURNT:    isKr ? '한 입만'          : 'one bite',
   };
   return (
     <div style={{
@@ -224,12 +230,12 @@ function Mosaic({ n = 7 }) {
                     fontFamily:'var(--sans)', fontSize:9.5, lineHeight:1.2,
                     color:'#fff',
                     padding:'2px 4px',
-                    background:'rgba(20,18,17,.55)',
+                    background:'rgba(45,38,32,.55)',
                     overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
                     alignSelf:'flex-start', maxWidth:'100%',
                   }}>{cap}</span>
                 )}
-                <Chip who={who} style={{ fontSize:8.5, padding:'2px 4px', background:'rgba(242,241,238,.88)', alignSelf:'flex-start' }}/>
+                <Chip who={who} style={{ fontSize:8.5, padding:'2px 4px', background:'rgba(240,232,216,.88)', alignSelf:'flex-start' }}/>
               </div>
             ) : (
               <div className="slot-empty" style={{ position:'absolute', inset:0 }}/>
@@ -371,8 +377,8 @@ function Screen03Camera() {
             WebkitTapHighlightColor:'transparent',
           }}>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <line x1="2" y1="2" x2="12" y2="12" stroke="rgba(242,241,238,.7)" strokeWidth="1.4" strokeLinecap="round"/>
-            <line x1="12" y1="2" x2="2" y2="12" stroke="rgba(242,241,238,.7)" strokeWidth="1.4" strokeLinecap="round"/>
+            <line x1="2" y1="2" x2="12" y2="12" stroke="rgba(240,232,216,.7)" strokeWidth="1.4" strokeLinecap="round"/>
+            <line x1="12" y1="2" x2="2" y2="12" stroke="rgba(240,232,216,.7)" strokeWidth="1.4" strokeLinecap="round"/>
           </svg>
         </button>
         <span className="lbl-dk">{T('shoot_title')}</span>
@@ -487,10 +493,10 @@ function Screen03Camera() {
             WebkitTapHighlightColor:'transparent',
           }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M4 8 A6 6 0 0 1 15 6" stroke="rgba(242,241,238,.85)" strokeWidth="1.3" fill="none"/>
-              <path d="M13 4 L15 6 L13 8" stroke="rgba(242,241,238,.85)" strokeWidth="1.3" fill="none"/>
-              <path d="M16 12 A6 6 0 0 1 5 14" stroke="rgba(242,241,238,.85)" strokeWidth="1.3" fill="none"/>
-              <path d="M7 16 L5 14 L7 12" stroke="rgba(242,241,238,.85)" strokeWidth="1.3" fill="none"/>
+              <path d="M4 8 A6 6 0 0 1 15 6" stroke="rgba(240,232,216,.85)" strokeWidth="1.3" fill="none"/>
+              <path d="M13 4 L15 6 L13 8" stroke="rgba(240,232,216,.85)" strokeWidth="1.3" fill="none"/>
+              <path d="M16 12 A6 6 0 0 1 5 14" stroke="rgba(240,232,216,.85)" strokeWidth="1.3" fill="none"/>
+              <path d="M7 16 L5 14 L7 12" stroke="rgba(240,232,216,.85)" strokeWidth="1.3" fill="none"/>
             </svg>
           </button>
           <span className="lbl-dk">Flip</span>
@@ -506,6 +512,19 @@ function Screen03Camera() {
 function Screen03bReview() {
   const [caption, setCaption] = React.useState('');
   const onCap = (e) => setCaption(e.target.value.slice(0,40));
+
+  // SEND TO CHANNEL: persist user's caption so FEED Mosaic picks it up
+  const sendToChannel = () => {
+    const cap = caption.trim();
+    try {
+      if (cap) localStorage.setItem('FREQ_USER_POST', cap);
+      else localStorage.removeItem('FREQ_USER_POST');
+    } catch(_){}
+    if (navigator.vibrate) { try { navigator.vibrate(10); } catch(_){} }
+    setCaption('');
+    if (window.FREQ_NAV) window.FREQ_NAV('feed');
+  };
+
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
       {/* top bar — back chevron + review title + round timer */}
@@ -578,7 +597,7 @@ function Screen03bReview() {
       {/* actions */}
       <div style={{ padding:'14px 16px 16px', display:'flex', gap:8 }}>
         <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('camera'); }} style={{ flex:1, height:48, fontSize:11 }}>RETAKE</Keycap>
-        <Keycap amber onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }} style={{ flex:2, height:48, fontSize:11 }}>SEND TO CHANNEL →</Keycap>
+        <Keycap amber onClick={sendToChannel} style={{ flex:2, height:48, fontSize:11 }}>SEND TO CHANNEL →</Keycap>
       </div>
     </div>
   );
@@ -875,7 +894,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
 
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
               <span className="lbl-dk">Airwaves · Open</span>
-              <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'rgba(242,241,238,.4)' }}>ETA 00:12</span>
+              <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'rgba(240,232,216,.4)' }}>ETA 00:12</span>
             </div>
           </div>
 
@@ -957,7 +976,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
             }}>
               00:03<span className="crt-cursor" style={{ verticalAlign:'baseline' }}/>
             </div>
-            <span className="lbl-dk" style={{ color:'rgba(242,241,238,.4)' }}>Tap START to begin now</span>
+            <span className="lbl-dk" style={{ color:'rgba(240,232,216,.4)' }}>Tap START to begin now</span>
           </div>
 
           {/* final roster */}
