@@ -224,11 +224,11 @@ function TabBar({ active = 'feed' }) {
       display:'flex',
       paddingBottom:'env(safe-area-inset-bottom, 0)',
     }}>
-      {/* FEED · 3x3 mosaic dots, denser and more refined */}
+      {/* FEED · 3x3 mosaic dots with rounded corners (polycarbonate) */}
       <Tab id="feed" label="Feed" icon={
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           {[0,1,2].flatMap(r => [0,1,2].map(c => (
-            <rect key={`${r}-${c}`} x={1 + c*6} y={1 + r*6} width="4" height="4" fill="currentColor"/>
+            <rect key={`${r}-${c}`} x={1 + c*6} y={1 + r*6} width="4" height="4" rx="1" ry="1" fill="currentColor"/>
           )))}
         </svg>
       }/>
@@ -265,13 +265,14 @@ function Keycap({ children, amber, graphite, onClick, style }) {
   );
 }
 
-// Film-stripe placeholder (3:4 content)
+// Film-stripe placeholder (3:4 content) — rounded polycarbonate frame
 function FilmPlaceholder({ label, style, children }) {
   return (
     <div className="film-stripe" style={{
       position:'relative', width:'100%', aspectRatio:'3/4',
       display:'grid', placeItems:'center',
-      boxShadow:'inset 0 0 0 1px rgba(0,0,0,.06)',
+      borderRadius:12, overflow:'hidden',
+      boxShadow:'inset 0 0 0 1px rgba(58,51,42,.1)',
       ...style,
     }}>
       <span className="lbl" style={{ color:'rgba(45,38,32,.35)' }}>{label || 'FRAME'}</span>
@@ -311,12 +312,19 @@ function BottomSheet({ open, onClose, children }) {
         onClick={(e) => e.stopPropagation()}
         style={{
           width:'100%', background:'var(--mist-0)',
-          padding:'18px 18px calc(env(safe-area-inset-bottom, 18px) + 18px)',
-          boxShadow:'0 -4px 20px rgba(0,0,0,.18)',
+          padding:'20px 18px calc(env(safe-area-inset-bottom, 18px) + 18px)',
+          borderRadius:'20px 20px 0 0',
+          boxShadow:'0 -4px 20px rgba(58,51,42,.18)',
           transform: visible ? 'translateY(0)' : 'translateY(110%)',
           transition:'transform 240ms cubic-bezier(0.2,0,0,1)',
           display:'flex', flexDirection:'column', gap:14,
         }}>
+        {/* drag handle indicator */}
+        <div style={{
+          width:36, height:4, borderRadius:2,
+          background:'var(--mist-3)',
+          margin:'-8px auto 4px',
+        }}/>
         {children}
       </div>
     </div>
@@ -403,9 +411,10 @@ function InviteSheet({ open, onClose, channel = '447.1' }) {
       {/* big mono channel code */}
       <div style={{
         margin:'4px 0 6px',
-        padding:'18px 14px',
+        padding:'18px 14px', borderRadius:14,
         background:'var(--mist-1)',
-        boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+        border:'1.5px solid var(--mist-3)',
+        boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(58,51,42,.06)',
         display:'flex', alignItems:'baseline', justifyContent:'center', gap:6,
       }}>
         <span style={{ fontFamily:'var(--mono)', fontSize:42, fontWeight:600, letterSpacing:'.06em', color:'var(--ink)', fontVariantNumeric:'tabular-nums' }}>{intPart}</span>

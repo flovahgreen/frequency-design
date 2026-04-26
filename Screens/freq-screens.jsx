@@ -47,8 +47,9 @@ function Screen01TuneIn({ initialDigits = [] }) {
       <div style={{ padding:'0 22px 0', position:'relative' }}>
         <div style={{
           position:'relative', height:200, background:'var(--mist-1)',
-          borderRadius:8,
-          boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+          borderRadius:18,
+          border:'1.5px solid var(--mist-3)',
+          boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(58,51,42,.06)',
           padding:'18px 18px 0', overflow:'hidden',
         }}>
           {/* tick marks */}
@@ -199,8 +200,7 @@ function Mosaic({ n = 7 }) {
   return (
     <div style={{
       display:'grid', gridTemplateColumns:`repeat(${cols}, 1fr)`, gridTemplateRows:`repeat(${rows}, 1fr)`,
-      gap:3, width:'100%', aspectRatio: '3/4',
-      background:'var(--mist-3)', padding:3,
+      gap:6, width:'100%', aspectRatio: '3/4',
     }}>
       {Array.from({ length: total }).map((_,i) => {
         const filled = i < n;
@@ -217,6 +217,7 @@ function Mosaic({ n = 7 }) {
               position:'relative',
               background: filled ? undefined : 'var(--mist-1)',
               cursor: filled ? 'pointer' : 'default',
+              borderRadius:8, overflow:'hidden',
             }}>
             {filled ? (
               <div className="film-stripe" style={{
@@ -229,16 +230,16 @@ function Mosaic({ n = 7 }) {
                   <span style={{
                     fontFamily:'var(--sans)', fontSize:9.5, lineHeight:1.2,
                     color:'#fff',
-                    padding:'2px 4px',
+                    padding:'3px 6px', borderRadius:6,
                     background:'rgba(45,38,32,.55)',
                     overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
                     alignSelf:'flex-start', maxWidth:'100%',
                   }}>{cap}</span>
                 )}
-                <Chip who={who} style={{ fontSize:8.5, padding:'2px 4px', background:'rgba(240,232,216,.88)', alignSelf:'flex-start' }}/>
+                <Chip who={who} style={{ fontSize:8.5, padding:'2px 5px', background:'rgba(240,232,216,.88)', alignSelf:'flex-start' }}/>
               </div>
             ) : (
-              <div className="slot-empty" style={{ position:'absolute', inset:0 }}/>
+              <div className="slot-empty" style={{ position:'absolute', inset:0, borderRadius:8 }}/>
             )}
           </div>
         );
@@ -260,14 +261,14 @@ function Screen02Feed() {
         <div style={{ flex:1, display:'flex', gap:3 }}>
           {Array.from({length: totalRounds}).map((_,i)=>(
             <div key={i} style={{
-              flex:1, height:4,
+              flex:1, height:5, borderRadius:3,
               background: i < round-1 ? 'var(--mist-3)'
                          : i === round-1 ? 'var(--ink)'
                          : 'var(--mist-2)',
             }}/>
           ))}
         </div>
-        <span className="mono" style={{ fontSize:11, letterSpacing:'.08em', fontWeight:500 }}>{round}/{totalRounds}</span>
+        <span className="mono" style={{ fontSize:11, letterSpacing:'.08em', fontWeight:700 }}>{round}/{totalRounds}</span>
       </div>
 
       {/* scroll area — mosaic + meta + member strip */}
@@ -278,6 +279,7 @@ function Screen02Feed() {
           <div style={{
             position:'absolute', right:-26, top:18, bottom:18, width:20,
             background:'var(--mist-2)', borderLeft:'1px solid var(--mist-3)',
+            borderRadius:'10px 0 0 10px',
           }}/>
         </div>
 
@@ -392,9 +394,9 @@ function Screen03Camera() {
       <div style={{ padding:'0 16px' }}>
         <div style={{
           position:'relative', width:'100%', aspectRatio:'3/4',
-          background:'#1a1917',
+          background:'#241B12',
+          borderRadius:14, overflow:'hidden',
           boxShadow:'inset 0 0 0 1px rgba(255,255,255,.06)',
-          overflow:'hidden',
         }}>
           <div className="film-stripe" style={{ position:'absolute', inset:0, opacity:.6 }}/>
           {[[0,0],[1,0],[0,1],[1,1]].map(([x,y],i)=>(
@@ -414,12 +416,12 @@ function Screen03Camera() {
             <line x1="6" y1="12" x2="10" y2="12" stroke="rgba(255,255,255,.7)" strokeWidth="1"/>
             <line x1="14" y1="12" x2="18" y2="12" stroke="rgba(255,255,255,.7)" strokeWidth="1"/>
           </svg>
-          <div style={{ position:'absolute', top:14, right:14, background:'rgba(0,0,0,.4)', padding:'3px 6px' }}>
+          <div style={{ position:'absolute', top:14, right:14, background:'rgba(0,0,0,.45)', padding:'4px 8px', borderRadius:8 }}>
             <span className="mono" style={{ fontSize:9, letterSpacing:'.14em', color:'rgba(255,255,255,.85)' }}>F·08</span>
           </div>
           {holding && (
-            <div style={{ position:'absolute', top:14, left:14, display:'flex', alignItems:'center', gap:6, background:'rgba(0,0,0,.4)', padding:'3px 6px' }}>
-              <div style={{ width:6, height:6, background:'var(--amber)', animation:'breathe 1s ease-in-out infinite' }}/>
+            <div style={{ position:'absolute', top:14, left:14, display:'flex', alignItems:'center', gap:6, background:'rgba(0,0,0,.45)', padding:'4px 8px', borderRadius:8 }}>
+              <div style={{ width:6, height:6, borderRadius:'50%', background:'var(--amber)', animation:'breathe 1s ease-in-out infinite' }}/>
               <span className="mono" style={{ fontSize:9, letterSpacing:'.14em', color:'#fff' }}>REC {recT.toFixed(1)}</span>
             </div>
           )}
@@ -435,9 +437,10 @@ function Screen03Camera() {
         <div style={{ display:'flex', flexDirection:'column', gap:6, alignItems:'center' }}>
           <div style={{
             width:48, height:60,
-            background:'#1a1917',
+            background:'#241B12',
+            borderRadius:10, overflow:'hidden',
             boxShadow:'inset 0 0 0 1px rgba(255,255,255,.1)',
-            position:'relative', overflow:'hidden',
+            position:'relative',
           }}>
             <div className="film-stripe" style={{ position:'absolute', inset:0, opacity:.8 }}/>
           </div>
@@ -456,7 +459,7 @@ function Screen03Camera() {
             style={{
               position:'relative',
               width:84, height:84, borderRadius:'50%',
-              background:'#1a1917', border:'none', padding:0, cursor:'pointer',
+              background:'#241B12', border:'none', padding:0, cursor:'pointer',
               boxShadow:'inset 0 0 0 2px #000, 0 0 0 3px rgba(255,255,255,.15)',
               display:'grid', placeItems:'center',
               WebkitTapHighlightColor:'transparent', userSelect:'none',
@@ -487,8 +490,8 @@ function Screen03Camera() {
         <div style={{ display:'flex', flexDirection:'column', gap:6, alignItems:'center' }}>
           <button style={{
             width:48, height:48, border:'none', cursor:'pointer',
-            background:'#1a1917',
-            boxShadow:'inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(0,0,0,.3), 0 1px 0 #000',
+            background:'#241B12', borderRadius:12,
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2)',
             display:'grid', placeItems:'center',
             WebkitTapHighlightColor:'transparent',
           }}>
@@ -672,11 +675,16 @@ function Screen04Post() {
         {stamps.map(s => (
           <button key={s.k} onClick={() => toggleStamp(s.k)} style={{
             flex:1, border:'none', cursor:'pointer',
-            background: s.active ? 'var(--ink)' : 'var(--mist-1)',
+            background: s.active
+              ? 'linear-gradient(180deg, #5A4F40, #3A332A)'
+              : 'linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55))',
             color: s.active ? 'var(--mist-0)' : 'var(--ink)',
-            boxShadow: s.active ? 'inset 0 1px 0 rgba(255,255,255,.1)'
-              : 'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
-            padding:'7px 0',
+            borderRadius:12,
+            border: s.active ? '1.5px solid rgba(58,51,42,.5)' : '1.5px solid var(--mist-3)',
+            boxShadow: s.active
+              ? 'inset 0 1px 0 rgba(255,255,255,.08), 0 1px 2px rgba(0,0,0,.15)'
+              : 'inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(58,51,42,.06)',
+            padding:'8px 0',
             display:'flex', flexDirection:'column', alignItems:'center', gap:2,
             transition: 'background 100ms ease-out',
             WebkitTapHighlightColor: 'transparent',
@@ -753,7 +761,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
       background:'transparent', border:'none', padding:0, cursor:'pointer',
       textAlign:'left',
     }}>
-      <div style={{ height:3, background: i <= idx ? 'var(--ink)' : 'var(--mist-2)' }}/>
+      <div style={{ height:4, borderRadius:2, background: i <= idx ? 'var(--ink)' : 'var(--mist-2)' }}/>
       <span className="lbl" style={{
         color: i === idx ? 'var(--ink)' : 'var(--ink-35)',
         fontSize:9,
@@ -778,8 +786,9 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
         <div style={{ padding:'0 18px', flex:1, display:'flex', flexDirection:'column', gap:16, overflowY:'auto' }}>
           {/* Frequency assignment card */}
           <div style={{
-            background:'var(--mist-1)', padding:'16px 14px 14px',
-            boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+            background:'var(--mist-1)', padding:'16px 14px 14px', borderRadius:14,
+            border:'1.5px solid var(--mist-3)',
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(58,51,42,.06)',
           }}>
             <div className="lbl" style={{ marginBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
               <span>Your Frequency</span>
@@ -871,7 +880,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
         <div style={{ padding:'0 18px', flex:1, display:'flex', flexDirection:'column', gap:16 }}>
           <div style={{
             background:'var(--graphite)', color:'var(--mist-0)',
-            padding:'22px 18px 20px', borderRadius:8,
+            padding:'22px 18px 20px', borderRadius:16,
             boxShadow:'0 1px 0 #000, inset 0 1px 0 rgba(255,255,255,.08)',
           }}>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
@@ -883,7 +892,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
             <div style={{ display:'flex', justifyContent:'center', gap:8, marginBottom:14 }}>
               {freq.map((d,i)=>(
                 <div key={i} style={{
-                  width:56, height:76, background:'#1a1917',
+                  width:56, height:76, background:'#241B12', borderRadius:10,
                   boxShadow:'inset 0 0 0 1px rgba(255,255,255,.1), inset 0 -14px 0 rgba(0,0,0,.3), inset 0 14px 0 rgba(0,0,0,.3)',
                   display:'grid', placeItems:'center',
                   fontFamily:'var(--mono)', fontSize:36, fontWeight:500, color:'var(--mist-0)',
@@ -900,8 +909,9 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
 
           {/* your identity card */}
           <div style={{
-            background:'var(--mist-1)', padding:14,
-            boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+            background:'var(--mist-1)', padding:14, borderRadius:14,
+            border:'1.5px solid var(--mist-3)',
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(58,51,42,.06)',
           }}>
             <div className="lbl" style={{ marginBottom:10 }}>You · Host</div>
             <div style={{ display:'flex', gap:10, alignItems:'center' }}>
@@ -919,11 +929,11 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
               <span>02:41 → {String(duration).padStart(2,'0')}:00</span>
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:6 }}>
-              {['KODAK','EKTA'].map(m => <div key={m} style={{ padding:8, background:'var(--mist-1)', boxShadow:'inset 0 0 0 1px var(--mist-3)' }}>
+              {['KODAK','EKTA'].map(m => <div key={m} style={{ padding:8, background:'var(--mist-1)', borderRadius:10, border:'1px solid var(--mist-3)' }}>
                 <Chip who={m}/>
               </div>)}
               {Array.from({length:7}).map((_,i)=>(
-                <div key={i} className="slot-empty" style={{ padding:8, minHeight:34 }}>
+                <div key={i} className="slot-empty" style={{ padding:8, minHeight:34, borderRadius:10 }}>
                   <span className="lbl" style={{ color:'var(--ink-35)', fontSize:9 }}>Waiting</span>
                 </div>
               ))}
@@ -943,13 +953,15 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
         <div style={{ padding:'0 18px', flex:1, display:'flex', flexDirection:'column', gap:16 }}>
           {/* sealed banner */}
           <div style={{
-            background:'var(--mist-1)', padding:'12px 14px',
-            boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+            background:'var(--mist-1)', padding:'12px 14px', borderRadius:14,
+            border:'1.5px solid var(--mist-3)',
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(58,51,42,.06)',
             display:'flex', alignItems:'center', gap:10,
           }}>
             <div style={{
-              width:10, height:10, background:'var(--signal)',
-              boxShadow:'0 0 8px rgba(181,255,68,.7)',
+              width:10, height:10, borderRadius:'50%',
+              background:'var(--signal-bright)',
+              boxShadow:'0 0 8px rgba(181,255,68,.75)',
             }}/>
             <div style={{ flex:1, display:'flex', flexDirection:'column', lineHeight:1.2 }}>
               <span className="lbl">Lobby Sealed</span>
@@ -963,7 +975,7 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
           {/* count-in */}
           <div style={{
             background:'var(--graphite)', color:'var(--mist-0)',
-            padding:'22px 18px', borderRadius:8,
+            padding:'22px 18px', borderRadius:16,
             boxShadow:'0 1px 0 #000, inset 0 1px 0 rgba(255,255,255,.08)',
             display:'flex', flexDirection:'column', alignItems:'center', gap:10,
           }}>
@@ -991,15 +1003,15 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
                 { who:'EKTA', name:'Rin', host:false },
               ].map(m => (
                 <div key={m.who} style={{
-                  padding:'10px 8px', background:'var(--mist-1)',
-                  boxShadow:'inset 0 0 0 1px var(--mist-3)',
+                  padding:'10px 8px', background:'var(--mist-1)', borderRadius:12,
+                  border:'1px solid var(--mist-3)',
                   display:'flex', flexDirection:'column', gap:6, alignItems:'flex-start',
                 }}>
                   <Chip who={m.who}/>
                   <span style={{ fontFamily:'var(--sans)', fontSize:12, fontWeight:500 }}>{m.name}</span>
                   {m.host && <span style={{
                     fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.14em',
-                    padding:'1px 4px', border:'1px solid var(--ink)', color:'var(--ink)',
+                    padding:'2px 5px', borderRadius:4, border:'1px solid var(--ink)', color:'var(--ink)',
                   }}>HOST</span>}
                 </div>
               ))}
@@ -1078,7 +1090,7 @@ function Screen06Members() {
               <span style={{ fontFamily:'var(--sans)', fontSize:13, fontWeight:500 }}>{r.name}</span>
               {r.host && <span style={{
                 fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.14em', textTransform:'uppercase',
-                padding:'2px 5px', border:'1px solid var(--ink)', color:'var(--ink)',
+                padding:'2px 5px', borderRadius:4, border:'1px solid var(--ink)', color:'var(--ink)',
               }}>HOST</span>}
               <div style={{ flex:1 }}/>
               <span className="mono" style={{ fontSize:9.5, letterSpacing:'.1em', color:'var(--ink-35)' }}>{r.last}</span>
@@ -1160,16 +1172,18 @@ function Screen07Settings() {
   );
   const Toggle = ({ on, onToggle }) => (
     <button onClick={() => onToggle && onToggle(!on)} style={{
-      width:34, height:20, padding:0, border:'none', cursor: onToggle ? 'pointer' : 'default',
+      width:36, height:22, padding:0, border:'none', cursor: onToggle ? 'pointer' : 'default',
+      borderRadius:11,
       background: on ? 'var(--signal)' : 'var(--mist-3)',
       boxShadow:'inset 0 1px 2px rgba(0,0,0,.15)',
       position:'relative', transition:'background 150ms',
       WebkitTapHighlightColor:'transparent',
     }}>
       <div style={{
-        position:'absolute', top:2, left: on ? 16 : 2, width:16, height:16,
+        position:'absolute', top:2, left: on ? 16 : 2, width:18, height:18,
+        borderRadius:'50%',
         background:'var(--mist-0)',
-        boxShadow:'0 1px 2px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.6)',
+        boxShadow:'0 1px 2px rgba(58,51,42,.25), inset 0 1px 0 rgba(255,255,255,.7)',
         transition:'left 150ms',
       }}/>
     </button>
@@ -1243,14 +1257,14 @@ function Screen07Settings() {
       {/* ROOM ↔ GENERAL segmented switch */}
       <div style={{ padding:'14px 16px 0' }}>
         <div style={{
-          display:'flex', gap:4, padding:3,
+          display:'flex', gap:4, padding:3, borderRadius:12,
           background:'var(--mist-2)',
           boxShadow:'inset 0 1px 2px rgba(0,0,0,.08)',
         }}>
           {[['room', isKr ? '방' : 'ROOM'], ['general', isKr ? '일반' : 'GENERAL']].map(([k, lbl]) => (
             <button key={k} onClick={() => setSection(k)} style={{
               flex:1, border:'none', cursor:'pointer',
-              padding:'9px 0',
+              padding:'10px 0', borderRadius:9,
               fontFamily:'var(--mono)', fontSize:11, letterSpacing:'.18em', textTransform:'uppercase',
               background: section === k ? 'var(--ink)' : 'transparent',
               color: section === k ? 'var(--mist-0)' : 'var(--ink-55)',
@@ -1269,8 +1283,9 @@ function Screen07Settings() {
         {/* Channel code card */}
         <div style={{
           margin:'0 16px',
-          background:'var(--mist-1)', padding:'14px 14px 12px',
-          boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1.5px 0 rgba(0,0,0,.05), 0 1px 0 var(--mist-3)',
+          background:'var(--mist-1)', padding:'14px 14px 12px', borderRadius:14,
+          border:'1.5px solid var(--mist-3)',
+          boxShadow:'inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(58,51,42,.06)',
         }}>
           <div className="lbl" style={{ marginBottom:6, color:'var(--ink-55)' }}>Code</div>
           <div style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:10 }}>
@@ -1309,7 +1324,7 @@ function Screen07Settings() {
                 <span style={{ fontFamily:'var(--sans)', fontSize:13, fontWeight:500 }}>{r.name}</span>
                 {r.host && <span style={{
                   fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.14em', textTransform:'uppercase',
-                  padding:'2px 5px', border:'1px solid var(--ink)', color:'var(--ink)',
+                  padding:'2px 5px', borderRadius:4, border:'1px solid var(--ink)', color:'var(--ink)',
                 }}>HOST</span>}
                 <div style={{ flex:1 }}/>
                 <span className="mono" style={{ fontSize:9.5, letterSpacing:'.1em', color:'var(--ink-35)' }}>{r.last}</span>
@@ -1339,8 +1354,9 @@ function Screen07Settings() {
         <div style={{ padding:'14px 16px 6px', display:'flex', alignItems:'center', gap:12 }}>
           <div style={{
             width:44, height:44, background:'var(--signal)',
+            borderRadius:14,
             display:'grid', placeItems:'center',
-            boxShadow:'inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(0,0,0,.2)',
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(0,0,0,.2), 0 1px 2px rgba(58,51,42,.1)',
           }}>
             <span style={{ fontFamily:'var(--mono)', fontSize:18, fontWeight:600, color:'var(--mist-0)' }}>J</span>
           </div>
@@ -1360,11 +1376,11 @@ function Screen07Settings() {
           }}>
             <span className="lbl" style={{ color:'var(--ink-55)', minWidth:110 }}>{T('language')}</span>
             <div style={{ flex:1 }}/>
-            <div style={{ display:'flex', gap:4, padding:3, background:'var(--mist-2)', boxShadow:'inset 0 1px 2px rgba(0,0,0,.08)' }}>
+            <div style={{ display:'flex', gap:4, padding:3, borderRadius:10, background:'var(--mist-2)', boxShadow:'inset 0 1px 2px rgba(0,0,0,.08)' }}>
               {[['en', T('eng')], ['kr', T('kor')]].map(([L, lbl]) => (
                 <button key={L} onClick={()=>setLang(L)} style={{
                   border:'none', cursor:'pointer',
-                  padding:'5px 12px', minWidth:68,
+                  padding:'6px 12px', minWidth:68, borderRadius:7,
                   fontFamily:'var(--mono)', fontSize:11, letterSpacing:'.12em',
                   background: lang===L ? 'var(--ink)' : 'transparent',
                   color: lang===L ? 'var(--mist-0)' : 'var(--ink-55)',
