@@ -955,7 +955,10 @@ function Screen05Open({ phase: initPhase = 'setup' }) {
             <div className="lbl" style={{ marginBottom:10 }}>You · Host</div>
             <div style={{ display:'flex', gap:10, alignItems:'center' }}>
               <Chip who="YOU" size="lg"/>
-              <span style={{ fontFamily:'var(--sans)', fontSize:14, fontWeight:500 }}>Jay</span>
+              <span style={{ fontFamily:'var(--sans)', fontSize:14, fontWeight:500 }}>{(() => {
+                try { return JSON.parse(localStorage.getItem('FREQ_USER') || '{}').name || 'You'; }
+                catch(_) { return 'You'; }
+              })()}</span>
               <div style={{ flex:1 }}/>
               <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>{freq.slice(0,3).join('')}.{freq[3]} MHZ</span>
             </div>
@@ -1421,7 +1424,107 @@ function Screen09SendTo() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────
+// 00 · ONBOARDING — first-launch name entry, creates FREQ_USER
+// ─────────────────────────────────────────────────────────────
+function Screen00Onboarding() {
+  const isKr = window.FREQ_LANG === 'kr';
+  const [name, setName] = React.useState('');
+
+  const onContinue = () => {
+    const n = name.trim();
+    if (!n) return;
+    try {
+      localStorage.setItem('FREQ_USER', JSON.stringify({ name: n.slice(0, 20), createdAt: Date.now() }));
+    } catch(_){}
+    if (navigator.vibrate) { try { navigator.vibrate(12); } catch(_){} }
+    if (window.FREQ_NAV) window.FREQ_NAV('feed');
+  };
+
+  const onKey = (e) => { if (e.key === 'Enter') { e.preventDefault(); onContinue(); } };
+
+  return (
+    <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
+      {/* top — logo + tagline */}
+      <div style={{ padding:'calc(env(safe-area-inset-top, 0px) + 60px) 22px 0', textAlign:'center' }}>
+        <div style={{ fontFamily:'var(--mono)', fontSize:18, fontWeight:700, letterSpacing:'.36em', color:'var(--ink)' }}>
+          FREQUENCY
+        </div>
+        <div style={{ marginTop:14, display:'inline-flex', alignItems:'center', gap:6 }}>
+          <span style={{ width:6, height:6, borderRadius:'50%', background:'var(--signal-bright)', boxShadow:'0 0 6px rgba(181,255,68,.7)' }}/>
+          <span style={{ fontFamily:'var(--mono)', fontSize:10.5, letterSpacing:'.18em', color:'var(--ink-55)', textTransform:'uppercase', fontWeight:600 }}>
+            {isKr ? '시작하기' : 'Begin'}
+          </span>
+        </div>
+      </div>
+
+      {/* spacer */}
+      <div style={{ flex:1 }}/>
+
+      {/* body — greeting + input */}
+      <div style={{ padding:'0 22px 28px', display:'flex', flexDirection:'column', gap:18 }}>
+        <div style={{ textAlign:'center' }}>
+          <div style={{ fontFamily:'var(--sans)', fontSize:20, fontWeight:700, color:'var(--ink)', lineHeight:1.3 }}>
+            {isKr ? '안녕하세요!' : 'Hello there!'}
+          </div>
+          <div style={{ marginTop:8, fontFamily:'var(--sans)', fontSize:13.5, color:'var(--ink-55)', lineHeight:1.5 }}>
+            {isKr
+              ? '친구들이 보게 될 이름을 알려주세요.'
+              : "Pick the name your friends will see."}
+          </div>
+        </div>
+
+        {/* name input — polycarbonate well */}
+        <div className="well" style={{ padding:'14px 16px', display:'flex', alignItems:'center', gap:8 }}>
+          <input
+            autoFocus
+            value={name}
+            onChange={(e) => setName(e.target.value.slice(0, 20))}
+            onKeyDown={onKey}
+            placeholder={isKr ? '닉네임' : 'name'}
+            maxLength={20}
+            style={{
+              flex:1, border:'none', outline:'none', background:'transparent',
+              fontFamily:'var(--sans)', fontSize:18, fontWeight:600, color:'var(--ink)',
+              caretColor:'var(--amber)',
+              padding:0, minWidth:0,
+            }}
+          />
+          <span className="mono" style={{ fontSize:10, color:'var(--ink-35)', letterSpacing:'.06em', flexShrink:0 }}>{name.length}/20</span>
+        </div>
+
+        <Keycap amber onClick={onContinue} style={{
+          width:'100%', height:50, fontSize:12,
+          opacity: name.trim() ? 1 : 0.4,
+          cursor: name.trim() ? 'pointer' : 'default',
+        }}>
+          {isKr ? '시작하기 →' : 'CONTINUE →'}
+        </Keycap>
+
+        {/* lang toggle (subtle, optional) */}
+        <div style={{ display:'flex', justifyContent:'center', gap:4, padding:3, borderRadius:10, background:'var(--mist-2)', alignSelf:'center', boxShadow:'inset 0 1px 2px rgba(0,0,0,.06)' }}>
+          {[['en','EN'],['kr','한']].map(([L, lbl]) => (
+            <button key={L} onClick={() => {
+              window.FREQ_LANG = L;
+              try { localStorage.setItem('FREQ_LANG', L); } catch(_){}
+              window.dispatchEvent(new CustomEvent('freq-lang-change'));
+            }} style={{
+              border:'none', cursor:'pointer',
+              padding:'4px 10px', minWidth:36, borderRadius:7,
+              fontFamily:'var(--mono)', fontSize:10, letterSpacing:'.12em',
+              background: window.FREQ_LANG === L ? 'var(--ink)' : 'transparent',
+              color: window.FREQ_LANG === L ? 'var(--mist-0)' : 'var(--ink-55)',
+              fontWeight: window.FREQ_LANG === L ? 700 : 500,
+            }}>{lbl}</button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 Object.assign(window, {
+  Screen00Onboarding,
   Screen01TuneIn, Screen02Feed, Screen03Camera, Screen03bReview, Screen04Post, Screen05Open, Screen06Members, Screen07Settings, Screen08Rooms, Screen09SendTo,
 });
 
@@ -1645,24 +1748,33 @@ function Screen07Settings() {
         </>)}
 
         {section === 'general' && (<>
-        {/* Profile */}
-        <div style={{ padding:'14px 16px 6px', display:'flex', alignItems:'center', gap:12 }}>
-          <div style={{
-            width:44, height:44, background:'var(--signal)',
-            borderRadius:14,
-            display:'grid', placeItems:'center',
-            boxShadow:'inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(0,0,0,.2), 0 1px 2px rgba(58,51,42,.1)',
-          }}>
-            <span style={{ fontFamily:'var(--mono)', fontSize:18, fontWeight:600, color:'var(--mist-0)' }}>J</span>
-          </div>
-          <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
-            <span style={{ fontFamily:'var(--sans)', fontSize:15, fontWeight:600 }}>Jay<span className="crt-cursor crt-cursor-sm crt-cursor-green"/></span>
-            <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>{T('profile_tag')}</span>
-          </div>
-          <div style={{ flex:1 }}/>
-          {/* EDIT 액션 미구현 — opacity 0.35로 비활성 표시, → 화살표 제거 */}
-          <span className="lbl" style={{ opacity:0.35, cursor:'default' }}>{isKr ? '편집' : 'EDIT'}</span>
-        </div>
+        {/* Profile — FREQ_USER 저장된 이름 사용 */}
+        {(() => {
+          let userName = 'Jay';
+          try {
+            const u = JSON.parse(localStorage.getItem('FREQ_USER') || '{}');
+            if (u.name) userName = u.name;
+          } catch(_){}
+          const initial = (userName[0] || 'J').toUpperCase();
+          return (
+            <div style={{ padding:'14px 16px 6px', display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{
+                width:44, height:44, background:'var(--signal)',
+                borderRadius:14,
+                display:'grid', placeItems:'center',
+                boxShadow:'inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(0,0,0,.2), 0 1px 2px rgba(58,51,42,.1)',
+              }}>
+                <span style={{ fontFamily:'var(--mono)', fontSize:18, fontWeight:600, color:'var(--mist-0)' }}>{initial}</span>
+              </div>
+              <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
+                <span style={{ fontFamily:'var(--sans)', fontSize:15, fontWeight:600 }}>{userName}<span className="crt-cursor crt-cursor-sm crt-cursor-green"/></span>
+                <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>@{userName.toLowerCase()} · {isKr ? '나' : 'YOU'}</span>
+              </div>
+              <div style={{ flex:1 }}/>
+              <span className="lbl" style={{ opacity:0.35, cursor:'default' }}>{isKr ? '편집' : 'EDIT'}</span>
+            </div>
+          );
+        })()}
 
         <Section title={T('language')}>
           <div style={{

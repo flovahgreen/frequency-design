@@ -75,10 +75,16 @@ const NAV_ALIAS = {
   info: 6, members: 6, '06': 6,
   rooms: 7, room_list: 7, '08': 7,
   sendto: 8, send_to: 8, '09': 8,
+  onboarding: 9, signup: 9, '00': 9,
 };
 
 function MobileRouter() {
-  const [screen, setScreen] = useMState(0);
+  // 첫 진입: localStorage FREQ_USER 있으면 FEED, 없으면 ONBOARDING
+  const initialScreen = (() => {
+    try { return localStorage.getItem('FREQ_USER') ? 1 : 9; }
+    catch(_) { return 9; }
+  })();
+  const [screen, setScreen] = useMState(initialScreen);
   const [lang, setLangState] = useMState(window.FREQ_LANG || 'kr');
   const [showSplash, setShowSplash] = useMState(true);
 
@@ -96,6 +102,7 @@ function MobileRouter() {
     { id: '07',  label: 'SET',    Comp: Screen07Settings,  tab: 'set',   back: null },
     { id: '08',  label: 'ROOMS',  Comp: Screen08Rooms,     tab: 'feed',  back: 'feed' },
     { id: '09',  label: 'SENDTO', Comp: Screen09SendTo,    tab: '',      back: 'review' },
+    { id: '00',  label: 'ONB',    Comp: Screen00Onboarding,tab: '',      back: null, hideNav: true },
   ];
 
   // 글로벌 navigate — 시안 컴포넌트에서 window.FREQ_NAV('feed') 처럼 호출
