@@ -133,9 +133,9 @@ function ScreenHeader({ channel = '4471', timer = '01:47:33', members = 7, onMen
         <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.15em', fontWeight:600, color:'var(--mist-0)' }}>{channel}</span>
       </div>
       <div style={{ flex:1 }}/>
-      {/* Timer */}
+      {/* Timer — channel expiration countdown */}
       <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', lineHeight:1.1 }}>
-        <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.18em', color:'rgba(242,241,238,.4)' }}>ROUND</span>
+        <span style={{ fontFamily:'var(--mono)', fontSize:8.5, letterSpacing:'.18em', color:'rgba(242,241,238,.4)', textTransform:'uppercase' }}>{T('expires')}</span>
         <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.08em', fontVariantNumeric:'tabular-nums', color:'var(--mist-0)' }}>{timer}</span>
       </div>
       <button onClick={onMenu} style={{

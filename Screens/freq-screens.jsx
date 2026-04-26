@@ -126,8 +126,8 @@ function Screen01TuneIn({ initialDigits = [] }) {
 
       </div>{/* /centered cluster */}
 
-      {/* keypad — pinned at bottom */}
-      <div style={{ padding:'14px 22px 8px', display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, flexShrink:0 }}>
+      {/* keypad — pinned at bottom, thumb-friendly sizing */}
+      <div style={{ padding:'14px 22px 8px', display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10, flexShrink:0 }}>
         {['1','2','3','4','5','6','7','8','9','⌫','0','↵'].map((k,i)=>{
           const isEnter = k === '↵';
           const isBack = k === '⌫';
@@ -138,7 +138,7 @@ function Screen01TuneIn({ initialDigits = [] }) {
               onClick={() => pressKey(k)}
               disabled={!enabled}
               style={{
-                border:'none', height:46,
+                border:'none', height:48,
                 fontFamily:'var(--mono)', fontSize: isEnter||isBack?14:18,
                 fontWeight:500, letterSpacing:'.04em',
                 cursor: enabled ? 'pointer' : 'default',
@@ -253,7 +253,7 @@ function Screen02Feed() {
         {/* meta row */}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <span className="lbl">Round 08 · 14:00</span>
+            <span className="lbl">Round 08 · 14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
           </div>
           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
             <span className="signal-dot"/>
@@ -347,7 +347,7 @@ function Screen03Camera({ holding = false }) {
         {/* Last frame peek */}
         <div style={{ display:'flex', flexDirection:'column', gap:6, alignItems:'center' }}>
           <div style={{
-            width:46, height:58,
+            width:48, height:60,
             background:'#1a1917',
             boxShadow:'inset 0 0 0 1px rgba(255,255,255,.1)',
             position:'relative', overflow:'hidden',
@@ -380,10 +380,11 @@ function Screen03Camera({ holding = false }) {
         {/* FLIP camera */}
         <div style={{ display:'flex', flexDirection:'column', gap:6, alignItems:'center' }}>
           <button style={{
-            width:46, height:46, border:'none', cursor:'pointer',
+            width:48, height:48, border:'none', cursor:'pointer',
             background:'#1a1917',
             boxShadow:'inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(0,0,0,.3), 0 1px 0 #000',
             display:'grid', placeItems:'center',
+            WebkitTapHighlightColor:'transparent',
           }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M4 8 A6 6 0 0 1 15 6" stroke="rgba(242,241,238,.85)" strokeWidth="1.3" fill="none"/>
@@ -407,11 +408,18 @@ function Screen03bReview() {
   const onCap = (e) => setCaption(e.target.value.slice(0,40));
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
-      {/* top bar */}
+      {/* top bar — back chevron + review title + round timer */}
       <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--mist-3)' }}>
-        <button onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('camera'); }} style={{ border:'none', background:'transparent', padding:0, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+        <button
+          onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('camera'); }}
+          aria-label="Back to camera"
+          style={{
+            width:28, height:28, padding:0, marginLeft:-8,
+            border:'none', background:'transparent', cursor:'pointer',
+            display:'grid', placeItems:'center',
+            WebkitTapHighlightColor:'transparent',
+          }}>
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.4"/></svg>
-          <span className="lbl">RETAKE</span>
         </button>
         <span className="lbl" style={{ color:'var(--ink)' }}>REVIEW · F·08</span>
         <span className="lbl">03:09</span>
@@ -460,7 +468,7 @@ function Screen03bReview() {
       {/* meta row */}
       <div style={{ padding:'14px 16px 0', display:'flex', alignItems:'center', gap:10 }}>
         <Chip who="YOU"/>
-        <span className="lbl">Round 08 · 14:00</span>
+        <span className="lbl">Round 08 · 14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
         <div style={{ flex:1 }}/>
         <span className="lbl">24H Expires</span>
       </div>
@@ -1254,15 +1262,18 @@ function Screen07Settings() {
 
         <Section title={T('capture')}>
           <Row first label={T('aspect')} value="3 : 4 · Locked"/>
-          <Row label={T('shutter_sound')} value={shutter ? 'ON' : 'OFF'} right={<Toggle on={shutter} onToggle={(v)=>flip('shutter', v, setShutter)}/>}/>
-          <Row label={T('haptic')} value={haptic ? 'MEDIUM' : 'OFF'} right={<Toggle on={haptic} onToggle={(v)=>flip('haptic', v, setHaptic)}/>}/>
-          <Row label={T('grid')} value={grid ? '3 × 3' : 'OFF'} right={<Toggle on={grid} onToggle={(v)=>flip('grid', v, setGrid)}/>}/>
+          {/* boolean-only toggles drop the value text — toggle visual is the source of truth */}
+          <Row label={T('shutter_sound')} value="" right={<Toggle on={shutter} onToggle={(v)=>flip('shutter', v, setShutter)}/>}/>
+          {/* HAPTIC keeps intensity label even when off (dimmed) */}
+          <Row label={T('haptic')} value={<span style={{ opacity: haptic ? 1 : 0.4 }}>MEDIUM</span>} right={<Toggle on={haptic} onToggle={(v)=>flip('haptic', v, setHaptic)}/>}/>
+          {/* GRID keeps grid pattern label */}
+          <Row label={T('grid')} value={<span style={{ opacity: grid ? 1 : 0.4 }}>3 × 3</span>} right={<Toggle on={grid} onToggle={(v)=>flip('grid', v, setGrid)}/>}/>
         </Section>
 
         <Section title={T('privacy')}>
           <Row first label={T('auto_vanish')} value="24H · Non-negotiable"/>
-          <Row label={T('receipts')} value={receipts ? 'ON' : 'OFF'} right={<Toggle on={receipts} onToggle={(v)=>flip('receipts', v, setReceipts)}/>}/>
-          <Row label={T('screen_lock')} value={screenLock ? 'ON' : 'OFF'} right={<Toggle on={screenLock} onToggle={(v)=>flip('screenLock', v, setScreenLock)}/>}/>
+          <Row label={T('receipts')} value="" right={<Toggle on={receipts} onToggle={(v)=>flip('receipts', v, setReceipts)}/>}/>
+          <Row label={T('screen_lock')} value="" right={<Toggle on={screenLock} onToggle={(v)=>flip('screenLock', v, setScreenLock)}/>}/>
         </Section>
 
         <Section title={T('appearance')}>
