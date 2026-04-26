@@ -34,7 +34,7 @@ const FREQ_STRINGS = {
     profile_tag: '@jay · YOU',
   },
   kr: {
-    tune_top: '주파수 · 튜닝', step: '입력', host_step: '호스트',
+    tune_top: 'Frequency · Tune', step: 'ENTER', host_step: 'HOST',
     locked: '잠김', scanning: '탐색 중',
     live: '송신', channel: '채널', round: '라운드',
     feed_round: '라운드', feed_live: '송신',
@@ -222,7 +222,8 @@ function TabBar({ active = 'feed' }) {
       borderTop:'1px solid var(--mist-3)',
       background:'var(--mist-0)',
       display:'flex',
-      paddingBottom:'env(safe-area-inset-bottom, 0)',
+      // safe-area는 너무 큼 → cap해서 버튼이 화면 바닥에 더 가깝게
+      paddingBottom:'min(env(safe-area-inset-bottom, 0px), 10px)',
     }}>
       {/* FEED · 3x3 mosaic dots with rounded corners (polycarbonate) */}
       <Tab id="feed" label="Feed" icon={

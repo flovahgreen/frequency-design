@@ -77,10 +77,7 @@ function Screen01TuneIn({ initialDigits = [] }) {
             {/* hub */}
             <circle cx="150" cy="150" r="7" fill="var(--graphite)"/>
             <circle cx="150" cy="150" r="2.5" fill={locked?'var(--signal)':'var(--mist-3)'}/>
-            {/* labels */}
-            <text x="20" y="165" fontFamily="var(--mono)" fontSize="8" fill="var(--ink-55)" letterSpacing="1.5">0000</text>
-            <text x="138" y="28" fontFamily="var(--mono)" fontSize="8" fill="var(--ink-55)" letterSpacing="1.5">4500</text>
-            <text x="262" y="165" fontFamily="var(--mono)" fontSize="8" fill="var(--ink-55)" letterSpacing="1.5">9999</text>
+            {/* (range labels 0000/4500/9999 removed — overlapped LED row, redundant with digit display) */}
           </svg>
 
           {/* LED lock row */}
@@ -1158,11 +1155,9 @@ function Screen07Settings() {
     if (navigator.vibrate) { try { navigator.vibrate(6); } catch(e){} }
   };
 
-  const Row = ({ label, value, right, first }) => (
+  const Row = ({ label, value, right }) => (
     <div style={{
-      padding:'13px 16px', display:'flex', alignItems:'center', gap:10,
-      borderTop: first ? '1px solid var(--mist-3)' : 'none',
-      borderBottom:'1px solid var(--mist-3)',
+      padding:'12px 16px', display:'flex', alignItems:'center', gap:10,
       background:'var(--mist-0)',
     }}>
       <span className="lbl" style={{ color:'var(--ink-55)', minWidth:110 }}>{label}</span>
@@ -1188,8 +1183,10 @@ function Screen07Settings() {
       }}/>
     </button>
   );
+  // Section · 카테고리 사이에 짧은 구분선 (양옆 16px 마진)
   const Section = ({ title, children }) => (
-    <div style={{ marginTop:22 }}>
+    <div style={{ marginTop:8 }}>
+      <div style={{ height:1, background:'var(--mist-3)', margin:'12px 16px 16px' }}/>
       <div style={{
         padding:'0 16px 8px',
         fontFamily:'var(--mono)',
@@ -1313,12 +1310,10 @@ function Screen07Settings() {
             <span>Host · You</span>
           </div>
           <div>
-            {roster.map((r,i)=>(
+            {roster.map((r)=>(
               <div key={r.who} style={{
                 display:'flex', alignItems:'center', gap:10,
-                padding:'9px 0',
-                borderTop: i === 0 ? '1px solid var(--mist-3)' : 'none',
-                borderBottom:'1px solid var(--mist-3)',
+                padding:'10px 0',
               }}>
                 <Chip who={r.who}/>
                 <span style={{ fontFamily:'var(--sans)', fontSize:13, fontWeight:500 }}>{r.name}</span>
@@ -1332,7 +1327,7 @@ function Screen07Settings() {
             ))}
             {Array.from({length:9 - roster.length}).map((_,i)=>(
               <div key={i} className="slot-empty" style={{
-                padding:'9px 12px', borderBottom:'1px solid var(--mist-3)',
+                padding:'10px 12px', marginTop:6, borderRadius:8,
                 display:'flex', alignItems:'center', gap:10,
               }}>
                 <span className="lbl" style={{ color:'var(--ink-35)' }}>Open slot</span>
@@ -1371,7 +1366,6 @@ function Screen07Settings() {
         <Section title={T('language')}>
           <div style={{
             padding:'10px 16px', display:'flex', gap:6, alignItems:'center',
-            borderTop:'1px solid var(--mist-3)', borderBottom:'1px solid var(--mist-3)',
             background:'var(--mist-0)',
           }}>
             <span className="lbl" style={{ color:'var(--ink-55)', minWidth:110 }}>{T('language')}</span>
