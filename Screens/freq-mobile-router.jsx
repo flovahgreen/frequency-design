@@ -73,6 +73,7 @@ const NAV_ALIAS = {
   open: 5, '05': 5,
   settings: 6, set: 6, '07': 6,
   info: 6, members: 6, '06': 6,
+  rooms: 7, room_list: 7, '08': 7,
 };
 
 function MobileRouter() {
@@ -91,6 +92,7 @@ function MobileRouter() {
     { id: '04',  label: 'POST',   Comp: Screen04Post,      tab: 'feed' },
     { id: '05',  label: 'OPEN',   Comp: Screen05Open,      tab: '' },
     { id: '07',  label: 'SET',    Comp: Screen07Settings,  tab: 'set' },
+    { id: '08',  label: 'ROOMS',  Comp: Screen08Rooms,     tab: 'feed' },
   ];
 
   // 글로벌 navigate — 시안 컴포넌트에서 window.FREQ_NAV('feed') 처럼 호출

@@ -574,37 +574,32 @@ function Screen03bReview() {
         </FilmPlaceholder>
       </div>
 
-      {/* caption input — real text input, 40 char limit */}
-      <div style={{ padding:'16px 16px 0' }}>
-        <div className="lbl" style={{ marginBottom:8, display:'flex', justifyContent:'space-between' }}>
-          <span>{T('caption_opt')}</span>
-          <span>{caption.length} / 40</span>
-        </div>
-        <div className="well" style={{
-          padding:'10px 14px', minHeight:66,
-          display:'flex', alignItems:'flex-start',
-        }}>
-          <textarea
-            value={caption}
-            onChange={onCap}
-            maxLength={40}
-            rows={2}
-            placeholder="Coffee, finally..."
-            style={{
-              flex:1, width:'100%',
-              border:'none', outline:'none', background:'transparent', resize:'none',
-              fontFamily:'var(--sans)', fontSize:15, color:'var(--ink)', lineHeight:1.4,
-              padding:0, minHeight:44,
-              caretColor:'var(--amber)',
-            }}
-          />
-        </div>
+      {/* caption — 사진 바로 아래 인라인. autoFocus로 키보드 자동 노출 */}
+      <div style={{ padding:'16px 24px 4px' }}>
+        <textarea
+          autoFocus
+          value={caption}
+          onChange={onCap}
+          maxLength={40}
+          rows={1}
+          placeholder={(window.FREQ_LANG === 'kr') ? '한 줄 적기...' : 'add a line...'}
+          style={{
+            width:'100%',
+            border:'none', outline:'none', background:'transparent', resize:'none',
+            fontFamily:'var(--sans)', fontSize:16, fontWeight:500,
+            color:'var(--ink)', textAlign:'center',
+            caretColor:'var(--amber)',
+            lineHeight:1.4,
+            padding:0,
+          }}
+        />
       </div>
 
-      {/* meta row — chip + round timer only */}
-      <div style={{ padding:'14px 16px 0', display:'flex', alignItems:'center', gap:10 }}>
+      {/* meta row — chip + char counter + round timer */}
+      <div style={{ padding:'8px 16px 0', display:'flex', alignItems:'center', gap:10 }}>
         <Chip who="YOU"/>
         <div style={{ flex:1 }}/>
+        <span className="mono" style={{ fontSize:9.5, color:'var(--ink-35)', letterSpacing:'.06em' }}>{caption.length}/40</span>
         <span className="lbl">14:00 {(window.FREQ_LANG === 'kr') ? '남음' : 'LEFT'}</span>
       </div>
 
@@ -1152,8 +1147,110 @@ function Screen06Members() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────
+// 08 · ROOMS — channel switcher / list of joined rooms
+// ─────────────────────────────────────────────────────────────
+function Screen08Rooms() {
+  const isKr = window.FREQ_LANG === 'kr';
+  const rooms = [
+    { code:'447.1', name: isKr ? '가족'        : 'Family',         members:7, active:true,  status: isKr ? '8/12 · 14:00 남음' : '8/12 · 14:00 LEFT' },
+    { code:'661.4', name: isKr ? '커피 크루'    : 'Coffee Crew',     members:4, active:false, status: isKr ? '3/12 · 22h 남음'   : '3/12 · 22h LEFT' },
+    { code:'888.2', name: isKr ? '일요 등산'    : 'Sunday Hiking',   members:5, active:false, status: isKr ? '종료'              : 'ENDED', ended:true },
+  ];
+
+  return (
+    <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
+      {/* top bar */}
+      <div style={{
+        padding:'14px 16px', display:'flex', alignItems:'center', justifyContent:'space-between',
+        borderBottom:'1px solid var(--mist-3)',
+      }}>
+        <button
+          onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }}
+          aria-label="Back to feed"
+          style={{
+            width:28, height:28, padding:0, marginLeft:-8,
+            border:'none', background:'transparent', cursor:'pointer',
+            display:'grid', placeItems:'center', WebkitTapHighlightColor:'transparent',
+          }}>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3 L5 8 L10 13" stroke="var(--ink)" strokeWidth="1.5"/>
+          </svg>
+        </button>
+        <span style={{
+          fontFamily:'var(--mono)', fontSize:15, fontWeight:700,
+          letterSpacing: isKr ? '.04em' : '.18em',
+          textTransform: isKr ? 'none' : 'uppercase',
+          color:'var(--ink)',
+        }}>{isKr ? '방 목록' : 'Rooms'}</span>
+        <span style={{ width:28 }}/>
+      </div>
+
+      {/* rooms list */}
+      <div style={{ flex:1, overflowY:'auto', padding:'18px 16px 24px', display:'flex', flexDirection:'column', gap:10 }}>
+        {rooms.map(r => (
+          <button key={r.code}
+            onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('feed'); }}
+            style={{
+              border:'none', cursor:'pointer', textAlign:'left',
+              padding:'14px 16px', borderRadius:14,
+              background: r.active
+                ? 'linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.7))'
+                : 'linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.4))',
+              border:`1.5px solid ${r.active ? 'var(--signal)' : 'var(--mist-3)'}`,
+              boxShadow: r.active
+                ? 'inset 0 1px 0 rgba(255,255,255,.7), 0 2px 8px rgba(101,190,63,.18)'
+                : 'inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(58,51,42,.06)',
+              opacity: r.ended ? 0.55 : 1,
+              display:'flex', alignItems:'center', gap:14,
+              WebkitTapHighlightColor:'transparent',
+            }}>
+            {/* active dot */}
+            <div style={{
+              width:10, height:10, borderRadius:'50%',
+              background: r.active ? 'var(--signal-bright)' : 'var(--mist-3)',
+              boxShadow: r.active ? '0 0 8px rgba(181,255,68,.7)' : 'inset 0 1px 1px rgba(0,0,0,.1)',
+              flexShrink:0,
+              animation: r.active ? 'breathe 1.8s ease-in-out infinite' : 'none',
+            }}/>
+
+            <div style={{ flex:1, display:'flex', flexDirection:'column', gap:3, minWidth:0 }}>
+              {/* code + name */}
+              <div style={{ display:'flex', alignItems:'baseline', gap:8 }}>
+                <span style={{ fontFamily:'var(--mono)', fontSize:18, fontWeight:700, letterSpacing:'.06em', color:'var(--ink)' }}>{r.code}</span>
+                <span style={{ fontFamily:'var(--sans)', fontSize:13, fontWeight:500, color:'var(--ink-70)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{r.name}</span>
+              </div>
+              {/* meta */}
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <span className="lbl" style={{ color:'var(--ink-55)' }}>{r.members} {isKr ? '명' : 'MEMBERS'}</span>
+                <span style={{ width:3, height:3, borderRadius:'50%', background:'var(--ink-35)' }}/>
+                <span className="lbl" style={{ color: r.ended ? 'var(--ink-35)' : 'var(--ink-55)' }}>{r.status}</span>
+              </div>
+            </div>
+
+            {/* chevron */}
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style={{ flexShrink:0 }}>
+              <path d="M6 3 L11 8 L6 13" stroke="var(--ink-35)" strokeWidth="1.5"/>
+            </svg>
+          </button>
+        ))}
+
+        {/* secondary actions */}
+        <div style={{ marginTop:8, display:'flex', flexDirection:'column', gap:8 }}>
+          <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('open'); }} style={{ width:'100%', height:46, fontSize:11 }}>
+            + {isKr ? '새 방 만들기' : 'CREATE NEW ROOM'}
+          </Keycap>
+          <Keycap onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('tune'); }} style={{ width:'100%', height:46, fontSize:11 }}>
+            + {isKr ? '코드로 입장' : 'JOIN WITH CODE'}
+          </Keycap>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 Object.assign(window, {
-  Screen01TuneIn, Screen02Feed, Screen03Camera, Screen03bReview, Screen04Post, Screen05Open, Screen06Members, Screen07Settings,
+  Screen01TuneIn, Screen02Feed, Screen03Camera, Screen03bReview, Screen04Post, Screen05Open, Screen06Members, Screen07Settings, Screen08Rooms,
 });
 
 // ─────────────────────────────────────────────────────────────

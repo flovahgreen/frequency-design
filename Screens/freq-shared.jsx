@@ -124,8 +124,19 @@ function ScreenHeader({ channel = '4471', timer = '01:47:33', members = 7, onMen
     }}>
       {/* signal pulse only */}
       <span className="signal-dot"/>
-      {/* Channel code as the headline */}
-      <span style={{ fontFamily:'var(--mono)', fontSize:16, letterSpacing:'.16em', fontWeight:700, color:'var(--mist-0)' }}>{channel}</span>
+      {/* Channel code as the headline — tappable to open Rooms list */}
+      <button
+        onClick={() => { if (window.FREQ_NAV) window.FREQ_NAV('rooms'); }}
+        style={{
+          background:'transparent', border:'none', padding:0, cursor:'pointer',
+          display:'flex', alignItems:'center', gap:6,
+          WebkitTapHighlightColor:'transparent',
+        }}>
+        <span style={{ fontFamily:'var(--mono)', fontSize:16, letterSpacing:'.16em', fontWeight:700, color:'var(--mist-0)' }}>{channel}</span>
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
+          <path d="M2 3.5 L5 6.5 L8 3.5" stroke="rgba(240,232,216,.6)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
       <div style={{ flex:1 }}/>
       {/* expiry timer (no label — context implied) */}
       <span style={{ fontFamily:'var(--mono)', fontSize:13, letterSpacing:'.08em', fontVariantNumeric:'tabular-nums', color:'rgba(240,232,216,.7)' }}>{timer}</span>
