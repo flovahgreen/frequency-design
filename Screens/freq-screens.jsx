@@ -1603,6 +1603,43 @@ Object.assign(window, {
 // ─────────────────────────────────────────────────────────────
 // 07 · APP SETTINGS
 // ─────────────────────────────────────────────────────────────
+
+// Profile row — Supabase 사용자 정보 표시. 별도 컴포넌트로 분리 (hook 규칙 준수)
+function ProfileRow({ isKr }) {
+  const sb = window.freqSupabase;
+  const [profile, setProfile] = React.useState({ name:'…', email:'' });
+  React.useEffect(() => {
+    if (!sb) return;
+    sb.auth.getUser().then(({ data }) => {
+      const u = data?.user;
+      if (u) {
+        setProfile({
+          name: u.user_metadata?.name || u.email?.split('@')[0] || 'You',
+          email: u.email || '',
+        });
+      }
+    });
+  }, []);
+  const initial = (profile.name[0] || '?').toUpperCase();
+  return (
+    <div style={{ padding:'14px 16px 6px', display:'flex', alignItems:'center', gap:12 }}>
+      <div style={{
+        width:44, height:44, background:'var(--signal)',
+        borderRadius:14,
+        display:'grid', placeItems:'center',
+        boxShadow:'inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(0,0,0,.2), 0 1px 2px rgba(58,51,42,.1)',
+      }}>
+        <span style={{ fontFamily:'var(--mono)', fontSize:18, fontWeight:600, color:'var(--mist-0)' }}>{initial}</span>
+      </div>
+      <div style={{ display:'flex', flexDirection:'column', gap:3, minWidth:0, flex:1 }}>
+        <span style={{ fontFamily:'var(--sans)', fontSize:15, fontWeight:600 }}>{profile.name}<span className="crt-cursor crt-cursor-sm crt-cursor-green"/></span>
+        <span className="mono" style={{ fontSize:10, letterSpacing:'.04em', color:'var(--ink-35)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{profile.email}</span>
+      </div>
+      <span className="lbl" style={{ opacity:0.35, cursor:'default' }}>{isKr ? '편집' : 'EDIT'}</span>
+    </div>
+  );
+}
+
 function Screen07Settings() {
   const [, force] = React.useReducer(x => x+1, 0);
   const lang = window.FREQ_LANG || 'en';
@@ -1820,41 +1857,8 @@ function Screen07Settings() {
         </>)}
 
         {section === 'general' && (<>
-        {/* Profile — Supabase 인증 사용자 정보 */}
-        {(() => {
-          const sb = window.freqSupabase;
-          const [profile, setProfile] = React.useState({ name:'…', email:'' });
-          React.useEffect(() => {
-            if (!sb) return;
-            sb.auth.getUser().then(({ data }) => {
-              const u = data?.user;
-              if (u) {
-                setProfile({
-                  name: u.user_metadata?.name || u.email?.split('@')[0] || 'You',
-                  email: u.email || '',
-                });
-              }
-            });
-          }, []);
-          const initial = (profile.name[0] || '?').toUpperCase();
-          return (
-            <div style={{ padding:'14px 16px 6px', display:'flex', alignItems:'center', gap:12 }}>
-              <div style={{
-                width:44, height:44, background:'var(--signal)',
-                borderRadius:14,
-                display:'grid', placeItems:'center',
-                boxShadow:'inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(0,0,0,.2), 0 1px 2px rgba(58,51,42,.1)',
-              }}>
-                <span style={{ fontFamily:'var(--mono)', fontSize:18, fontWeight:600, color:'var(--mist-0)' }}>{initial}</span>
-              </div>
-              <div style={{ display:'flex', flexDirection:'column', gap:3, minWidth:0, flex:1 }}>
-                <span style={{ fontFamily:'var(--sans)', fontSize:15, fontWeight:600 }}>{profile.name}<span className="crt-cursor crt-cursor-sm crt-cursor-green"/></span>
-                <span className="mono" style={{ fontSize:10, letterSpacing:'.04em', color:'var(--ink-35)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{profile.email}</span>
-              </div>
-              <span className="lbl" style={{ opacity:0.35, cursor:'default' }}>{isKr ? '편집' : 'EDIT'}</span>
-            </div>
-          );
-        })()}
+        {/* Profile — 별도 컴포넌트라 hook 규칙 안전 */}
+        <ProfileRow isKr={isKr}/>
 
         <Section title={T('language')}>
           <div style={{
