@@ -79,14 +79,33 @@ const NAV_ALIAS = {
 };
 
 function MobileRouter() {
-  // 첫 진입: localStorage FREQ_USER 있으면 FEED, 없으면 ONBOARDING
+  // 첫 진입: Supabase 세션 있으면 FEED(1), 없으면 ONBOARDING(9)
+  // SDK는 localStorage에 세션을 캐싱하므로 동기적으로 빠르게 가능
   const initialScreen = (() => {
-    try { return localStorage.getItem('FREQ_USER') ? 1 : 9; }
-    catch(_) { return 9; }
+    try {
+      // Supabase v2의 세션 storage key 패턴: sb-{ref}-auth-token
+      const keys = Object.keys(localStorage);
+      const hasSession = keys.some(k => k.startsWith('sb-') && k.endsWith('-auth-token'));
+      return hasSession ? 1 : 9;
+    } catch(_) { return 9; }
   })();
   const [screen, setScreen] = useMState(initialScreen);
   const [lang, setLangState] = useMState(window.FREQ_LANG || 'kr');
   const [showSplash, setShowSplash] = useMState(true);
+
+  // Supabase 인증 상태 변화 감지 — 매직 링크 클릭 후 자동 로그인 처리
+  useMEffect(() => {
+    if (!window.freqSupabase) return;
+    const { data } = window.freqSupabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        // 매직 링크 콜백 또는 첫 로그인 → FEED로
+        if (screen === 9) setScreen(1);
+      } else if (event === 'SIGNED_OUT') {
+        setScreen(9); // 로그아웃 → 온보딩
+      }
+    });
+    return () => { try { data?.subscription?.unsubscribe?.(); } catch(_){} };
+  }, [screen]);
 
   // INFO(Members) 화면은 Settings의 Channel 섹션으로 통합 → 라우터에서 제거
   // tab: 활성 표시할 탭 id (빈 값=어떤 탭도 활성 아님)

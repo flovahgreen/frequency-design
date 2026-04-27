@@ -1,6 +1,22 @@
 // Shared FREQUENCY primitives — in the spirit of Dieter Rams + TE OP-1
 // Greyscale base, micro-accents of green (signal) and one amber key per screen.
 
+// ── Supabase client (backend: auth / DB / realtime / storage) ──
+// publishable key는 브라우저에서 안전. service key는 절대 클라이언트에 두지 말 것.
+const SUPABASE_URL = 'https://ohqcbzekblzmugifnakl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_qM_WMqPqd1poLfSC3xFD9g_7NqZled6';
+const freqSupabase = (window.supabase && window.supabase.createClient)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        persistSession: true,
+        detectSessionInUrl: true,   // 매직 링크 콜백 자동 처리
+        autoRefreshToken: true,
+      },
+    })
+  : null;
+window.freqSupabase = freqSupabase;
+if (!freqSupabase) console.warn('[FREQ] Supabase SDK not loaded');
+
 // Simple i18n — controlled by window.FREQ_LANG ('en' | 'kr')
 const FREQ_STRINGS = {
   en: {

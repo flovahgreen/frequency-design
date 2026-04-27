@@ -1430,18 +1430,65 @@ function Screen09SendTo() {
 function Screen00Onboarding() {
   const isKr = window.FREQ_LANG === 'kr';
   const [name, setName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [phase, setPhase] = React.useState('input');  // 'input' | 'sending' | 'sent' | 'error'
+  const [errorMsg, setErrorMsg] = React.useState('');
 
-  const onContinue = () => {
-    const n = name.trim();
-    if (!n) return;
+  const sb = window.freqSupabase;
+  const valid = name.trim().length > 0 && /\S+@\S+\.\S+/.test(email.trim());
+
+  const onContinue = async () => {
+    if (!valid || !sb || phase === 'sending') return;
+    setPhase('sending');
+    setErrorMsg('');
+    if (navigator.vibrate) { try { navigator.vibrate(8); } catch(_){} }
+
     try {
-      localStorage.setItem('FREQ_USER', JSON.stringify({ name: n.slice(0, 20), createdAt: Date.now() }));
-    } catch(_){}
-    if (navigator.vibrate) { try { navigator.vibrate(12); } catch(_){} }
-    if (window.FREQ_NAV) window.FREQ_NAV('feed');
+      // 매직 링크 발송. 닉네임은 user_metadata에 저장됨
+      const { error } = await sb.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          data: { name: name.trim().slice(0, 20) },
+          emailRedirectTo: window.location.origin + window.location.pathname,
+        },
+      });
+      if (error) throw error;
+      setPhase('sent');
+    } catch (e) {
+      setErrorMsg(e?.message || 'Failed to send');
+      setPhase('error');
+    }
   };
 
   const onKey = (e) => { if (e.key === 'Enter') { e.preventDefault(); onContinue(); } };
+
+  // 이메일 발송 후 성공 화면
+  if (phase === 'sent') {
+    return (
+      <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
+        <div style={{ padding:'calc(env(safe-area-inset-top, 0px) + 60px) 22px 0', textAlign:'center' }}>
+          <div style={{ fontFamily:'var(--mono)', fontSize:18, fontWeight:700, letterSpacing:'.36em', color:'var(--ink)' }}>
+            FREQUENCY
+          </div>
+        </div>
+        <div style={{ flex:1 }}/>
+        <div style={{ padding:'0 22px 28px', textAlign:'center' }}>
+          <div style={{ fontSize:48, marginBottom:16 }}>📬</div>
+          <div style={{ fontFamily:'var(--sans)', fontSize:20, fontWeight:700, color:'var(--ink)', marginBottom:10 }}>
+            {isKr ? '이메일을 확인해주세요' : 'Check your email'}
+          </div>
+          <div style={{ fontFamily:'var(--sans)', fontSize:13.5, color:'var(--ink-55)', lineHeight:1.6, marginBottom:24 }}>
+            {isKr
+              ? <>로그인 링크를<br/><b style={{ color:'var(--ink)' }}>{email}</b><br/>로 보냈어요. 링크를 누르면 자동으로 들어옵니다.</>
+              : <>We sent a sign-in link to<br/><b style={{ color:'var(--ink)' }}>{email}</b><br/>Tap it to come back here.</>}
+          </div>
+          <Keycap onClick={() => setPhase('input')} style={{ width:'100%', height:42, fontSize:11 }}>
+            {isKr ? '이메일 다시 입력' : 'CHANGE EMAIL'}
+          </Keycap>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ flex:1, background:'var(--mist-0)', display:'flex', flexDirection:'column' }}>
@@ -1458,34 +1505,30 @@ function Screen00Onboarding() {
         </div>
       </div>
 
-      {/* spacer */}
       <div style={{ flex:1 }}/>
 
-      {/* body — greeting + input */}
-      <div style={{ padding:'0 22px 28px', display:'flex', flexDirection:'column', gap:18 }}>
+      {/* body */}
+      <div style={{ padding:'0 22px 28px', display:'flex', flexDirection:'column', gap:14 }}>
         <div style={{ textAlign:'center' }}>
           <div style={{ fontFamily:'var(--sans)', fontSize:20, fontWeight:700, color:'var(--ink)', lineHeight:1.3 }}>
             {isKr ? '안녕하세요!' : 'Hello there!'}
           </div>
           <div style={{ marginTop:8, fontFamily:'var(--sans)', fontSize:13.5, color:'var(--ink-55)', lineHeight:1.5 }}>
-            {isKr
-              ? '친구들이 보게 될 이름을 알려주세요.'
-              : "Pick the name your friends will see."}
+            {isKr ? '닉네임과 이메일을 알려주세요.' : 'Tell us your name and email.'}
           </div>
         </div>
 
-        {/* name input — polycarbonate well */}
-        <div className="well" style={{ padding:'14px 16px', display:'flex', alignItems:'center', gap:8 }}>
+        {/* name input */}
+        <div className="well" style={{ padding:'13px 16px', display:'flex', alignItems:'center', gap:8 }}>
           <input
             autoFocus
             value={name}
             onChange={(e) => setName(e.target.value.slice(0, 20))}
-            onKeyDown={onKey}
             placeholder={isKr ? '닉네임' : 'name'}
             maxLength={20}
             style={{
               flex:1, border:'none', outline:'none', background:'transparent',
-              fontFamily:'var(--sans)', fontSize:18, fontWeight:600, color:'var(--ink)',
+              fontFamily:'var(--sans)', fontSize:17, fontWeight:600, color:'var(--ink)',
               caretColor:'var(--amber)',
               padding:0, minWidth:0,
             }}
@@ -1493,15 +1536,44 @@ function Screen00Onboarding() {
           <span className="mono" style={{ fontSize:10, color:'var(--ink-35)', letterSpacing:'.06em', flexShrink:0 }}>{name.length}/20</span>
         </div>
 
+        {/* email input */}
+        <div className="well" style={{ padding:'13px 16px', display:'flex', alignItems:'center', gap:8 }}>
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={onKey}
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            spellCheck={false}
+            placeholder={isKr ? '이메일' : 'email'}
+            style={{
+              flex:1, border:'none', outline:'none', background:'transparent',
+              fontFamily:'var(--sans)', fontSize:17, fontWeight:500, color:'var(--ink)',
+              caretColor:'var(--amber)',
+              padding:0, minWidth:0,
+            }}
+          />
+        </div>
+
+        {phase === 'error' && (
+          <div style={{ fontFamily:'var(--sans)', fontSize:12, color:'#D24', textAlign:'center' }}>
+            {errorMsg}
+          </div>
+        )}
+
         <Keycap amber onClick={onContinue} style={{
           width:'100%', height:50, fontSize:12,
-          opacity: name.trim() ? 1 : 0.4,
-          cursor: name.trim() ? 'pointer' : 'default',
+          opacity: (valid && phase !== 'sending') ? 1 : 0.4,
+          cursor: (valid && phase !== 'sending') ? 'pointer' : 'default',
         }}>
-          {isKr ? '시작하기 →' : 'CONTINUE →'}
+          {phase === 'sending'
+            ? (isKr ? '전송 중...' : 'SENDING...')
+            : (isKr ? '로그인 링크 받기 →' : 'SEND MAGIC LINK →')}
         </Keycap>
 
-        {/* lang toggle (subtle, optional) */}
+        {/* lang toggle */}
         <div style={{ display:'flex', justifyContent:'center', gap:4, padding:3, borderRadius:10, background:'var(--mist-2)', alignSelf:'center', boxShadow:'inset 0 1px 2px rgba(0,0,0,.06)' }}>
           {[['en','EN'],['kr','한']].map(([L, lbl]) => (
             <button key={L} onClick={() => {
@@ -1748,14 +1820,23 @@ function Screen07Settings() {
         </>)}
 
         {section === 'general' && (<>
-        {/* Profile — FREQ_USER 저장된 이름 사용 */}
+        {/* Profile — Supabase 인증 사용자 정보 */}
         {(() => {
-          let userName = 'Jay';
-          try {
-            const u = JSON.parse(localStorage.getItem('FREQ_USER') || '{}');
-            if (u.name) userName = u.name;
-          } catch(_){}
-          const initial = (userName[0] || 'J').toUpperCase();
+          const sb = window.freqSupabase;
+          const [profile, setProfile] = React.useState({ name:'…', email:'' });
+          React.useEffect(() => {
+            if (!sb) return;
+            sb.auth.getUser().then(({ data }) => {
+              const u = data?.user;
+              if (u) {
+                setProfile({
+                  name: u.user_metadata?.name || u.email?.split('@')[0] || 'You',
+                  email: u.email || '',
+                });
+              }
+            });
+          }, []);
+          const initial = (profile.name[0] || '?').toUpperCase();
           return (
             <div style={{ padding:'14px 16px 6px', display:'flex', alignItems:'center', gap:12 }}>
               <div style={{
@@ -1766,11 +1847,10 @@ function Screen07Settings() {
               }}>
                 <span style={{ fontFamily:'var(--mono)', fontSize:18, fontWeight:600, color:'var(--mist-0)' }}>{initial}</span>
               </div>
-              <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
-                <span style={{ fontFamily:'var(--sans)', fontSize:15, fontWeight:600 }}>{userName}<span className="crt-cursor crt-cursor-sm crt-cursor-green"/></span>
-                <span className="mono" style={{ fontSize:10, letterSpacing:'.12em', color:'var(--ink-35)' }}>@{userName.toLowerCase()} · {isKr ? '나' : 'YOU'}</span>
+              <div style={{ display:'flex', flexDirection:'column', gap:3, minWidth:0, flex:1 }}>
+                <span style={{ fontFamily:'var(--sans)', fontSize:15, fontWeight:600 }}>{profile.name}<span className="crt-cursor crt-cursor-sm crt-cursor-green"/></span>
+                <span className="mono" style={{ fontSize:10, letterSpacing:'.04em', color:'var(--ink-35)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{profile.email}</span>
               </div>
-              <div style={{ flex:1 }}/>
               <span className="lbl" style={{ opacity:0.35, cursor:'default' }}>{isKr ? '편집' : 'EDIT'}</span>
             </div>
           );
@@ -1822,8 +1902,10 @@ function Screen07Settings() {
         </Section>
 
         <div style={{ padding:'22px 16px 20px', display:'flex', flexDirection:'column', gap:8 }}>
-          {/* SIGN OUT 미구현 — disabled 비주얼, no onClick */}
-          <Keycap style={{ width:'100%', height:42, fontSize:11, opacity:0.4, cursor:'default' }}>{T('sign_out')}</Keycap>
+          {/* SIGN OUT — Supabase 세션 종료 → onAuthStateChange가 onboarding으로 보냄 */}
+          <Keycap onClick={async () => {
+            if (window.freqSupabase) await window.freqSupabase.auth.signOut();
+          }} style={{ width:'100%', height:42, fontSize:11 }}>{T('sign_out')}</Keycap>
           <Keycap graphite onClick={() => setConfirm('delete')} style={{ width:'100%', height:42, fontSize:11 }}>{T('delete_acct')}</Keycap>
         </div>
         </>)}
